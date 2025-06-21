@@ -1,0 +1,18 @@
+[
+  {
+    "label": "Super Admin",
+    "key": "super_admin"
+  },
+  {
+    "label": "Agent",
+    "key": "agent"
+  },
+  {
+    "label": "Admin",
+    "key": "admin"
+  },
+  {
+    "label": "Support",
+    "key": "support"
+  }
+]

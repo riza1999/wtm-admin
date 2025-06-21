@@ -1,35 +1,7 @@
 "use client";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -54,7 +26,6 @@ import {
   IconChevronRight,
   IconChevronsLeft,
   IconChevronsRight,
-  IconDotsVertical,
 } from "@tabler/icons-react";
 import {
   ColumnDef,
@@ -70,189 +41,17 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-import { CirclePlus } from "lucide-react";
 import Link from "next/link";
-import React from "react";
 import z from "zod";
+import { schema } from "./schema";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Search } from "lucide-react";
+import React from "react";
+import { Tab } from "@/types/tabs";
+import AddSuperAdmin from "./modal-add";
+import { ActionDialogs } from "./action-dialogs";
 
-export const schema = z.object({
-  id: z.number(),
-  name: z.string(),
-  agent: z.string(),
-  promo_group: z.string(),
-  email: z.string(),
-  phone: z.string(),
-});
-
-const columns: ColumnDef<z.infer<typeof schema>>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "name",
-    header: "Agent Name",
-    cell: ({ row }) => {
-      return row.original.name;
-    },
-    enableHiding: false,
-  },
-  {
-    accessorKey: "agent",
-    header: "Agent Company",
-    cell: ({ row }) => {
-      return row.original.agent;
-    },
-  },
-  {
-    accessorKey: "promo_group",
-    header: "Promo Group",
-    cell: ({ row }) => {
-      return (
-        <>
-          <Label htmlFor={`${row.original.id}-promo-group`} className="sr-only">
-            Promo Group
-          </Label>
-          <Select defaultValue={row.original.promo_group}>
-            <SelectTrigger
-              className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
-              size="sm"
-              id={`${row.original.id}-promo-group`}
-            >
-              <SelectValue placeholder="Assign promo group" />
-            </SelectTrigger>
-            <SelectContent align="end">
-              <SelectItem value="group_a">Promo Group A</SelectItem>
-              <SelectItem value="group_b">Promo Group B</SelectItem>
-              <SelectItem value="group_c">Promo Group C</SelectItem>
-              <SelectSeparator />
-              <SelectItemLink href={"/dummy"}>Create New Group</SelectItemLink>
-            </SelectContent>
-          </Select>
-        </>
-      );
-    },
-  },
-  {
-    accessorKey: "email",
-    header: "E-mail",
-    cell: ({ row }) => {
-      return row.original.email;
-    },
-  },
-  {
-    accessorKey: "phone",
-    header: "Phone Number",
-    cell: ({ row }) => {
-      return row.original.phone;
-    },
-  },
-  {
-    id: "actions",
-    cell: () => (
-      <AlertDialog>
-        <Dialog>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-                size="icon"
-              >
-                <IconDotsVertical />
-                <span className="sr-only">Open menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-32">
-              <DialogTrigger asChild>
-                <DropdownMenuItem>Edit</DropdownMenuItem>
-              </DialogTrigger>
-              <DropdownMenuSeparator />
-              <AlertDialogTrigger asChild>
-                <DropdownMenuItem variant="destructive">
-                  Delete
-                </DropdownMenuItem>
-              </AlertDialogTrigger>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <form>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Edit profile</DialogTitle>
-                <DialogDescription>
-                  Make changes to your profile here. Click save when you&apos;re
-                  done.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4">
-                <div className="grid gap-3">
-                  <Label htmlFor="name-1">Name</Label>
-                  <Input id="name-1" name="name" defaultValue="Pedro Duarte" />
-                </div>
-                <div className="grid gap-3">
-                  <Label htmlFor="username-1">Username</Label>
-                  <Input
-                    id="username-1"
-                    name="username"
-                    defaultValue="@peduarte"
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button variant="outline">Cancel</Button>
-                </DialogClose>
-                <Button type="submit">Save changes</Button>
-              </DialogFooter>
-            </DialogContent>
-          </form>
-
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your
-                account and remove your data from our servers.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                className={buttonVariants({ variant: "destructive" })}
-              >
-                Delete
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </Dialog>
-      </AlertDialog>
-    ),
-  },
-];
-
-const DataTable = ({
+const TableContent = ({
   data: initialData,
 }: {
   data: z.infer<typeof schema>[];
@@ -269,6 +68,140 @@ const DataTable = ({
     pageIndex: 0,
     pageSize: 10,
   });
+
+  const handleEditUser = (
+    userId: number,
+    updatedData: { name: string; email: string; phone: string; status: boolean }
+  ) => {
+    setData((prevData) =>
+      prevData.map((user) =>
+        user.id === userId
+          ? {
+              ...user,
+              name: updatedData.name,
+              email: updatedData.email,
+              phone: updatedData.phone,
+            }
+          : user
+      )
+    );
+  };
+
+  const columns: ColumnDef<z.infer<typeof schema>>[] = [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <div className="flex items-center justify-center">
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
+            aria-label="Select all"
+          />
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div className="flex items-center justify-center">
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+          />
+        </div>
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: "name",
+      header: "Agent Name",
+      cell: ({ row }) => {
+        return row.original.name;
+      },
+      enableHiding: false,
+    },
+    {
+      accessorKey: "agent",
+      header: "Agent Company",
+      cell: ({ row }) => {
+        return row.original.agent;
+      },
+    },
+    {
+      accessorKey: "promo_group",
+      header: "Promo Group",
+      cell: ({ row }) => {
+        return (
+          <>
+            <Label
+              htmlFor={`${row.original.id}-promo-group`}
+              className="sr-only"
+            >
+              Promo Group
+            </Label>
+            <Select defaultValue={row.original.promo_group}>
+              <SelectTrigger
+                className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
+                size="sm"
+                id={`${row.original.id}-promo-group`}
+              >
+                <SelectValue placeholder="Assign promo group" />
+              </SelectTrigger>
+              <SelectContent align="end">
+                <SelectItem value="group_a">Promo Group A</SelectItem>
+                <SelectItem value="group_b">Promo Group B</SelectItem>
+                <SelectItem value="group_c">Promo Group C</SelectItem>
+                <SelectSeparator />
+                <SelectItemLink href={"/dummy"}>
+                  Create New Group
+                </SelectItemLink>
+              </SelectContent>
+            </Select>
+          </>
+        );
+      },
+    },
+    {
+      accessorKey: "email",
+      header: "E-mail",
+      cell: ({ row }) => {
+        return row.original.email;
+      },
+    },
+    {
+      accessorKey: "phone",
+      header: "Phone Number",
+      cell: ({ row }) => {
+        return row.original.phone;
+      },
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => (
+        <ActionDialogs
+          user={{
+            id: row.original.id,
+            name: row.original.name,
+            email: row.original.email,
+            phone: row.original.phone,
+            status: true,
+          }}
+          onEdit={handleEditUser}
+          onDelete={(userId) => {
+            // Handle delete logic here
+            console.log("Deleting user:", userId);
+            setData((prevData) =>
+              prevData.filter((user) => user.id !== userId)
+            );
+          }}
+        />
+      ),
+    },
+  ];
 
   const table = useReactTable({
     data,
@@ -425,6 +358,83 @@ const DataTable = ({
   );
 };
 
+const DataTable = ({
+  data: initialData,
+  tabs,
+}: {
+  data: z.infer<typeof schema>[];
+  tabs: Tab[];
+}) => {
+  return (
+    <Tabs
+      defaultValue="super_admin"
+      className="w-full flex-col justify-start gap-6"
+    >
+      <div className="flex items-center justify-between">
+        <Label htmlFor="Role-selector" className="sr-only">
+          Role
+        </Label>
+        <Select defaultValue="super_admin">
+          <SelectTrigger
+            className="flex w-fit @4xl/main:hidden"
+            size="sm"
+            id="role-selector"
+          >
+            <SelectValue placeholder="Select a role" />
+          </SelectTrigger>
+          <SelectContent>
+            {tabs.map((tab) => (
+              <SelectItem value={tab.key} key={tab.key}>
+                {tab.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
+          {tabs.map((tab) => (
+            <TabsTrigger value={tab.key} key={tab.key}>
+              {tab.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </div>
+
+      <div className="flex justify-between gap-2">
+        <div className="flex w-full items-center gap-2 max-w-sm">
+          <Input type="search" placeholder="Search Agent Name Here..." />
+          <Button type="submit" variant={"secondary"}>
+            <Search /> Search
+          </Button>
+        </div>
+
+        <AddSuperAdmin />
+      </div>
+
+      <TabsContent
+        value="super_admin"
+        className="relative flex flex-col gap-4 overflow-auto "
+      >
+        <TableContent data={initialData} />
+      </TabsContent>
+      <TabsContent value="agent" className="flex flex-col ">
+        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed justify-center flex items-center text-xl">
+          agent
+        </div>
+      </TabsContent>
+      <TabsContent value="admin" className="flex flex-col ">
+        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed justify-center flex items-center text-xl">
+          admin
+        </div>
+      </TabsContent>
+      <TabsContent value="support" className="flex flex-col ">
+        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed justify-center flex items-center text-xl">
+          support
+        </div>
+      </TabsContent>
+    </Tabs>
+  );
+};
+
 const SelectItemLink = ({
   href,
   children,
@@ -442,4 +452,5 @@ const SelectItemLink = ({
     </Link>
   );
 };
+
 export default DataTable;
