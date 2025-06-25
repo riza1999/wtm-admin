@@ -1,4 +1,3 @@
-import { Column } from "@tanstack/react-table";
 import { Check, PlusCircle } from "lucide-react";
 import * as React from "react";
 
@@ -20,24 +19,49 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { useQueryState } from "nuqs";
 
 interface DataTableFacetedFilterProps<TData, TValue> {
-  column?: Column<TData, TValue>;
   title?: string;
   options: {
     label: string;
     value: string;
     icon?: React.ComponentType<{ className?: string }>;
   }[];
+  urlKey: string;
 }
 
-export function DataTableFacetedFilter<TData, TValue>({
-  column,
+export function DataTableFacetedFilterCopy<TData, TValue>({
   title,
   options,
+  urlKey,
 }: DataTableFacetedFilterProps<TData, TValue>) {
-  const facets = column?.getFacetedUniqueValues();
-  const selectedValues = new Set(column?.getFilterValue() as string[]);
+  const [selectedParam, setSelectedParam] = useQueryState(urlKey, {
+    defaultValue: "",
+    parse: (value) => value,
+    serialize: (value) => value,
+  });
+
+  const selectedValues = new Set(
+    selectedParam ? selectedParam.split(",").filter(Boolean) : []
+  );
+
+  const handleSelect = (value: string) => {
+    const newSet = new Set(selectedValues);
+    if (newSet.has(value)) {
+      newSet.delete(value);
+    } else {
+      newSet.add(value);
+    }
+
+    // Convert Set back to comma-separated string
+    const newParam = Array.from(newSet).join(",");
+    setSelectedParam(newParam || null);
+  };
+
+  const clearSelection = () => {
+    setSelectedParam(null);
+  };
 
   return (
     <Popover>
@@ -91,17 +115,8 @@ export function DataTableFacetedFilter<TData, TValue>({
                 return (
                   <CommandItem
                     key={option.value}
-                    onSelect={() => {
-                      if (isSelected) {
-                        selectedValues.delete(option.value);
-                      } else {
-                        selectedValues.add(option.value);
-                      }
-                      const filterValues = Array.from(selectedValues);
-                      column?.setFilterValue(
-                        filterValues.length ? filterValues : undefined
-                      );
-                    }}
+                    value={option.value}
+                    onSelect={() => handleSelect(option.value)}
                   >
                     <div
                       className={cn(
@@ -117,11 +132,6 @@ export function DataTableFacetedFilter<TData, TValue>({
                       <option.icon className="text-muted-foreground size-4" />
                     )}
                     <span>{option.label}</span>
-                    {facets?.get(option.value) && (
-                      <span className="text-muted-foreground ml-auto flex size-4 items-center justify-center font-mono text-xs">
-                        {facets.get(option.value)}
-                      </span>
-                    )}
                   </CommandItem>
                 );
               })}
@@ -131,7 +141,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                 <CommandSeparator />
                 <CommandGroup>
                   <CommandItem
-                    onSelect={() => column?.setFilterValue(undefined)}
+                    onSelect={clearSelection}
                     className="justify-center text-center"
                   >
                     Clear filters

@@ -3,11 +3,11 @@
 import { Table } from "@tanstack/react-table";
 import { CirclePlus, X } from "lucide-react";
 
-import { DataTableFacetedFilter } from "@/components/data-table/faceted-filter";
 import { DataTableViewOptions } from "@/components/data-table/view-option";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+import { DataTableFacetedFilterCopy } from "@/components/data-table/faceted-filter";
 import {
   ArrowDown,
   ArrowRight,
@@ -16,6 +16,8 @@ import {
   HelpCircle,
   Timer,
 } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { debounce, parseAsString, useQueryState } from "nuqs";
 import { useState } from "react";
 import { UserForm } from "./form";
 
@@ -62,40 +64,45 @@ export const promo_groups = [
 export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
-  const isFiltered = table.getState().columnFilters.length > 0;
+
+  const [query, setQuery] = useQueryState(
+    "q",
+    parseAsString
+      .withDefault("")
+      .withOptions({ shallow: false, limitUrlUpdates: debounce(500) })
+  );
+
+  const handleReset = () => {
+    router.replace(pathname);
+  };
+
+  const isFiltered = searchParams.size > 0;
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center gap-2">
         <Input
           placeholder="Filter name..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        {table.getColumn("agent") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("agent")}
-            title="Agent"
-            options={agents}
-          />
-        )}
-        {table.getColumn("promo_group") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("promo_group")}
-            title="Promo Group"
-            options={promo_groups}
-          />
-        )}
+        <DataTableFacetedFilterCopy
+          title="Agent"
+          options={agents}
+          urlKey="agent"
+        />
+        <DataTableFacetedFilterCopy
+          title="Promo Group"
+          options={promo_groups}
+          urlKey="promo_groups"
+        />
         {isFiltered && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => table.resetColumnFilters()}
-          >
+          <Button variant="ghost" size="sm" onClick={handleReset}>
             Reset
             <X />
           </Button>
