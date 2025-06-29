@@ -3,13 +3,17 @@ import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { SearchParams } from "@/types";
 import { Option } from "@/types/data-table";
 import React from "react";
-import { AgentControlPageProps, AgentControlTableResponse } from "./types";
+import {
+  AgentControl,
+  AgentControlPageProps,
+  AgentControlTableResponse,
+} from "./types";
 
 export const getData = async ({
   searchParams,
 }: {
   searchParams: SearchParams;
-}) => {
+}): Promise<AgentControlTableResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
   const data = [
@@ -29,9 +33,13 @@ export const getData = async ({
       phone_number: "081234567800",
       status: "rejected",
     },
-  ] as AgentControlTableResponse[];
+  ] as AgentControl[];
 
-  return data;
+  return {
+    success: true,
+    data,
+    pageCount: 2,
+  };
 };
 
 export const getCompanyOptions = async () => {

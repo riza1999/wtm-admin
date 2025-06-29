@@ -1,5 +1,5 @@
 import { updateAgentStatus } from "@/app/(dashboard)/account/agent-control/actions";
-import { AgentControlTableResponse } from "@/app/(dashboard)/account/agent-control/types";
+import { AgentControl } from "@/app/(dashboard)/account/agent-control/types";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -26,7 +26,7 @@ import { toast } from "sonner";
 
 interface GetAgentControlTableColumnsProps {
   setRowAction: React.Dispatch<
-    React.SetStateAction<DataTableRowAction<AgentControlTableResponse> | null>
+    React.SetStateAction<DataTableRowAction<AgentControl> | null>
   >;
   companyOptions: Option[];
 }
@@ -34,7 +34,7 @@ interface GetAgentControlTableColumnsProps {
 export function getAgentControlTableColumns({
   setRowAction,
   companyOptions,
-}: GetAgentControlTableColumnsProps): ColumnDef<AgentControlTableResponse>[] {
+}: GetAgentControlTableColumnsProps): ColumnDef<AgentControl>[] {
   return [
     {
       id: "select",
@@ -192,6 +192,7 @@ export function getAgentControlTableColumns({
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
+                variant="destructive"
                 onSelect={() => setRowAction({ row, variant: "delete" })}
               >
                 Delete

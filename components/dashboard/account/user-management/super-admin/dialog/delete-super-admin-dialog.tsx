@@ -1,13 +1,11 @@
 "use client";
 
-// import type { Task } from "@/db/schema";
 import type { Row } from "@tanstack/react-table";
 import { Loader, Trash } from "lucide-react";
 import * as React from "react";
-import { toast } from "sonner";
 
-import { deleteAgent } from "@/app/(dashboard)/account/agent-control/actions";
-import { AgentControl } from "@/app/(dashboard)/account/agent-control/types";
+import { deleteSuperAdmin } from "@/app/(dashboard)/account/user-management/super-admin/actions";
+import { SuperAdmin } from "@/app/(dashboard)/account/user-management/super-admin/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -30,33 +28,32 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { toast } from "sonner";
 
-interface DeleteAgentControlDialogProps
+interface DeleteSuperAdminDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
-  agentControl: Row<AgentControl>["original"][];
+  superAdmin: Row<SuperAdmin>["original"][];
   showTrigger?: boolean;
   onSuccess?: () => void;
 }
 
-export function DeleteAgentControlDialog({
-  agentControl,
+export function DeleteSuperAdminDialog({
+  superAdmin,
   showTrigger = true,
   onSuccess,
   ...props
-}: DeleteAgentControlDialogProps) {
+}: DeleteSuperAdminDialogProps) {
   const [isDeletePending, startDeleteTransition] = React.useTransition();
   const isDesktop = useMediaQuery("(min-width: 640px)");
 
   function onDelete() {
     startDeleteTransition(async () => {
-      const agentId = agentControl[0].id;
-
-      toast.promise(deleteAgent(agentId), {
-        // loading: "Deleting agent...",
+      const adminId = superAdmin[0].id;
+      toast.promise(deleteSuperAdmin(adminId), {
+        loading: "Deleting super admin...",
         success: (data) => data.message,
-        error: "Failed to delete agent",
+        error: "Failed to delete super admin",
       });
-
       props.onOpenChange?.(false);
       onSuccess?.();
     });
@@ -69,7 +66,7 @@ export function DeleteAgentControlDialog({
           <DialogTrigger asChild>
             <Button variant="outline" size="sm">
               <Trash className="mr-2 size-4" aria-hidden="true" />
-              Delete ({agentControl.length})
+              Delete ({superAdmin.length})
             </Button>
           </DialogTrigger>
         ) : null}
@@ -78,9 +75,9 @@ export function DeleteAgentControlDialog({
             <DialogTitle>Are you absolutely sure?</DialogTitle>
             <DialogDescription>
               This action cannot be undone. This will permanently delete your{" "}
-              <span className="font-medium">{agentControl.length}</span>
-              {agentControl.length === 1 ? " agent" : " agents"} from our
-              servers.
+              <span className="font-medium">{superAdmin.length}</span>
+              {superAdmin.length === 1 ? " super admin" : " super admins"} from
+              our servers.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2 sm:space-x-0">
@@ -113,7 +110,7 @@ export function DeleteAgentControlDialog({
         <DrawerTrigger asChild>
           <Button variant="outline" size="sm">
             <Trash className="mr-2 size-4" aria-hidden="true" />
-            Delete ({agentControl.length})
+            Delete ({superAdmin.length})
           </Button>
         </DrawerTrigger>
       ) : null}
@@ -122,8 +119,9 @@ export function DeleteAgentControlDialog({
           <DrawerTitle>Are you absolutely sure?</DrawerTitle>
           <DrawerDescription>
             This action cannot be undone. This will permanently delete your{" "}
-            <span className="font-medium">{agentControl.length}</span>
-            {agentControl.length === 1 ? " agent" : " agents"} from our servers.
+            <span className="font-medium">{superAdmin.length}</span>
+            {superAdmin.length === 1 ? " super admin" : " super admins"} from
+            our servers.
           </DrawerDescription>
         </DrawerHeader>
         <DrawerFooter className="gap-2 sm:space-x-0">

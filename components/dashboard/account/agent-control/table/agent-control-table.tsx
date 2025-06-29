@@ -4,7 +4,7 @@ import {
   getCompanyOptions,
   getData,
 } from "@/app/(dashboard)/account/agent-control/page";
-import { AgentControlTableResponse } from "@/app/(dashboard)/account/agent-control/types";
+import { AgentControl } from "@/app/(dashboard)/account/agent-control/types";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { useDataTable } from "@/hooks/use-data-table";
@@ -27,9 +27,9 @@ interface AgentControlTableProps {
 
 const AgentControlTable = ({ promises }: AgentControlTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [data, companyOptions] = React.use(promises);
+  const [{ data, pageCount }, companyOptions] = React.use(promises);
   const [rowAction, setRowAction] =
-    React.useState<DataTableRowAction<AgentControlTableResponse> | null>(null);
+    React.useState<DataTableRowAction<AgentControl> | null>(null);
 
   const columns = React.useMemo(
     () =>
@@ -43,7 +43,7 @@ const AgentControlTable = ({ promises }: AgentControlTableProps) => {
   const { table } = useDataTable({
     data,
     columns,
-    pageCount: 2,
+    pageCount,
     getRowId: (originalRow) => originalRow.id,
     shallow: false,
     clearOnDefault: true,

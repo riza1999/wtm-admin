@@ -1,7 +1,7 @@
 "use client";
 
-import { editAgent } from "@/app/(dashboard)/account/agent-control/actions";
-import { AgentControl } from "@/app/(dashboard)/account/agent-control/types";
+import { editSuperAdmin } from "@/app/(dashboard)/account/user-management/super-admin/actions";
+import { SuperAdmin } from "@/app/(dashboard)/account/user-management/super-admin/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,59 +18,52 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
-import { AgentControlForm } from "../form/agent-control-form";
+import { SuperAdminForm } from "../form/super-admin-form";
 
-export const editAgentSchema = z.object({
+export const editSuperAdminSchema = z.object({
   name: z.string().optional(),
-  email: z.string().optional(),
+  email: z.string().email().optional(),
   phone: z.string().optional(),
+  status: z.boolean().optional(),
 });
 
-export type EditAgentSchema = z.infer<typeof editAgentSchema>;
+export type EditSuperAdminSchema = z.infer<typeof editSuperAdminSchema>;
 
-interface EditAgentControlDialogProps
+interface EditSuperAdminDialogProps
   extends React.ComponentPropsWithRef<typeof Dialog> {
-  agent: AgentControl | null;
+  superAdmin: SuperAdmin | null;
 }
 
-const EditAgentControlDialog = ({
-  agent,
+const EditSuperAdminDialog = ({
+  superAdmin,
   ...props
-}: EditAgentControlDialogProps) => {
+}: EditSuperAdminDialogProps) => {
   const [isPending, startTransition] = React.useTransition();
 
-  console.log({
-    name: agent?.name,
-    email: agent?.email,
-    phone: agent?.phone_number,
-  });
-
-  const form = useForm<EditAgentSchema>({
-    resolver: zodResolver(editAgentSchema),
+  const form = useForm<EditSuperAdminSchema>({
+    resolver: zodResolver(editSuperAdminSchema),
     defaultValues: {
-      name: agent?.name ?? "",
-      email: agent?.email,
-      phone: agent?.phone_number,
+      name: superAdmin?.name ?? "",
+      email: superAdmin?.email,
+      phone: superAdmin?.phone,
+      status: superAdmin?.status,
     },
   });
 
-  function onSubmit(input: EditAgentSchema) {
+  function onSubmit(input: EditSuperAdminSchema) {
     startTransition(async () => {
-      if (!agent) return;
-
-      const { success } = await editAgent({
-        id: agent.id,
+      if (!superAdmin) return;
+      const { success, message } = await editSuperAdmin({
+        id: superAdmin.id,
         ...input,
       });
-
       if (!success) {
-        toast.error("Failed to edit agent");
+        toast.error("Failed to edit super admin");
         return;
       }
-
       form.reset(input);
       props.onOpenChange?.(false);
-      toast.success("Agent edited");
+      toast.success(message || "Super Admin edited");
     });
   }
 
@@ -78,12 +71,12 @@ const EditAgentControlDialog = ({
     <Dialog {...props}>
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>Edit Agent</DialogTitle>
+          <DialogTitle>Edit Super Admin</DialogTitle>
           <DialogDescription>
             Edit details below and save the changes
           </DialogDescription>
         </DialogHeader>
-        <AgentControlForm<EditAgentSchema> form={form} onSubmit={onSubmit}>
+        <SuperAdminForm<EditSuperAdminSchema> form={form} onSubmit={onSubmit}>
           <DialogFooter className="gap-2 pt-2 sm:space-x-0">
             <DialogClose asChild>
               <Button type="button" variant="outline">
@@ -95,10 +88,10 @@ const EditAgentControlDialog = ({
               Save
             </Button>
           </DialogFooter>
-        </AgentControlForm>
+        </SuperAdminForm>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default EditAgentControlDialog;
+export default EditSuperAdminDialog;

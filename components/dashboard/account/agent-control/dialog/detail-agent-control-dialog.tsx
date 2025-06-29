@@ -7,7 +7,7 @@ import * as React from "react";
 import { toast } from "sonner";
 
 import { updateAgentStatus } from "@/app/(dashboard)/account/agent-control/actions";
-import { AgentControlTableResponse } from "@/app/(dashboard)/account/agent-control/types";
+import { AgentControl } from "@/app/(dashboard)/account/agent-control/types";
 import { ImageGrid } from "@/components/dashboard/account/agent-control/image-grid";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +20,7 @@ import {
 
 interface DetailAgentControlDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
-  agentControl: Row<AgentControlTableResponse>["original"][];
+  agentControl: Row<AgentControl>["original"][];
   onSuccess?: () => void;
 }
 
