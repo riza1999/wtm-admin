@@ -1,6 +1,9 @@
 "use client";
 
-import { getData } from "@/app/(dashboard)/account/agent-control/page";
+import {
+  getCompanyOptions,
+  getData,
+} from "@/app/(dashboard)/account/agent-control/page";
 import { AgentControlTableResponse } from "@/app/(dashboard)/account/agent-control/types";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
@@ -14,11 +17,16 @@ import EditAgentControlDialog from "../dialog/edit-agent-control-dialog";
 import { getAgentControlTableColumns } from "./agent-control-columns";
 
 interface AgentControlTableProps {
-  promises: Promise<[Awaited<ReturnType<typeof getData>>]>;
+  promises: Promise<
+    [
+      Awaited<ReturnType<typeof getData>>,
+      Awaited<ReturnType<typeof getCompanyOptions>>
+    ]
+  >;
 }
 
 const AgentControlTable = ({ promises }: AgentControlTableProps) => {
-  const [data] = React.use(promises);
+  const [data, companyOptions] = React.use(promises);
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<AgentControlTableResponse> | null>(null);
 
@@ -26,6 +34,7 @@ const AgentControlTable = ({ promises }: AgentControlTableProps) => {
     () =>
       getAgentControlTableColumns({
         setRowAction,
+        companyOptions,
       }),
     []
   );

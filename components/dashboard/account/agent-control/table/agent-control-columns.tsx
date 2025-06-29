@@ -18,9 +18,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DataTableRowAction } from "@/types/data-table";
+import { DataTableRowAction, Option } from "@/types/data-table";
 import { ColumnDef } from "@tanstack/react-table";
-import { CircleAlert, Ellipsis, EyeIcon, Text } from "lucide-react";
+import { Ellipsis, EyeIcon, Text } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
 
@@ -28,10 +28,12 @@ interface GetAgentControlTableColumnsProps {
   setRowAction: React.Dispatch<
     React.SetStateAction<DataTableRowAction<AgentControlTableResponse> | null>
   >;
+  companyOptions: Option[];
 }
 
 export function getAgentControlTableColumns({
   setRowAction,
+  companyOptions,
 }: GetAgentControlTableColumnsProps): ColumnDef<AgentControlTableResponse>[] {
   return [
     {
@@ -86,7 +88,7 @@ export function getAgentControlTableColumns({
         label: "Company",
         placeholder: "Search agent company...",
         variant: "multiSelect",
-        options: [{ label: "Esensi DIgital", value: "12", icon: CircleAlert }],
+        options: companyOptions,
       },
       enableColumnFilter: true,
     },

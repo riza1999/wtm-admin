@@ -1,6 +1,7 @@
 import AgentControlTable from "@/components/dashboard/account/agent-control/table/agent-control-table";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { SearchParams } from "@/types";
+import { Option } from "@/types/data-table";
 import React from "react";
 import { AgentControlPageProps, AgentControlTableResponse } from "./types";
 
@@ -9,8 +10,6 @@ export const getData = async ({
 }: {
   searchParams: SearchParams;
 }) => {
-  console.log({ searchParams });
-
   await new Promise((resolve) => setTimeout(resolve, 2000));
 
   const data = [
@@ -35,6 +34,27 @@ export const getData = async ({
   return data;
 };
 
+export const getCompanyOptions = async () => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  const data = [
+    {
+      label: "Esensi Digital",
+      value: "1",
+    },
+    {
+      label: "Vevo",
+      value: "2",
+    },
+    {
+      label: "88 Rising",
+      value: "3",
+    },
+  ] as Option[];
+
+  return data;
+};
+
 const AgentControlPage = async (props: AgentControlPageProps) => {
   const searchParams = await props.searchParams;
 
@@ -42,6 +62,7 @@ const AgentControlPage = async (props: AgentControlPageProps) => {
     getData({
       searchParams,
     }),
+    getCompanyOptions(),
   ]);
 
   return (
