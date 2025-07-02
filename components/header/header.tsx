@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import Link from "next/link";
 import React from "react";
-import { NavUser } from "./nav-user";
 import { NavDropdown } from "./nav-dropdown";
+import { NavUser } from "./nav-user";
 
 const menuItems = [
   {
@@ -19,7 +19,7 @@ const menuItems = [
     name: "Hotel Listing",
     href: "#link",
     childs: [
-      { name: "Add Hotel Listing", href: "/hotel-listing/add-hotel-listing" },
+      { name: "Add Hotel Listing", href: "/hotel-listing" },
       { name: "Room Availability", href: "/hotel-listing/room-availability" },
     ],
   },
