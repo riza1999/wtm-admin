@@ -16,6 +16,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { MonthPicker } from "@/components/ui/monthpicker";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Table,
   TableBody,
@@ -25,8 +31,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useDataTable } from "@/hooks/use-data-table";
+import { cn } from "@/lib/utils";
 import type { DataTableRowAction } from "@/types/data-table";
-import { Loader } from "lucide-react";
+import { format } from "date-fns/format";
+import { CalendarIcon, Loader } from "lucide-react";
 import React, { useTransition } from "react";
 import { toast } from "sonner";
 import { getRoomAvailabilityTableColumns } from "./room-availability-columns";
@@ -40,6 +48,7 @@ const RoomAvailabilityTable = ({ promises }: RoomAvailabilityTableProps) => {
   const [{ data, pageCount }] = React.use(promises);
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<RoomAvailabilityHotel> | null>(null);
+  const [date, setDate] = React.useState<Date>();
 
   const columns = React.useMemo(
     () =>
@@ -64,7 +73,25 @@ const RoomAvailabilityTable = ({ promises }: RoomAvailabilityTableProps) => {
   return (
     <div className="relative">
       <DataTable table={table} isPending={isPending}>
-        <DataTableToolbar table={table} isPending={isPending} />
+        <DataTableToolbar table={table} isPending={isPending}>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "justify-start text-left font-normal",
+                  !date && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {date ? format(date, "MMM yyyy") : <span>Select Period</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <MonthPicker onMonthSelect={setDate} selectedMonth={date} />
+            </PopoverContent>
+          </Popover>
+        </DataTableToolbar>
       </DataTable>
 
       {rowAction?.variant === "detail" && (
