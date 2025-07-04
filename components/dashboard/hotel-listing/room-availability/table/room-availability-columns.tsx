@@ -82,7 +82,7 @@ export function getRoomAvailabilityTableColumns({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40">
               <DropdownMenuItem
-                onSelect={() => setRowAction({ row, variant: "detail" })}
+                onSelect={() => setRowAction({ row, variant: "update" })}
               >
                 Detail
               </DropdownMenuItem>
