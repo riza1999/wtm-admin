@@ -15,11 +15,11 @@ import { useDataTable } from "@/hooks/use-data-table";
 import { cn } from "@/lib/utils";
 import type { DataTableRowAction } from "@/types/data-table";
 import { format } from "date-fns/format";
-import { CalendarIcon } from "lucide-react";
-import React, { useTransition } from "react";
-import { getRoomAvailabilityTableColumns } from "./room-availability-columns";
-import { UpdateRoomAvailabilityDrawer } from "../drawer/update-room-availability-drawer";
+import { CalendarIcon, ChevronsUpDown } from "lucide-react";
 import { createParser, useQueryState } from "nuqs";
+import React, { useTransition } from "react";
+import { UpdateRoomAvailabilityDrawer } from "../drawer/update-room-availability-drawer";
+import { getRoomAvailabilityTableColumns } from "./room-availability-columns";
 
 interface RoomAvailabilityTableProps {
   promises: Promise<[Awaited<ReturnType<typeof getData>>]>;
@@ -79,6 +79,7 @@ const RoomAvailabilityTable = ({ promises }: RoomAvailabilityTableProps) => {
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {date ? format(date, "MMM yyyy") : <span>Select Period</span>}
+                <ChevronsUpDown className="ml-auto opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">

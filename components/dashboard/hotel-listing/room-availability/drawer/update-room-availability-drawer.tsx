@@ -2,14 +2,14 @@ import { updateRoomAvailability } from "@/app/(dashboard)/hotel-listing/room-ava
 import { RoomAvailabilityHotel } from "@/app/(dashboard)/hotel-listing/room-availability/types";
 import { Button } from "@/components/ui/button";
 import {
-  DialogHeader,
-  DialogFooter,
   Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogTitle,
   DialogClose,
+  DialogContent,
   DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Drawer,
@@ -196,7 +196,7 @@ export const UpdateRoomAvailabilityDrawer = ({
         <DrawerTitle className="sr-only">Update Room Availability</DrawerTitle>
       </DrawerHeader>
       <DrawerContent aria-describedby="update-room-availability-drawer">
-        <div className="px-12 pt-10 pb-12 space-y-8">
+        <div className="max-w-full lg:max-w-7xl mx-auto px-6 pt-10 pb-12 space-y-8">
           {/* Hotel Name */}
           <h3 className="text-2xl font-semibold text-center">
             {localHotel?.name}
