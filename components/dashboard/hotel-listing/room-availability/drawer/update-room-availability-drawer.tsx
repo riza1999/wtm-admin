@@ -32,23 +32,45 @@ import { toast } from "sonner";
 interface UpdateRoomAvailabilityDrawerProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
   roomAvailabilityHotel: RoomAvailabilityHotel | null;
+  period: string | null;
   showTrigger?: boolean;
   onSuccess?: () => void;
 }
 
 export const UpdateRoomAvailabilityDrawer = ({
   roomAvailabilityHotel,
+  period,
   onSuccess,
   ...props
 }: UpdateRoomAvailabilityDrawerProps) => {
   const [isUpdatePending, startUpdateTransition] = React.useTransition();
   const [open, setOpen] = React.useState(false);
+  const [localHotel, setLocalHotel] =
+    React.useState<RoomAvailabilityHotel | null>(null);
+
+  React.useEffect(() => {
+    setLocalHotel(
+      roomAvailabilityHotel
+        ? JSON.parse(JSON.stringify(roomAvailabilityHotel))
+        : null
+    );
+  }, [roomAvailabilityHotel]);
 
   function onUpdate() {
-    startUpdateTransition(async () => {
-      const hotelId = String(roomAvailabilityHotel?.id);
+    if (!period) {
+      toast.error("Please select a period");
+      return;
+    }
 
-      toast.promise(updateRoomAvailability(hotelId), {
+    if (!localHotel) {
+      toast.error("Please select a hotel");
+      return;
+    }
+
+    startUpdateTransition(async () => {
+      const hotelId = String(localHotel?.id);
+
+      toast.promise(updateRoomAvailability(hotelId, period, localHotel), {
         // loading: "Deleting hotel...",
         success: (data) => data.message,
         error: "Failed to update room availability",
@@ -61,10 +83,9 @@ export const UpdateRoomAvailabilityDrawer = ({
   }
 
   const days =
-    roomAvailabilityHotel?.rooms?.length &&
-    roomAvailabilityHotel?.rooms[0]?.availability
+    localHotel?.rooms?.length && localHotel?.rooms[0]?.availability
       ? Array.from(
-          { length: roomAvailabilityHotel?.rooms[0].availability.length },
+          { length: localHotel?.rooms[0].availability.length },
           (_, i) => String(i + 1).padStart(2, "0")
         )
       : [];
@@ -74,10 +95,10 @@ export const UpdateRoomAvailabilityDrawer = ({
       <DrawerHeader>
         <DrawerTitle className="sr-only">Update Room Availability</DrawerTitle>
       </DrawerHeader>
-      <DrawerContent>
+      <DrawerContent aria-describedby="update-room-availability-drawer">
         <div className="px-12 pt-10 pb-12 space-y-8">
           <h3 className="text-2xl font-semibold text-center">
-            {roomAvailabilityHotel?.name}
+            {localHotel?.name}
           </h3>
           {/* Availability Calendar */}
           <div className="rounded-lg border  overflow-hidden">
@@ -95,7 +116,7 @@ export const UpdateRoomAvailabilityDrawer = ({
                       className="text-center p-2 font-semibold"
                       colSpan={days.length}
                     >
-                      {roomAvailabilityHotel?.period}
+                      {localHotel?.period}
                     </TableHead>
                   </TableRow>
                   <TableRow className="border-b">
@@ -110,24 +131,46 @@ export const UpdateRoomAvailabilityDrawer = ({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {roomAvailabilityHotel?.rooms.map((roomType, roomIndex) => (
+                  {localHotel?.rooms.map((roomType, roomIndex) => (
                     <TableRow key={roomIndex} className="border-b">
                       <TableCell className="p-4 font-medium">
                         {roomType.name}
                       </TableCell>
-                      {roomType.availability.map((isAvailable, dayIndex) => (
-                        <TableCell key={dayIndex} className="p-1">
-                          <div
-                            className={`h-8 w-full rounded cursor-pointer transition-colors hover:opacity-80 ${
-                              isAvailable ? "bg-green-500" : "bg-red-500"
-                            }`}
-                            // onClick={() => toggleAvailability(roomIndex, dayIndex)}
-                            title={`Click to toggle availability for ${
-                              roomType.name
-                            } on day ${dayIndex + 1}`}
-                          />
-                        </TableCell>
-                      ))}
+                      {roomType.availability.map((isAvailable, dayIndex) => {
+                        // Determine if this cell has been edited
+                        const original =
+                          roomAvailabilityHotel?.rooms?.[roomIndex]
+                            ?.availability?.[dayIndex];
+                        const isEdited =
+                          original !== undefined && isAvailable !== original;
+                        return (
+                          <TableCell key={dayIndex} className="p-1">
+                            <div
+                              className={`h-8 w-full rounded cursor-pointer transition-colors hover:opacity-80
+                                ${isAvailable ? "bg-green-500" : "bg-red-500"}
+                                ${
+                                  isEdited
+                                    ? "bg-amber-300 border-2 border-amber-400"
+                                    : ""
+                                }
+                              `}
+                              onClick={() => {
+                                // Only update local state, do not call updateRoomAvailability
+                                const updatedHotel = JSON.parse(
+                                  JSON.stringify(localHotel)
+                                );
+                                updatedHotel.rooms[roomIndex].availability[
+                                  dayIndex
+                                ] = !isAvailable;
+                                setLocalHotel(updatedHotel);
+                              }}
+                              title={`Click to toggle availability for ${
+                                roomType.name
+                              } on day ${dayIndex + 1}`}
+                            />
+                          </TableCell>
+                        );
+                      })}
                     </TableRow>
                   ))}
                 </TableBody>
@@ -152,7 +195,7 @@ export const UpdateRoomAvailabilityDrawer = ({
               <DialogTrigger asChild>
                 <Button size="sm">Save Changes</Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent aria-describedby="update-room-availability-dialog">
                 <DialogHeader>
                   <DialogTitle>Confirm Changes</DialogTitle>
                   <DialogDescription>

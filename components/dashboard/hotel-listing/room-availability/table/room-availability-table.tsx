@@ -25,17 +25,13 @@ interface RoomAvailabilityTableProps {
   promises: Promise<[Awaited<ReturnType<typeof getData>>]>;
 }
 
-// Create a custom parser for the "mm-yyyy" format
 const monthYearParser = createParser({
   parse: (value) => {
     const [month, year] = value.split("-").map(Number);
-    // Note: JS Date months are 0-indexed (0-11)
     return new Date(year, month - 1);
   },
   serialize: (value) => {
-    const month = (value.getMonth() + 1).toString().padStart(2, "0");
-    const year = value.getFullYear();
-    return `${month}-${year}`;
+    return format(value, "MM-yyyy");
   },
 });
 
@@ -96,6 +92,7 @@ const RoomAvailabilityTable = ({ promises }: RoomAvailabilityTableProps) => {
         open={rowAction?.variant === "update"}
         roomAvailabilityHotel={rowAction?.row.original ?? null}
         onOpenChange={() => setRowAction(null)}
+        period={date ? format(date, "MM-yyyy") : null}
       />
     </div>
   );
