@@ -3,11 +3,8 @@ import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { SearchParams } from "@/types";
 import { Option } from "@/types/data-table";
 import React from "react";
-import {
-  BookingSummary,
-  BookingSummaryTableResponse,
-} from "./booking-summary/types";
-import { BookingManagementPageProps } from "./types";
+import { BookingManagementPageProps } from "../types";
+import { BookingSummary, BookingSummaryTableResponse } from "./types";
 
 export const getData = async ({
   searchParams,
@@ -80,33 +77,25 @@ const BookingManagementPage = async (props: BookingManagementPageProps) => {
   ]);
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Booking Management</h1>
-      </div>
-
-      <div className="w-full">
-        <React.Suspense
-          fallback={
-            <DataTableSkeleton
-              columnCount={7}
-              filterCount={2}
-              cellWidths={[
-                "10rem",
-                "30rem",
-                "10rem",
-                "10rem",
-                "6rem",
-                "6rem",
-                "6rem",
-              ]}
-            />
-          }
-        >
-          <BookingManagementTable promises={promises} />
-        </React.Suspense>
-      </div>
-    </div>
+    <React.Suspense
+      fallback={
+        <DataTableSkeleton
+          columnCount={7}
+          filterCount={2}
+          cellWidths={[
+            "10rem",
+            "30rem",
+            "10rem",
+            "10rem",
+            "6rem",
+            "6rem",
+            "6rem",
+          ]}
+        />
+      }
+    >
+      <BookingManagementTable promises={promises} />
+    </React.Suspense>
   );
 };
 

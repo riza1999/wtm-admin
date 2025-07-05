@@ -25,7 +25,7 @@ const menuItems = [
   },
   {
     name: "Booking Management",
-    href: "/booking-management",
+    href: "/booking-management/booking-summary",
   },
   { name: "Report", href: "/report" },
   { name: "Promo", href: "/promo" },
