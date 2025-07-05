@@ -1,7 +1,7 @@
 "use client";
 
-import { editBooking } from "@/app/(dashboard)/booking-management/actions";
-import { BookingManagement } from "@/app/(dashboard)/booking-management/types";
+import { editBooking } from "@/app/(dashboard)/booking-management/booking-summary/actions";
+import { BookingSummary } from "@/app/(dashboard)/booking-management/booking-summary/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,9 +18,9 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
-import { BookingManagementForm } from "../form/booking-management-form";
+import { BookingSummaryForm } from "../form/booking-summary-form";
 
-export const editBookingManagementSchema = z.object({
+export const editBookingSummarySchema = z.object({
   guest_name: z.string().optional(),
   agent_name: z.string().optional(),
   agent_company: z.string().optional(),
@@ -31,23 +31,21 @@ export const editBookingManagementSchema = z.object({
   promo_id: z.string().optional(),
 });
 
-export type EditBookingManagementSchema = z.infer<
-  typeof editBookingManagementSchema
->;
+export type EditBookingSummarySchema = z.infer<typeof editBookingSummarySchema>;
 
-interface EditBookingManagementDialogProps
+interface EditBookingSummaryDialogProps
   extends React.ComponentPropsWithRef<typeof Dialog> {
-  booking: BookingManagement | null;
+  booking: BookingSummary | null;
 }
 
-const EditBookingManagementDialog = ({
+const EditBookingSummaryDialog = ({
   booking,
   ...props
-}: EditBookingManagementDialogProps) => {
+}: EditBookingSummaryDialogProps) => {
   const [isPending, startTransition] = React.useTransition();
 
-  const form = useForm<EditBookingManagementSchema>({
-    resolver: zodResolver(editBookingManagementSchema),
+  const form = useForm<EditBookingSummarySchema>({
+    resolver: zodResolver(editBookingSummarySchema),
     defaultValues: {
       guest_name: booking?.guest_name ?? "",
       agent_name: booking?.agent_name ?? "",
@@ -60,7 +58,7 @@ const EditBookingManagementDialog = ({
     },
   });
 
-  function onSubmit(input: EditBookingManagementSchema) {
+  function onSubmit(input: EditBookingSummarySchema) {
     startTransition(async () => {
       if (!booking) return;
 
@@ -89,7 +87,7 @@ const EditBookingManagementDialog = ({
             Edit details below and save the changes
           </DialogDescription>
         </DialogHeader>
-        <BookingManagementForm<EditBookingManagementSchema>
+        <BookingSummaryForm<EditBookingSummarySchema>
           form={form}
           onSubmit={onSubmit}
         >
@@ -104,10 +102,10 @@ const EditBookingManagementDialog = ({
               Save
             </Button>
           </DialogFooter>
-        </BookingManagementForm>
+        </BookingSummaryForm>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default EditBookingManagementDialog;
+export default EditBookingSummaryDialog;

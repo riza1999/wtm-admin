@@ -1,19 +1,19 @@
-import BookingManagementTable from "@/components/dashboard/booking-management/table/booking-management-table";
+import BookingManagementTable from "@/components/dashboard/booking-management/booking-summary/table/booking-summary-table";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { SearchParams } from "@/types";
 import { Option } from "@/types/data-table";
 import React from "react";
 import {
-  BookingManagement,
-  BookingManagementPageProps,
-  BookingManagementTableResponse,
-} from "./types";
+  BookingSummary,
+  BookingSummaryTableResponse,
+} from "./booking-summary/types";
+import { BookingManagementPageProps } from "./types";
 
 export const getData = async ({
   searchParams,
 }: {
   searchParams: SearchParams;
-}): Promise<BookingManagementTableResponse> => {
+}): Promise<BookingSummaryTableResponse> => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
   const data = [
@@ -39,7 +39,7 @@ export const getData = async ({
       payment_status: "unpaid",
       promo_id: "PR-002",
     },
-  ] as BookingManagement[];
+  ] as BookingSummary[];
 
   return {
     success: true,

@@ -5,8 +5,8 @@ import { Loader } from "lucide-react";
 import * as React from "react";
 import { toast } from "sonner";
 
-import { updateBookingStatus } from "@/app/(dashboard)/booking-management/actions";
-import { BookingManagement } from "@/app/(dashboard)/booking-management/types";
+import { updateBookingStatus } from "@/app/(dashboard)/booking-management/booking-summary/actions";
+import { BookingSummary } from "@/app/(dashboard)/booking-management/booking-summary/types";
 import { ImageGrid } from "@/components/dashboard/account/agent-control/image-grid";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,23 +17,23 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-interface DetailBookingManagementDialogProps
+interface DetailBookingSummaryDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
-  bookingManagement: Row<BookingManagement>["original"][];
+  bookingSummary: Row<BookingSummary>["original"][];
   onSuccess?: () => void;
 }
 
-export function DetailBookingManagementDialog({
-  bookingManagement,
+export function DetailBookingSummaryDialog({
+  bookingSummary,
   onSuccess,
   ...props
-}: DetailBookingManagementDialogProps) {
+}: DetailBookingSummaryDialogProps) {
   const [isUpdatePending, startUpdateTransition] = React.useTransition();
   const [variant, setVariant] = React.useState<"approved" | "rejected" | null>(
     null
   );
 
-  // Sample image data - replace with actual data from bookingManagement
+  // Sample image data - replace with actual data from BookingSummary
   const images = [
     { title: "Booking Selfie Photo" },
     { title: "Identity Card" },

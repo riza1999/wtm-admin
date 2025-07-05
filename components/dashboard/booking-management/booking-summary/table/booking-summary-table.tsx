@@ -1,22 +1,22 @@
 "use client";
 
+import { BookingSummary } from "@/app/(dashboard)/booking-management/booking-summary/types";
 import {
   getCompanyOptions,
   getData,
 } from "@/app/(dashboard)/booking-management/page";
-import { BookingManagement } from "@/app/(dashboard)/booking-management/types";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { useDataTable } from "@/hooks/use-data-table";
 import type { DataTableRowAction } from "@/types/data-table";
 import React, { useTransition } from "react";
-import CreateBookingManagementDialog from "../dialog/create-booking-management-dialog";
-import { DeleteBookingManagementDialog } from "../dialog/delete-booking-management-dialog";
-import { DetailBookingManagementDialog } from "../dialog/detail-booking-management-dialog";
-import EditBookingManagementDialog from "../dialog/edit-booking-management-dialog";
-import { getBookingManagementTableColumns } from "./booking-management-columns";
+import CreateBookingSummaryDialog from "../dialog/create-booking-summary-dialog";
+import { DeleteBookingSummaryDialog } from "../dialog/delete-booking-summary-dialog";
+import { DetailBookingSummaryDialog } from "../dialog/detail-booking-summary-dialog";
+import EditBookingSummaryDialog from "../dialog/edit-booking-summary-dialog";
+import { getBookingSummaryTableColumns } from "./booking-summary-columns";
 
-interface BookingManagementTableProps {
+interface BookingSummaryTableProps {
   promises: Promise<
     [
       Awaited<ReturnType<typeof getData>>,
@@ -25,15 +25,15 @@ interface BookingManagementTableProps {
   >;
 }
 
-const BookingManagementTable = ({ promises }: BookingManagementTableProps) => {
+const BookingSummaryTable = ({ promises }: BookingSummaryTableProps) => {
   const [isPending, startTransition] = useTransition();
   const [{ data, pageCount }, companyOptions] = React.use(promises);
   const [rowAction, setRowAction] =
-    React.useState<DataTableRowAction<BookingManagement> | null>(null);
+    React.useState<DataTableRowAction<BookingSummary> | null>(null);
 
   const columns = React.useMemo(
     () =>
-      getBookingManagementTableColumns({
+      getBookingSummaryTableColumns({
         setRowAction,
         companyOptions,
       }),
@@ -55,31 +55,27 @@ const BookingManagementTable = ({ promises }: BookingManagementTableProps) => {
       <div className="relative">
         <DataTable table={table} isPending={isPending}>
           <DataTableToolbar table={table} isPending={isPending}>
-            <CreateBookingManagementDialog />
+            <CreateBookingSummaryDialog />
           </DataTableToolbar>
         </DataTable>
       </div>
-      <DetailBookingManagementDialog
+      <DetailBookingSummaryDialog
         open={rowAction?.variant === "detail"}
         onOpenChange={() => setRowAction(null)}
-        bookingManagement={
-          rowAction?.row.original ? [rowAction.row.original] : []
-        }
+        bookingSummary={rowAction?.row.original ? [rowAction.row.original] : []}
         onSuccess={() => rowAction?.row.toggleSelected(false)}
       />
       {rowAction?.variant === "update" && (
-        <EditBookingManagementDialog
+        <EditBookingSummaryDialog
           open={rowAction?.variant === "update"}
           onOpenChange={() => setRowAction(null)}
           booking={rowAction?.row.original ?? null}
         />
       )}
-      <DeleteBookingManagementDialog
+      <DeleteBookingSummaryDialog
         open={rowAction?.variant === "delete"}
         onOpenChange={() => setRowAction(null)}
-        bookingManagement={
-          rowAction?.row.original ? [rowAction.row.original] : []
-        }
+        bookingSummary={rowAction?.row.original ? [rowAction.row.original] : []}
         showTrigger={false}
         onSuccess={() => rowAction?.row.toggleSelected(false)}
       />
@@ -87,4 +83,4 @@ const BookingManagementTable = ({ promises }: BookingManagementTableProps) => {
   );
 };
 
-export default BookingManagementTable;
+export default BookingSummaryTable;

@@ -5,8 +5,8 @@ import { Loader, Trash } from "lucide-react";
 import * as React from "react";
 import { toast } from "sonner";
 
-import { deleteBooking } from "@/app/(dashboard)/booking-management/actions";
-import { BookingManagement } from "@/app/(dashboard)/booking-management/types";
+import { deleteBooking } from "@/app/(dashboard)/booking-management/booking-summary/actions";
+import { BookingSummary } from "@/app/(dashboard)/booking-management/booking-summary/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -30,25 +30,25 @@ import {
 } from "@/components/ui/drawer";
 import { useMediaQuery } from "@/hooks/use-media-query";
 
-interface DeleteBookingManagementDialogProps
+interface DeleteBookingSummaryDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
-  bookingManagement: Row<BookingManagement>["original"][];
+  bookingSummary: Row<BookingSummary>["original"][];
   showTrigger?: boolean;
   onSuccess?: () => void;
 }
 
-export function DeleteBookingManagementDialog({
-  bookingManagement,
+export function DeleteBookingSummaryDialog({
+  bookingSummary,
   showTrigger = true,
   onSuccess,
   ...props
-}: DeleteBookingManagementDialogProps) {
+}: DeleteBookingSummaryDialogProps) {
   const [isDeletePending, startDeleteTransition] = React.useTransition();
   const isDesktop = useMediaQuery("(min-width: 640px)");
 
   function onDelete() {
     startDeleteTransition(async () => {
-      const bookingId = bookingManagement[0].id;
+      const bookingId = bookingSummary[0].id;
 
       toast.promise(deleteBooking(bookingId), {
         success: (data) => data.message,
@@ -67,7 +67,7 @@ export function DeleteBookingManagementDialog({
           <DialogTrigger asChild>
             <Button variant="outline" size="sm">
               <Trash className="mr-2 size-4" aria-hidden="true" />
-              Delete ({bookingManagement.length})
+              Delete ({bookingSummary.length})
             </Button>
           </DialogTrigger>
         ) : null}
@@ -76,9 +76,9 @@ export function DeleteBookingManagementDialog({
             <DialogTitle>Are you absolutely sure?</DialogTitle>
             <DialogDescription>
               This action cannot be undone. This will permanently delete your{" "}
-              <span className="font-medium">{bookingManagement.length}</span>
-              {bookingManagement.length === 1 ? " booking" : " bookings"} from
-              our servers.
+              <span className="font-medium">{bookingSummary.length}</span>
+              {bookingSummary.length === 1 ? " booking" : " bookings"} from our
+              servers.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2 sm:space-x-0">
@@ -111,7 +111,7 @@ export function DeleteBookingManagementDialog({
         <DrawerTrigger asChild>
           <Button variant="outline" size="sm">
             <Trash className="mr-2 size-4" aria-hidden="true" />
-            Delete ({bookingManagement.length})
+            Delete ({bookingSummary.length})
           </Button>
         </DrawerTrigger>
       ) : null}
@@ -120,8 +120,8 @@ export function DeleteBookingManagementDialog({
           <DrawerTitle>Are you absolutely sure?</DrawerTitle>
           <DrawerDescription>
             This action cannot be undone. This will permanently delete your{" "}
-            <span className="font-medium">{bookingManagement.length}</span>
-            {bookingManagement.length === 1 ? " booking" : " bookings"} from our
+            <span className="font-medium">{bookingSummary.length}</span>
+            {bookingSummary.length === 1 ? " booking" : " bookings"} from our
             servers.
           </DrawerDescription>
         </DrawerHeader>

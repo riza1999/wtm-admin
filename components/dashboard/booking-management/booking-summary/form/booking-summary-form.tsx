@@ -20,18 +20,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-interface BookingManagementFormProps<T extends FieldValues>
+interface BookingSummaryFormProps<T extends FieldValues>
   extends Omit<React.ComponentPropsWithRef<"form">, "onSubmit"> {
   children: React.ReactNode;
   form: UseFormReturn<T>;
   onSubmit: (data: T) => void;
 }
 
-export function BookingManagementForm<T extends FieldValues>({
+export function BookingSummaryForm<T extends FieldValues>({
   form,
   onSubmit,
   children,
-}: BookingManagementFormProps<T>) {
+}: BookingSummaryFormProps<T>) {
   console.log({ form });
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { createBooking } from "@/app/(dashboard)/booking-management/actions";
+import { createBooking } from "@/app/(dashboard)/booking-management/booking-summary/actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,9 +18,9 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
-import { BookingManagementForm } from "../form/booking-management-form";
+import { BookingSummaryForm } from "../form/booking-summary-form";
 
-export const createBookingManagementSchema = z.object({
+export const createBookingSummarySchema = z.object({
   guest_name: z.string(),
   agent_name: z.string(),
   agent_company: z.string(),
@@ -31,16 +31,16 @@ export const createBookingManagementSchema = z.object({
   promo_id: z.string(),
 });
 
-export type CreateBookingManagementSchema = z.infer<
-  typeof createBookingManagementSchema
+export type CreateBookingSummarySchema = z.infer<
+  typeof createBookingSummarySchema
 >;
 
-const CreateBookingManagementDialog = () => {
+const CreateBookingSummaryDialog = () => {
   const [open, setOpen] = React.useState(false);
   const [isPending, startTransition] = React.useTransition();
 
-  const form = useForm<CreateBookingManagementSchema>({
-    resolver: zodResolver(createBookingManagementSchema),
+  const form = useForm<CreateBookingSummarySchema>({
+    resolver: zodResolver(createBookingSummarySchema),
     defaultValues: {
       guest_name: "",
       agent_name: "",
@@ -53,7 +53,7 @@ const CreateBookingManagementDialog = () => {
     },
   });
 
-  function onSubmit(input: CreateBookingManagementSchema) {
+  function onSubmit(input: CreateBookingSummarySchema) {
     startTransition(async () => {
       const { success } = await createBooking(input);
 
@@ -83,7 +83,7 @@ const CreateBookingManagementDialog = () => {
             Fill in the details below to create a new booking
           </DialogDescription>
         </DialogHeader>
-        <BookingManagementForm form={form} onSubmit={onSubmit}>
+        <BookingSummaryForm form={form} onSubmit={onSubmit}>
           <DialogFooter className="gap-2 pt-2 sm:space-x-0">
             <DialogClose asChild>
               <Button type="button" variant="outline">
@@ -95,10 +95,10 @@ const CreateBookingManagementDialog = () => {
               Create
             </Button>
           </DialogFooter>
-        </BookingManagementForm>
+        </BookingSummaryForm>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default CreateBookingManagementDialog;
+export default CreateBookingSummaryDialog;

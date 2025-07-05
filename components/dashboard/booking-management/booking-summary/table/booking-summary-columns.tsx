@@ -1,4 +1,4 @@
-import { BookingManagement } from "@/app/(dashboard)/booking-management/types";
+import { BookingSummary } from "@/app/(dashboard)/booking-management/booking-summary/types";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,17 +15,17 @@ import { ColumnDef } from "@tanstack/react-table";
 import { CloudOff, Ellipsis, EyeIcon, FileText, Text } from "lucide-react";
 import React from "react";
 
-interface GetBookingManagementTableColumnsProps {
+interface GetBookingSummaryTableColumnsProps {
   setRowAction: React.Dispatch<
-    React.SetStateAction<DataTableRowAction<BookingManagement> | null>
+    React.SetStateAction<DataTableRowAction<BookingSummary> | null>
   >;
   companyOptions: Option[];
 }
 
-export function getBookingManagementTableColumns({
+export function getBookingSummaryTableColumns({
   setRowAction,
   companyOptions,
-}: GetBookingManagementTableColumnsProps): ColumnDef<BookingManagement>[] {
+}: GetBookingSummaryTableColumnsProps): ColumnDef<BookingSummary>[] {
   return [
     {
       id: "select",
