@@ -23,7 +23,10 @@ const menuItems = [
       { name: "Room Availability", href: "/hotel-listing/room-availability" },
     ],
   },
-  { name: "Booking Management", href: "/booking-management" },
+  {
+    name: "Booking Management",
+    href: "/booking-management",
+  },
   { name: "Report", href: "/report" },
   { name: "Promo", href: "/promo" },
   { name: "Promo Group", href: "/promo-group" },
