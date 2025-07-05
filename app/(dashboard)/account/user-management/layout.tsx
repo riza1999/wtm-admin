@@ -3,16 +3,24 @@ import React from "react";
 
 const tabItems = [
   {
-    href: "/booking-management/booking-summary",
-    label: "Booking Summary",
+    href: "/account/user-management/super-admin",
+    label: "Super Admin",
   },
   {
-    href: "/booking-management/history-booking-log",
-    label: "History Booking Log",
+    href: "/account/user-management/agent",
+    label: "Agent",
+  },
+  {
+    href: "/account/user-management/admin",
+    label: "Admin",
+  },
+  {
+    href: "/account/user-management/support",
+    label: "Support",
   },
 ];
 
-const BookingManagementLayout = ({
+const UserManagementLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -20,7 +28,7 @@ const BookingManagementLayout = ({
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Booking Management</h1>
+        <h1 className="text-3xl font-bold">User Management</h1>
       </div>
 
       <TabsPageChanger tabItems={tabItems} defaultValue={tabItems[0].href} />
@@ -30,4 +38,4 @@ const BookingManagementLayout = ({
   );
 };
 
-export default BookingManagementLayout;
+export default UserManagementLayout;
