@@ -1,39 +1,8 @@
 import SuperAdminTable from "@/components/dashboard/account/user-management/super-admin/table/super-admin-table";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
-import { SearchParams } from "@/types";
 import { Suspense } from "react";
-import { SuperAdminPageProps, SuperAdminTableResponse } from "./types";
-
-export const getSuperAdminData = async ({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}): Promise<SuperAdminTableResponse> => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  const data = [
-    {
-      id: "1",
-      name: "kelvin",
-      email: "kelvin@wtmdigital.com",
-      phone: "081234567800",
-      status: true,
-    },
-    {
-      id: "2",
-      name: "budi",
-      email: "budi@wtmdigital.com",
-      phone: "081234567800",
-      status: false,
-    },
-  ];
-
-  return {
-    success: true,
-    data,
-    pageCount: 2,
-  };
-};
+import { getSuperAdminData } from "./fetch";
+import { SuperAdminPageProps } from "./types";
 
 const SuperAdminPage = async (props: SuperAdminPageProps) => {
   const searchParams = await props.searchParams;

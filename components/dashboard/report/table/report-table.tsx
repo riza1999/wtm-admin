@@ -1,6 +1,6 @@
 "use client";
 
-import { getCompanyOptions, getData } from "@/app/(dashboard)/report/page";
+import { getCompanyOptions, getData } from "@/app/(dashboard)/report/fetch";
 import { Report } from "@/app/(dashboard)/report/types";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";

@@ -1,6 +1,6 @@
 "use client";
 
-import { getSuperAdminData } from "@/app/(dashboard)/account/user-management/page";
+import { getSupportData } from "@/app/(dashboard)/account/user-management/support/fetch";
 import { Support } from "@/app/(dashboard)/account/user-management/support/types";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
@@ -13,7 +13,7 @@ import EditSupportDialog from "../dialog/edit-support-dialog";
 import { getSupportTableColumns } from "./support-columns";
 
 interface SupportTableProps {
-  promises: Promise<[Awaited<ReturnType<typeof getSuperAdminData>>]>;
+  promises: Promise<[Awaited<ReturnType<typeof getSupportData>>]>;
 }
 
 const SupportTable = ({ promises }: SupportTableProps) => {

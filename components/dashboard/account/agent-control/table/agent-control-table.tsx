@@ -3,7 +3,7 @@
 import {
   getCompanyOptions,
   getData,
-} from "@/app/(dashboard)/account/agent-control/page";
+} from "@/app/(dashboard)/account/agent-control/fetch";
 import { AgentControl } from "@/app/(dashboard)/account/agent-control/types";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";

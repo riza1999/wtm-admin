@@ -1,39 +1,8 @@
 import SupportTable from "@/components/dashboard/account/user-management/support/table/support-table";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
-import { SearchParams } from "@/types";
 import { Suspense } from "react";
-import { SupportPageProps, SupportTableResponse } from "./types";
-
-export const getSupportData = async ({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}): Promise<SupportTableResponse> => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  const data = [
-    {
-      id: "1",
-      name: "kelvin support",
-      email: "kelvin_support@wtmdigital.com",
-      phone: "081234567800",
-      status: false,
-    },
-    {
-      id: "2",
-      name: "budi support",
-      email: "budi_support@wtmdigital.com",
-      phone: "081234567800",
-      status: false,
-    },
-  ];
-
-  return {
-    success: true,
-    data,
-    pageCount: 2,
-  };
-};
+import { getSupportData } from "./fetch";
+import { SupportPageProps } from "./types";
 
 const SupportPage = async (props: SupportPageProps) => {
   const searchParams = await props.searchParams;

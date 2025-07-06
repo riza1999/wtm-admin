@@ -1,6 +1,6 @@
 "use client";
 
-import { getData } from "@/app/(dashboard)/hotel-listing/room-availability/page";
+import { getData } from "@/app/(dashboard)/hotel-listing/room-availability/fetch";
 import { RoomAvailabilityHotel } from "@/app/(dashboard)/hotel-listing/room-availability/types";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";

@@ -3,7 +3,7 @@
 import {
   getCompanyOptions,
   getData,
-} from "@/app/(dashboard)/booking-management/booking-summary/page";
+} from "@/app/(dashboard)/booking-management/booking-summary/fetch";
 import { BookingSummary } from "@/app/(dashboard)/booking-management/booking-summary/types";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";

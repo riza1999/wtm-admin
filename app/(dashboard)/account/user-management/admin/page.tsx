@@ -1,39 +1,8 @@
 import AdminTable from "@/components/dashboard/account/user-management/admin/table/admin-table";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
-import { SearchParams } from "@/types";
 import { Suspense } from "react";
-import { AdminPageProps, AdminTableResponse } from "./types";
-
-export const getAdminData = async ({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}): Promise<AdminTableResponse> => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  const data = [
-    {
-      id: "1",
-      name: "kelvin admin",
-      email: "kelvin_admin@wtmdigital.com",
-      phone: "081234567800",
-      status: true,
-    },
-    {
-      id: "2",
-      name: "budi admin",
-      email: "budi_admin@wtmdigital.com",
-      phone: "081234567800",
-      status: true,
-    },
-  ];
-
-  return {
-    success: true,
-    data,
-    pageCount: 2,
-  };
-};
+import { getAdminData } from "./fetch";
+import { AdminPageProps } from "./types";
 
 const AdminPage = async (props: AdminPageProps) => {
   const searchParams = await props.searchParams;

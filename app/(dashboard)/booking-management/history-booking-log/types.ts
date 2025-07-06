@@ -1,3 +1,5 @@
+import { SearchParams } from "@/types";
+
 export type BookingStatus = "confirmed" | "rejected" | "in review";
 export type PaymentStatus = "paid" | "unpaid";
 
@@ -19,4 +21,8 @@ export interface HistoryBookingLogTableResponse {
   success: boolean;
   data: HistoryBookingLog[];
   pageCount: number;
+}
+
+export interface HistoryBookingLogPageProps {
+  searchParams: Promise<SearchParams>;
 }

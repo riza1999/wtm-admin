@@ -3,7 +3,7 @@
 import {
   getData,
   getRegionOptions,
-} from "@/app/(dashboard)/hotel-listing/page";
+} from "@/app/(dashboard)/hotel-listing/fetch";
 import { Hotel } from "@/app/(dashboard)/hotel-listing/types";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";

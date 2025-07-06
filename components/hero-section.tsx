@@ -1,10 +1,8 @@
-import React from "react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import { HeroHeader } from "./header/header";
 import { InfiniteSlider } from "@/components/ui/infinite-slider";
 import { ProgressiveBlur } from "@/components/ui/progressive-blur";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function HeroSection() {
   return (
@@ -59,77 +57,77 @@ export default function HeroSection() {
             <div className="relative py-6 md:w-[calc(100%-11rem)]">
               <InfiniteSlider speedOnHover={20} speed={40} gap={112}>
                 <div className="flex">
-                  <img
+                  <Image
                     className="mx-auto h-5 w-fit dark:invert"
                     src="https://html.tailus.io/blocks/customers/nvidia.svg"
                     alt="Nvidia Logo"
-                    height="20"
-                    width="auto"
+                    height={20}
+                    width={100}
                   />
                 </div>
 
                 <div className="flex">
-                  <img
+                  <Image
                     className="mx-auto h-4 w-fit dark:invert"
                     src="https://html.tailus.io/blocks/customers/column.svg"
                     alt="Column Logo"
-                    height="16"
-                    width="auto"
+                    height={16}
+                    width={80}
                   />
                 </div>
                 <div className="flex">
-                  <img
+                  <Image
                     className="mx-auto h-4 w-fit dark:invert"
                     src="https://html.tailus.io/blocks/customers/github.svg"
                     alt="GitHub Logo"
-                    height="16"
-                    width="auto"
+                    height={16}
+                    width={80}
                   />
                 </div>
                 <div className="flex">
-                  <img
+                  <Image
                     className="mx-auto h-5 w-fit dark:invert"
                     src="https://html.tailus.io/blocks/customers/nike.svg"
                     alt="Nike Logo"
-                    height="20"
-                    width="auto"
+                    height={20}
+                    width={100}
                   />
                 </div>
                 <div className="flex">
-                  <img
+                  <Image
                     className="mx-auto h-5 w-fit dark:invert"
                     src="https://html.tailus.io/blocks/customers/lemonsqueezy.svg"
                     alt="Lemon Squeezy Logo"
-                    height="20"
-                    width="auto"
+                    height={20}
+                    width={100}
                   />
                 </div>
                 <div className="flex">
-                  <img
+                  <Image
                     className="mx-auto h-4 w-fit dark:invert"
                     src="https://html.tailus.io/blocks/customers/laravel.svg"
                     alt="Laravel Logo"
-                    height="16"
-                    width="auto"
+                    height={16}
+                    width={80}
                   />
                 </div>
                 <div className="flex">
-                  <img
+                  <Image
                     className="mx-auto h-7 w-fit dark:invert"
                     src="https://html.tailus.io/blocks/customers/lilly.svg"
                     alt="Lilly Logo"
-                    height="28"
-                    width="auto"
+                    height={28}
+                    width={140}
                   />
                 </div>
 
                 <div className="flex">
-                  <img
+                  <Image
                     className="mx-auto h-6 w-fit dark:invert"
                     src="https://html.tailus.io/blocks/customers/openai.svg"
                     alt="OpenAI Logo"
-                    height="24"
-                    width="auto"
+                    height={24}
+                    width={120}
                   />
                 </div>
               </InfiniteSlider>

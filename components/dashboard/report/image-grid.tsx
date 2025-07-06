@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface ImageGridProps {
   images: {
     title: string;
@@ -17,10 +19,12 @@ export function ImageGrid({ images, className }: ImageGridProps) {
             <p className="font-medium tracking-tight mb-2">{image.title}</p>
             <div className="w-full aspect-square rounded-lg border border-dashed flex justify-center items-center text-lg">
               {image.src ? (
-                <img
+                <Image
                   src={image.src}
                   alt={image.alt || image.title}
                   className="w-full h-full object-cover rounded-lg"
+                  width={400}
+                  height={400}
                 />
               ) : (
                 <span className="text-muted-foreground">Image</span>
@@ -37,10 +41,12 @@ export function ImageGrid({ images, className }: ImageGridProps) {
             <p className="font-medium tracking-tight mb-2">{image.title}</p>
             <div className="w-full aspect-square rounded-lg border border-dashed flex justify-center items-center text-lg">
               {image.src ? (
-                <img
+                <Image
                   src={image.src}
                   alt={image.alt || image.title}
                   className="w-full h-full object-cover rounded-lg"
+                  width={400}
+                  height={400}
                 />
               ) : (
                 <span className="text-muted-foreground">Image</span>
@@ -67,10 +73,12 @@ export function ImageGrid({ images, className }: ImageGridProps) {
                 }`}
               >
                 {image.src ? (
-                  <img
+                  <Image
                     src={image.src}
                     alt={image.alt || image.title}
                     className="w-full h-full object-cover rounded-lg"
+                    width={400}
+                    height={400}
                   />
                 ) : (
                   <span className="text-muted-foreground">Image</span>

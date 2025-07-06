@@ -1,6 +1,6 @@
 "use client";
 
-import { getSuperAdminData } from "@/app/(dashboard)/account/user-management/page";
+import { getSuperAdminData } from "@/app/(dashboard)/account/user-management/super-admin/fetch";
 import { SuperAdmin } from "@/app/(dashboard)/account/user-management/super-admin/types";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";

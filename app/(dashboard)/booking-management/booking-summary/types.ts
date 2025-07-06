@@ -1,3 +1,5 @@
+import { SearchParams } from "@/types";
+
 export type BookingStatus = "confirmed" | "rejected" | "in review";
 export type PaymentStatus = "paid" | "unpaid";
 
@@ -17,4 +19,8 @@ export interface BookingSummaryTableResponse {
   success: boolean;
   data: BookingSummary[];
   pageCount: number;
+}
+
+export interface BookingSummaryPageProps {
+  searchParams: Promise<SearchParams>;
 }
