@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import Link from "next/link";
 import React from "react";
-import { NavUser } from "./nav-user";
 import { NavDropdown } from "./nav-dropdown";
+import { NavUser } from "./nav-user";
 
 const menuItems = [
   {
@@ -19,19 +19,22 @@ const menuItems = [
     name: "Hotel Listing",
     href: "#link",
     childs: [
-      { name: "Add Hotel Listing", href: "/hotel-listing/add-hotel-listing" },
+      { name: "Add Hotel Listing", href: "/hotel-listing" },
       { name: "Room Availability", href: "/hotel-listing/room-availability" },
     ],
   },
-  { name: "Booking Management", href: "/booking-management" },
+  {
+    name: "Booking Management",
+    href: "/booking-management/booking-summary",
+  },
   { name: "Report", href: "/report" },
   { name: "Promo", href: "/promo" },
   { name: "Promo Group", href: "/promo-group" },
 ];
 
 const user = {
-  name: "shadcn",
-  email: "m@example.com",
+  name: "Riza Kurniawanda",
+  email: "riza@gmail.com",
   avatar: "/avatars/shadcn.jpg",
 };
 

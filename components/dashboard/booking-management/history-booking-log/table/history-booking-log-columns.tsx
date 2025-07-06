@@ -1,0 +1,313 @@
+import { HistoryBookingLog } from "@/app/(dashboard)/booking-management/history-booking-log/types";
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { formatDate } from "@/lib/format";
+import { DataTableRowAction, Option } from "@/types/data-table";
+import { ColumnDef } from "@tanstack/react-table";
+import { Text } from "lucide-react";
+import React from "react";
+
+interface GetHistoryBookingLogTableColumnsProps {
+  setRowAction: React.Dispatch<
+    React.SetStateAction<DataTableRowAction<HistoryBookingLog> | null>
+  >;
+  companyOptions: Option[];
+}
+
+export function getHistoryBookingLogTableColumns({
+  setRowAction,
+  companyOptions,
+}: GetHistoryBookingLogTableColumnsProps): ColumnDef<HistoryBookingLog>[] {
+  return [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+          className="translate-y-0.5"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+          className="translate-y-0.5"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+      size: 40,
+    },
+    {
+      id: "booking_id",
+      accessorKey: "booking_id",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Booking ID" />
+      ),
+      cell: ({ row }) => row.original.booking_id,
+      meta: {
+        label: "Booking ID",
+        placeholder: "Search booking ID...",
+        variant: "text",
+        icon: Text,
+      },
+      enableColumnFilter: false,
+      enableHiding: false,
+    },
+    {
+      id: "confirm_date",
+      accessorKey: "confirm_date",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Confirm Date" />
+      ),
+      cell: ({ row }) => {
+        return formatDate(row.original.confirm_date);
+      },
+      meta: {
+        label: "Confirm Date",
+        placeholder: "Filter by date...",
+        variant: "date",
+      },
+      enableColumnFilter: false,
+    },
+    {
+      id: "agent_name",
+      accessorKey: "agent_name",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Agent Name" />
+      ),
+      cell: ({ row }) => row.original.agent_name,
+      meta: {
+        label: "Agent Name",
+        placeholder: "Search agent name...",
+        variant: "text",
+        icon: Text,
+      },
+      enableColumnFilter: false,
+    },
+    {
+      id: "booking_status",
+      accessorKey: "booking_status",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Booking Status" />
+      ),
+      cell: ({ row }) => {
+        const value = row.original.booking_status;
+        let variant: "default" | "secondary" | "destructive" = "default";
+        if (value === "confirmed") variant = "default";
+        else if (value === "rejected") variant = "destructive";
+        else if (value === "in review") variant = "secondary";
+        return (
+          <Badge variant={variant} className="capitalize">
+            {value}
+          </Badge>
+        );
+      },
+      meta: {
+        label: "Booking Status",
+        placeholder: "Filter by status...",
+        variant: "select",
+        options: [
+          { label: "Confirmed", value: "confirmed" },
+          { label: "Rejected", value: "rejected" },
+          { label: "In Review", value: "in review" },
+        ],
+      },
+      enableColumnFilter: false,
+    },
+    {
+      id: "payment_status",
+      accessorKey: "payment_status",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Payment Status" />
+      ),
+      cell: ({ row }) => {
+        const value = row.original.payment_status;
+        let variant: "default" | "secondary" | "destructive" = "default";
+        if (value === "paid") variant = "default";
+        else if (value === "unpaid") variant = "destructive";
+        return (
+          <Badge variant={variant} className="capitalize">
+            {value}
+          </Badge>
+        );
+      },
+      meta: {
+        label: "Payment Status",
+        placeholder: "Filter by payment status...",
+        variant: "select",
+        options: [
+          { label: "Paid", value: "paid" },
+          { label: "Unpaid", value: "unpaid" },
+        ],
+      },
+      enableColumnFilter: false,
+    },
+    {
+      id: "date_in",
+      accessorKey: "date_in",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Check-in Date" />
+      ),
+      cell: ({ row }) => {
+        return formatDate(row.original.date_in);
+      },
+      meta: {
+        label: "Check-in Date",
+        placeholder: "Filter by check-in date...",
+        variant: "date",
+      },
+      enableColumnFilter: false,
+    },
+    {
+      id: "date_out",
+      accessorKey: "date_out",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Check-out Date" />
+      ),
+      cell: ({ row }) => {
+        return formatDate(row.original.date_out);
+      },
+      meta: {
+        label: "Check-out Date",
+        placeholder: "Filter by check-out date...",
+        variant: "date",
+      },
+      enableColumnFilter: false,
+    },
+    {
+      id: "hotel_name",
+      accessorKey: "hotel_name",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Hotel Name" />
+      ),
+      cell: ({ row }) => row.original.hotel_name,
+      meta: {
+        label: "Hotel Name",
+        placeholder: "Search hotel name...",
+        variant: "text",
+        icon: Text,
+      },
+      enableColumnFilter: false,
+    },
+    {
+      id: "room_type",
+      accessorKey: "room_type",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Room Type" />
+      ),
+      cell: ({ row }) => row.original.room_type,
+      meta: {
+        label: "Room Type",
+        placeholder: "Search room type...",
+        variant: "text",
+        icon: Text,
+      },
+      enableColumnFilter: false,
+    },
+    {
+      id: "room_night",
+      accessorKey: "room_night",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Room Nights" />
+      ),
+      cell: ({ row }) => row.original.room_night,
+      meta: {
+        label: "Room Nights",
+        placeholder: "Filter by room nights...",
+        variant: "number",
+      },
+      enableColumnFilter: false,
+    },
+    {
+      id: "capacity",
+      accessorKey: "capacity",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Capacity" />
+      ),
+      cell: ({ row }) => row.original.capacity,
+      meta: {
+        label: "Capacity",
+        placeholder: "Search capacity...",
+        variant: "text",
+        icon: Text,
+      },
+      enableColumnFilter: false,
+    },
+    // {
+    //   id: "detail",
+    //   accessorKey: "detail",
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title="Booking Detail" />
+    //   ),
+    //   cell: ({ row }) => {
+    //     return (
+    //       <Button
+    //         size={"sm"}
+    //         onClick={() => setRowAction({ row, variant: "detail" })}
+    //       >
+    //         <EyeIcon className="h-4 w-4" />
+    //         See details
+    //       </Button>
+    //     );
+    //   },
+    //   enableHiding: false,
+    //   enableSorting: false,
+    // },
+    // {
+    //   id: "api_status",
+    //   accessorKey: "api_status",
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title="API Status" />
+    //   ),
+    //   cell: ({ row }) => (
+    //     <CloudOff className="size-5 text-red-500" aria-hidden="true" />
+    //   ),
+    //   enableHiding: false,
+    //   enableSorting: false,
+    //   size: 50,
+    // },
+    // {
+    //   id: "actions",
+    //   cell: function Cell({ row }) {
+    //     const [isUpdatePending, startUpdateTransition] = React.useTransition();
+
+    //     return (
+    //       <DropdownMenu>
+    //         <DropdownMenuTrigger asChild>
+    //           <Button
+    //             aria-label="Open menu"
+    //             variant="ghost"
+    //             className="flex size-8 p-0 data-[state=open]:bg-muted"
+    //           >
+    //             <Ellipsis className="size-4" aria-hidden="true" />
+    //           </Button>
+    //         </DropdownMenuTrigger>
+    //         <DropdownMenuContent align="end" className="w-40">
+    //           <DropdownMenuItem
+    //             onSelect={() => setRowAction({ row, variant: "update" })}
+    //           >
+    //             Edit
+    //           </DropdownMenuItem>
+    //           <DropdownMenuSeparator />
+    //           <DropdownMenuItem
+    //             variant="destructive"
+    //             onSelect={() => setRowAction({ row, variant: "delete" })}
+    //           >
+    //             Delete
+    //           </DropdownMenuItem>
+    //         </DropdownMenuContent>
+    //       </DropdownMenu>
+    //     );
+    //   },
+    //   size: 40,
+    // },
+  ];
+}

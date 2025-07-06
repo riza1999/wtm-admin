@@ -1,0 +1,112 @@
+"use client";
+
+import {
+  getData,
+  getRegionOptions,
+} from "@/app/(dashboard)/hotel-listing/page";
+import { Hotel } from "@/app/(dashboard)/hotel-listing/types";
+import { DataTable } from "@/components/data-table/data-table";
+import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
+import { TableCell, TableRow } from "@/components/ui/table";
+import { useDataTable } from "@/hooks/use-data-table";
+import type { DataTableRowAction } from "@/types/data-table";
+import React, { useTransition } from "react";
+import CreateHotelDialog from "../dialog/create-hotel-dialog";
+import { DeleteHotelDialog } from "../dialog/delete-hotel-dialog";
+import EditHotelDialog from "../dialog/edit-hotel-dialog";
+import { getHotelTableColumns } from "./hotel-columns";
+
+interface HotelTableProps {
+  promises: Promise<
+    [
+      Awaited<ReturnType<typeof getData>>,
+      Awaited<ReturnType<typeof getRegionOptions>>
+    ]
+  >;
+}
+
+const HotelTable = ({ promises }: HotelTableProps) => {
+  const [isPending, startTransition] = useTransition();
+  const [{ data, pageCount }, companyOptions] = React.use(promises);
+  const [rowAction, setRowAction] =
+    React.useState<DataTableRowAction<Hotel> | null>(null);
+
+  const columns = React.useMemo(
+    () =>
+      getHotelTableColumns({
+        setRowAction,
+        companyOptions,
+      }),
+    []
+  );
+
+  const { table } = useDataTable({
+    data,
+    columns,
+    pageCount,
+    getRowId: (originalRow) => originalRow.id,
+    shallow: false,
+    clearOnDefault: true,
+    startTransition,
+    // getSubRows: (row) => row.rooms,
+  });
+
+  return (
+    <>
+      <div className="relative">
+        <DataTable
+          table={table}
+          isPending={isPending}
+          renderSubRow={(hotel) => (
+            <TableRow>
+              <TableCell />
+              <TableCell className="px-5">
+                <div className="space-y-2">
+                  {hotel.rooms.map((room) => (
+                    <div key={room.id} className="mt-1">
+                      <div className="flex justify-between">
+                        <h3>{room.name}</h3>
+                        <p className="text-muted-foreground text-xs">
+                          Rp. {room.normal_price}
+                        </p>
+                      </div>
+                      <div className="flex justify-between">
+                        <p className="text-muted-foreground text-xs">
+                          {room.description}
+                        </p>
+                        <h3 className="font-medium">
+                          Rp. {room.discount_price}
+                        </h3>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </TableCell>
+              <TableCell colSpan={table.getAllColumns().length} />
+            </TableRow>
+          )}
+        >
+          <DataTableToolbar table={table} isPending={isPending}>
+            <CreateHotelDialog />
+          </DataTableToolbar>
+        </DataTable>
+      </div>
+      {rowAction?.variant === "update" && (
+        <EditHotelDialog
+          open={rowAction?.variant === "update"}
+          onOpenChange={() => setRowAction(null)}
+          hotel={rowAction?.row.original ?? null}
+        />
+      )}
+      <DeleteHotelDialog
+        open={rowAction?.variant === "delete"}
+        onOpenChange={() => setRowAction(null)}
+        hotel={rowAction?.row.original ? [rowAction.row.original] : []}
+        showTrigger={false}
+        onSuccess={() => rowAction?.row.toggleSelected(false)}
+      />
+    </>
+  );
+};
+
+export default HotelTable;
