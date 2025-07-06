@@ -33,8 +33,8 @@ const menuItems = [
 ];
 
 const user = {
-  name: "shadcn",
-  email: "m@example.com",
+  name: "Riza Kurniawanda",
+  email: "riza@gmail.com",
   avatar: "/avatars/shadcn.jpg",
 };
 
