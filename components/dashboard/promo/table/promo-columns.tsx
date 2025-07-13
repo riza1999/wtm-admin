@@ -29,6 +29,14 @@ export function getPromoTableColumns({
 }: GetPromoTableColumnsProps): ColumnDef<Promo>[] {
   return [
     {
+      id: "no",
+      header: "No",
+      cell: ({ row }) => row.index + 1,
+      enableSorting: false,
+      enableHiding: false,
+      size: 40,
+    },
+    {
       id: "id",
       accessorKey: "id",
       header: ({ column }) => (

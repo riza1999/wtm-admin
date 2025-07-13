@@ -2,7 +2,6 @@ import { updatePromoGroup } from "@/app/(dashboard)/account/user-management/agen
 import { Agent } from "@/app/(dashboard)/account/user-management/agent/types";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,26 +37,9 @@ export function getAgentTableColumns({
 }: GetAgentTableColumnsProps): ColumnDef<Agent>[] {
   return [
     {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-          className="translate-y-0.5"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-          className="translate-y-0.5"
-        />
-      ),
+      id: "no",
+      header: "No",
+      cell: ({ row }) => row.index + 1,
       enableSorting: false,
       enableHiding: false,
       size: 40,
