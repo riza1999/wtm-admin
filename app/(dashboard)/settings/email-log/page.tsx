@@ -5,7 +5,7 @@ import { getCompanyOptions, getData } from "./fetch";
 import { EmailLogPageProps } from "./types";
 
 const EmailLogPage = async (props: EmailLogPageProps) => {
-  const searchParams = await props.search_params;
+  const searchParams = await props.searchParams;
 
   const promises = Promise.all([
     getData({

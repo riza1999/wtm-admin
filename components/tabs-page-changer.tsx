@@ -33,8 +33,6 @@ const TabsPageChanger = memo(
       ));
     }, [tabItems]);
 
-    console.log({ pathname, defaultTabs });
-
     return (
       <Tabs defaultValue={defaultTabs}>
         <TabsList>{renderedTabs}</TabsList>

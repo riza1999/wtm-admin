@@ -16,5 +16,5 @@ export interface EmailLogTableResponse {
 }
 
 export interface EmailLogPageProps {
-  search_params: Promise<SearchParams>;
+  searchParams: Promise<SearchParams>;
 }
