@@ -117,7 +117,7 @@ export function getAgentTableColumns({
               }}
             >
               <SelectTrigger
-                className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
+                className="w-38 bg-primary text-white **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate [&>svg]:!text-white [&>svg]:!opacity-100"
                 size="sm"
                 id={`${row.original.id}-promo-group`}
               >

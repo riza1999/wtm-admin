@@ -69,7 +69,7 @@ const EmailSettingForm = ({ defaultValues }: EmailSettingFormProps) => {
                       E-mail Body Template
                     </FormLabel>
                     <FormControl>
-                      <Textarea className="h-40" {...field} />
+                      <Textarea className="h-40 bg-white" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -85,7 +85,7 @@ const EmailSettingForm = ({ defaultValues }: EmailSettingFormProps) => {
                     </FormLabel>
                     <FormControl>
                       <Textarea
-                        className="h-24"
+                        className="h-24 bg-white"
                         placeholder="Enter your email subject here"
                         {...field}
                       />
