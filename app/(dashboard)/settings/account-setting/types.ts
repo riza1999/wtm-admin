@@ -1,4 +1,5 @@
 export interface AccountProfile {
+  username: string;
   firstName: string;
   lastName: string;
   agentCompany: string;

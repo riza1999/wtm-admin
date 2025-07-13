@@ -13,6 +13,7 @@ const menuItems = [
     childs: [
       { name: "User Management", href: "/account/user-management/super-admin" },
       { name: "Agent Control", href: "/account/agent-control" },
+      { name: "Role Based Access", href: "/account/role-based-access" },
     ],
   },
   {

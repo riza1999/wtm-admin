@@ -6,6 +6,7 @@ export async function fetchAccountProfile(): Promise<AccountProfile> {
   await new Promise((resolve) => setTimeout(resolve, 500));
   // Return mock data based on the current page content
   return {
+    username: "raffiwtm12",
     firstName: "Muhammad",
     lastName: "Abduraffi",
     agentCompany: "Esensi Digital",

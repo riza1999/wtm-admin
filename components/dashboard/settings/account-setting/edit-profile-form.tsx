@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import z from "zod";
 
 const profileSchema = z.object({
+  username: z.string().min(1, "Username is required"),
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   agentCompany: z.string().min(1, "Agent company is required"),
@@ -44,6 +45,7 @@ const EditProfileForm = ({ defaultValues }: EditProfileFormProps) => {
   const form = useForm<ProfileSchema>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
+      username: defaultValues.username,
       firstName: defaultValues.firstName,
       lastName: defaultValues.lastName,
       agentCompany: defaultValues.agentCompany,
@@ -73,6 +75,21 @@ const EditProfileForm = ({ defaultValues }: EditProfileFormProps) => {
           <div className="min-w-[180px] font-medium">Edit Profile</div>
           <div className="flex-1">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem className="col-span-2">
+                    <FormLabel className="text-sm font-medium">
+                      Username
+                    </FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter username" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="firstName"

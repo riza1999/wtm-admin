@@ -14,10 +14,6 @@ const tabItems = [
     href: "/settings/email-log",
     label: "E-mail Log",
   },
-  {
-    href: "/settings/role-based-access",
-    label: "Role Based Access",
-  },
 ];
 
 const SettingsLayout = ({
