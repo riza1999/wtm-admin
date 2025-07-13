@@ -130,7 +130,7 @@ const AccountSettingForm = ({ defaultValues }: AccountSettingFormProps) => {
                   )}
                 />
               </div>
-              <Button type="submit" disabled={isLoading}>
+              <Button className="mt-2" type="submit" disabled={isLoading}>
                 {isLoading && (
                   <Loader
                     className="mr-2 h-4 w-4 animate-spin"
