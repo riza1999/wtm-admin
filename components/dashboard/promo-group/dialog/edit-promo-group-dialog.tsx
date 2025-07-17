@@ -1,6 +1,7 @@
 "use client";
 
 import { editPromoGroup } from "@/app/(dashboard)/promo-group/actions";
+import { PromoGroup } from "@/app/(dashboard)/promo-group/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -27,7 +28,7 @@ export const editPromoGroupSchema = z.object({
 export type EditPromoGroupSchemaType = z.infer<typeof editPromoGroupSchema>;
 
 interface EditPromoGroupDialogProps {
-  promoGroup: EditPromoGroupSchemaType | null;
+  promoGroup: PromoGroup | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -59,7 +60,14 @@ const EditPromoGroupDialog = ({
 
   function onSubmit(input: EditPromoGroupSchemaType) {
     startTransition(async () => {
-      const { success } = await editPromoGroup(input);
+      if (!promoGroup) return;
+
+      const { success } = await editPromoGroup({
+        id: promoGroup.id,
+        members: [],
+        promos: [],
+        ...input,
+      });
 
       if (!success) {
         toast.error("Failed to update promo group");

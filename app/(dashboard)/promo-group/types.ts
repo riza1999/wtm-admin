@@ -26,7 +26,6 @@ export interface PromoPageProps {
 
 // Schema for creating a new promo
 export interface CreatePromoGroupSchema {
-  id: string;
   name: string;
 }
 
