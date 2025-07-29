@@ -22,7 +22,7 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { Ellipsis, EyeIcon, Text } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
-import { ConfirmStatusChangeDialog } from "../../../../confirm-status-change-dialog";
+import { ConfirmationDialog } from "../../../../confirmation-dialog";
 
 interface GetAgentControlTableColumnsProps {
   setRowAction: React.Dispatch<
@@ -106,7 +106,7 @@ export function getAgentControlTableColumns({
             <SelectItem value="rejected">Rejected</SelectItem>
           </SelectContent>
         </Select>
-        <ConfirmStatusChangeDialog
+        <ConfirmationDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}
           onConfirm={handleConfirm}

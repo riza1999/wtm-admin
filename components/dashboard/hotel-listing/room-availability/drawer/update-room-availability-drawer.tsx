@@ -1,6 +1,6 @@
 import { updateRoomAvailability } from "@/app/(dashboard)/hotel-listing/room-availability/actions";
 import { RoomAvailabilityHotel } from "@/app/(dashboard)/hotel-listing/room-availability/types";
-import { ConfirmStatusChangeDialog } from "@/components/confirm-status-change-dialog";
+import { ConfirmationDialog } from "@/components/confirmation-dialog";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import {
@@ -208,15 +208,20 @@ export const UpdateRoomAvailabilityDrawer = ({
           {/* Legend and Save Button */}
           <div className="flex items-center justify-between">
             <AvailabilityLegend />
-            <ConfirmStatusChangeDialog
+            {/* Trigger Button */}
+            <Button size="sm" onClick={() => setOpen(true)}>
+              Save Changes
+            </Button>
+            {/* Confirmation Dialog */}
+            <ConfirmationDialog
               open={open}
               onOpenChange={setOpen}
               onConfirm={onUpdate}
               onCancel={onCancel}
               isLoading={isUpdatePending}
-            >
-              <Button size="sm">Save Changes</Button>
-            </ConfirmStatusChangeDialog>
+              title="Save Room Availability"
+              description="Are you sure you want to save the changes to room availability?"
+            />
           </div>
         </div>
       </DrawerContent>

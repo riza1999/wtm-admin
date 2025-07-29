@@ -9,30 +9,35 @@ import {
 } from "@/components/ui/dialog";
 import { AlertTriangle, Loader } from "lucide-react";
 
-interface ConfirmStatusChangeDialogProps {
+interface ConfirmationDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
   onCancel: () => void;
   isLoading: boolean;
-  children?: React.ReactNode;
   title?: string;
   description?: string;
+  children?: React.ReactNode; // Custom content (e.g., reason textarea)
+  confirmDisabled?: boolean;
 }
 
-export function ConfirmStatusChangeDialog({
+/**
+ * A generic confirmation dialog for critical actions.
+ */
+export function ConfirmationDialog({
   open,
   onOpenChange,
   onConfirm,
   onCancel,
   isLoading,
-  children,
   title = "Confirm Changes",
   description = "Are you sure you want to save the changes?",
-}: ConfirmStatusChangeDialogProps) {
+  children,
+  confirmDisabled,
+}: ConfirmationDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogTrigger asChild>{null}</DialogTrigger>
       <DialogContent showCloseButton={false}>
         <div className="flex flex-col items-center text-center gap-1">
           <AlertTriangle
@@ -47,11 +52,12 @@ export function ConfirmStatusChangeDialog({
             {description}
           </DialogDescription>
         </div>
+        {children}
         <DialogFooter className="sm:justify-center">
           <Button variant="outline" onClick={onCancel} disabled={isLoading}>
             Cancel
           </Button>
-          <Button onClick={onConfirm} disabled={isLoading}>
+          <Button onClick={onConfirm} disabled={isLoading || confirmDisabled}>
             {isLoading && (
               <Loader className="mr-2 size-4 animate-spin" aria-hidden="true" />
             )}
