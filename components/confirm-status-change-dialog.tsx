@@ -5,6 +5,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { AlertTriangle, Loader } from "lucide-react";
 
@@ -13,9 +14,8 @@ interface ConfirmStatusChangeDialogProps {
   onOpenChange: (open: boolean) => void;
   onConfirm: () => void;
   onCancel: () => void;
-  pendingValue: string | null;
   isLoading: boolean;
-  getStatusColor: (value: string) => string;
+  children?: React.ReactNode;
 }
 
 export function ConfirmStatusChangeDialog({
@@ -23,12 +23,12 @@ export function ConfirmStatusChangeDialog({
   onOpenChange,
   onConfirm,
   onCancel,
-  pendingValue,
   isLoading,
-  getStatusColor,
+  children,
 }: ConfirmStatusChangeDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent showCloseButton={false}>
         <div className="flex flex-col items-center text-center gap-1">
           <AlertTriangle

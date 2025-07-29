@@ -22,7 +22,7 @@ import { ColumnDef, Row } from "@tanstack/react-table";
 import { Ellipsis, EyeIcon, Text } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
-import { ConfirmStatusChangeDialog } from "../dialog/confirm-status-change-dialog";
+import { ConfirmStatusChangeDialog } from "../../../../confirm-status-change-dialog";
 
 interface GetAgentControlTableColumnsProps {
   setRowAction: React.Dispatch<
@@ -111,9 +111,7 @@ export function getAgentControlTableColumns({
           onOpenChange={setDialogOpen}
           onConfirm={handleConfirm}
           onCancel={handleCancel}
-          pendingValue={pendingValue}
           isLoading={isUpdatePending}
-          getStatusColor={getStatusColor}
         />
       </>
     );
