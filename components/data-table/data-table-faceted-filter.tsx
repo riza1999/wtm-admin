@@ -27,6 +27,7 @@ import * as React from "react";
 interface DataTableFacetedFilterProps<TData, TValue> {
   column?: Column<TData, TValue>;
   title?: string;
+  placeholder?: string;
   options: Option[];
   multiple?: boolean;
 }
@@ -34,6 +35,7 @@ interface DataTableFacetedFilterProps<TData, TValue> {
 export function DataTableFacetedFilter<TData, TValue>({
   column,
   title,
+  placeholder,
   options,
   multiple,
 }: DataTableFacetedFilterProps<TData, TValue>) {
@@ -131,7 +133,7 @@ export function DataTableFacetedFilter<TData, TValue>({
       </PopoverTrigger>
       <PopoverContent className="w-[12.5rem] p-0" align="start">
         <Command>
-          <CommandInput placeholder={title} />
+          <CommandInput placeholder={placeholder ?? "Search..."} />
           <CommandList className="max-h-full">
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup className="max-h-[18.75rem] overflow-y-auto overflow-x-hidden">

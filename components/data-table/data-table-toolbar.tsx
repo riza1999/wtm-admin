@@ -148,6 +148,7 @@ function DataTableToolbarFilter<TData>({
             <DataTableFacetedFilter
               column={column}
               title={columnMeta.label ?? column.id}
+              placeholder={columnMeta.placeholder}
               options={columnMeta.options ?? []}
               multiple={columnMeta.variant === "multiSelect"}
             />
