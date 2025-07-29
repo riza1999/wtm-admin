@@ -112,6 +112,8 @@ export function getAgentControlTableColumns({
           onConfirm={handleConfirm}
           onCancel={handleCancel}
           isLoading={isUpdatePending}
+          title="Change Approval Status"
+          description={`You're about to update the approval status for this agent \n This change may affect their access in the system`}
         />
       </>
     );

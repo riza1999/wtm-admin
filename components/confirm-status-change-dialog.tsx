@@ -16,6 +16,8 @@ interface ConfirmStatusChangeDialogProps {
   onCancel: () => void;
   isLoading: boolean;
   children?: React.ReactNode;
+  title?: string;
+  description?: string;
 }
 
 export function ConfirmStatusChangeDialog({
@@ -25,6 +27,8 @@ export function ConfirmStatusChangeDialog({
   onCancel,
   isLoading,
   children,
+  title = "Confirm Changes",
+  description = "Are you sure you want to save the changes?",
 }: ConfirmStatusChangeDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -35,14 +39,12 @@ export function ConfirmStatusChangeDialog({
             className="mb-2 size-10 text-yellow-500"
             aria-hidden="true"
           />
-          <DialogTitle>Change Approval Status</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <div className="my-2 w-full">
             <div className="border-t border-muted-foreground/20 w-full" />
           </div>
-          <DialogDescription>
-            You're about to update the approval status for this agent.
-            <br />
-            This change may affect their access in the system.
+          <DialogDescription className="whitespace-pre-line">
+            {description}
           </DialogDescription>
         </div>
         <DialogFooter className="sm:justify-center">
