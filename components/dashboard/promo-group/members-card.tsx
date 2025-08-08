@@ -5,23 +5,28 @@ import { Member } from "@/app/(dashboard)/promo-group/types";
 import { ConfirmationDialog } from "@/components/confirmation-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlusCircle, X } from "lucide-react";
+import { Option } from "@/types/data-table";
+import { X } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
+import AddAgentCompanyDialog from "./dialog/add-agent-company-dialog";
+import AddMemberPromoGroupDialog from "./dialog/add-member-promo-group-dialog";
 
 interface MembersCardProps {
   members: Member[];
+  allMembers: Member[];
+  companyOptions: Option[];
 }
 
-export function MembersCard({ members }: MembersCardProps) {
+export function MembersCard({
+  members,
+  allMembers,
+  companyOptions,
+}: MembersCardProps) {
   const [localMembers, setLocalMembers] = React.useState<Member[]>(members);
 
   const [openSaveDialog, setOpenSaveDialog] = React.useState(false);
   const [isSavePending, startSaveTransition] = React.useTransition();
-
-  const onAddMember = () => {
-    console.log("Add member clicked");
-  };
 
   const onAddAgentCompany = () => {
     console.log("Add agent company clicked");
@@ -52,14 +57,30 @@ export function MembersCard({ members }: MembersCardProps) {
       <CardContent className="space-y-4">
         {/* Action Buttons */}
         <div className="flex gap-2">
-          <Button size="sm" className="text-xs" onClick={onAddMember}>
-            <PlusCircle />
-            Add Member
-          </Button>
-          <Button size="sm" className="text-xs " onClick={onAddAgentCompany}>
-            <PlusCircle />
-            Add Agent Company
-          </Button>
+          <AddMemberPromoGroupDialog
+            onAdd={(member) =>
+              setLocalMembers((prev) => {
+                if (prev.some((m) => m.id === member.id)) return prev;
+                return [...prev, member];
+              })
+            }
+            companyOptions={companyOptions}
+            members={allMembers}
+          />
+          <AddAgentCompanyDialog
+            companyOptions={companyOptions}
+            members={allMembers}
+            onAddMany={(newMembers) =>
+              setLocalMembers((prev) => {
+                const existingIds = new Set(prev.map((m) => m.id));
+                const merged = [...prev];
+                for (const m of newMembers) {
+                  if (!existingIds.has(m.id)) merged.push(m);
+                }
+                return merged;
+              })
+            }
+          />
         </div>
 
         {/* Members List */}

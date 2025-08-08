@@ -3,7 +3,7 @@ import PromoDetailsCard from "@/components/dashboard/promo-group/promo-details-c
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getPromoGroup } from "../../fetch";
+import { getCompanyOptions, getMembers, getPromoGroup } from "../../fetch";
 
 const PromoGroupEditPage = async ({
   params,
@@ -11,7 +11,11 @@ const PromoGroupEditPage = async ({
   params: Promise<{ id: string }>;
 }) => {
   const { id } = await params;
-  const [promoGroup] = await Promise.all([getPromoGroup(id)]);
+  const [promoGroup, companyOptions, allMembers] = await Promise.all([
+    getPromoGroup(id),
+    getCompanyOptions(),
+    getMembers(),
+  ]);
 
   if (!promoGroup) {
     return notFound();
@@ -32,13 +36,9 @@ const PromoGroupEditPage = async ({
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
         <MembersCard
-          members={[
-            { id: "1", name: "Muhammad Abduraffi", company: "Esensi Tech" },
-            { id: "2", name: "Kelvin Setiono", company: "Esensi Tech" },
-            { id: "3", name: "Eugenia Caroline", company: "Esensi Tech" },
-            { id: "4", name: "Maulana", company: "Esensi Tech" },
-            { id: "5", name: "Hecky Riadi", company: "Esensi Tech" },
-          ]}
+          members={promoGroup.members}
+          allMembers={allMembers}
+          companyOptions={companyOptions}
         />
         <PromoDetailsCard promos={promoGroup.promos} />
       </div>

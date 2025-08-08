@@ -39,6 +39,8 @@ const members: Member[] = [
   { id: "1", name: "Alice", company: "Esensi Digital" },
   { id: "2", name: "Bob", company: "Vevo" },
   { id: "3", name: "Charlie", company: "88 Rising" },
+  { id: "4", name: "Diana", company: "Esensi Digital" },
+  { id: "5", name: "Evan", company: "Vevo" },
 ];
 
 // Mock promo groups
@@ -95,4 +97,20 @@ export const getCompanyOptions = async () => {
   ] as Option[];
 
   return data;
+};
+
+// Return Member[] optionally filtered by company label
+export const getMembers = async (companyLabel?: string): Promise<Member[]> => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  if (!companyLabel) return members;
+  return members.filter((m) => m.company === companyLabel);
+};
+
+// Return member options (id as value, name as label) optionally filtered by company label
+export const getMemberOptions = async (
+  companyLabel?: string
+): Promise<Option[]> => {
+  const list = await getMembers(companyLabel);
+  return list.map((m) => ({ label: m.name, value: m.id }));
 };
