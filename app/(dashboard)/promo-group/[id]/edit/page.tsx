@@ -1,4 +1,5 @@
 import { MembersCard } from "@/components/dashboard/promo-group/members-card";
+import PromoDetailsCard from "@/components/dashboard/promo-group/promo-details-card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -29,7 +30,7 @@ const PromoGroupEditPage = async ({
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
         <MembersCard
           members={[
             { id: "1", name: "Muhammad Abduraffi", company: "Esensi Tech" },
@@ -39,6 +40,7 @@ const PromoGroupEditPage = async ({
             { id: "5", name: "Hecky Riadi", company: "Esensi Tech" },
           ]}
         />
+        <PromoDetailsCard promos={promoGroup.promos} />
       </div>
     </div>
   );
