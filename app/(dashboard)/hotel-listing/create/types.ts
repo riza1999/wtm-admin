@@ -46,6 +46,7 @@ export interface HotelDetail {
 // =========================
 
 export interface Room {
+  id: string;
   features: Feature[]; // room features with icon
   images: string[];
   name: string;

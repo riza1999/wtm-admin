@@ -3,10 +3,12 @@
 import {
   HotelDetail,
   ImageFile,
+  Room,
 } from "@/app/(dashboard)/hotel-listing/create/types";
 import { ImageUpload } from "@/components/dashboard/hotel-listing/create/image-upload";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { PlusCircle } from "lucide-react";
+import { useCallback, useState } from "react";
 import { HotelInfoUpload } from "./info-upload";
 import { RoomCardInput } from "./room-card-input";
 
@@ -16,17 +18,58 @@ interface CreateHotelFormProps {
 
 export function CreateHotelForm({ hotel }: CreateHotelFormProps) {
   const [images, setImages] = useState<ImageFile[]>([]);
+  const [rooms, setRooms] = useState<Room[]>(hotel.rooms);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleImagesChange = (newImages: ImageFile[]) => {
+  const handleImagesChange = useCallback((newImages: ImageFile[]) => {
     setImages(newImages);
-  };
+  }, []);
+
+  const addNewRoom = useCallback(() => {
+    const newRoom: Room = {
+      id: `room-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      name: "",
+      images: [],
+      features: [],
+      options: [
+        {
+          label: "Without Breakfast",
+          price: 0,
+        },
+        {
+          label: "With Breakfast",
+          price: 0,
+        },
+      ],
+    };
+    setRooms((prevRooms) => [...prevRooms, newRoom]);
+  }, []);
+
+  const removeRoom = useCallback((id: string) => {
+    setRooms((prevRooms) => prevRooms.filter((room) => room.id !== id));
+  }, []);
+
+  const updateRoom = useCallback((id: string, updatedRoom: Room) => {
+    setRooms((prevRooms) => {
+      const newRooms = [...prevRooms];
+      const index = newRooms.findIndex((room) => room.id === id);
+      if (index !== -1) {
+        newRooms[index] = { ...updatedRoom, id };
+      }
+      return newRooms;
+    });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (images.length === 0) {
       alert("Please upload at least one image");
+      return;
+    }
+
+    if (rooms.length === 0) {
+      alert("Please add at least one room");
       return;
     }
 
@@ -44,6 +87,9 @@ export function CreateHotelForm({ hotel }: CreateHotelFormProps) {
         }
       });
 
+      // Add rooms data
+      formData.append("rooms", JSON.stringify(rooms));
+
       // Add other form data here when you implement the other sections
       // formData.append('name', hotelName);
       // formData.append('description', description);
@@ -55,6 +101,7 @@ export function CreateHotelForm({ hotel }: CreateHotelFormProps) {
           name: img.file.name,
           isMain: img.isMain,
         })),
+        rooms: rooms,
         formData: Object.fromEntries(formData.entries()),
       });
 
@@ -101,11 +148,42 @@ export function CreateHotelForm({ hotel }: CreateHotelFormProps) {
 
       {/* Room Card Section */}
       <section className="space-y-8">
-        {hotel.rooms.map((room, i) => (
-          <div key={i}>
-            <RoomCardInput {...room} />
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold">Room Configuration</h2>
+          <Button
+            type="button"
+            onClick={addNewRoom}
+            className="inline-flex items-center gap-2"
+          >
+            <PlusCircle className="size-4" />
+            Add New Room
+          </Button>
+        </div>
+
+        {rooms.length === 0 ? (
+          <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
+            <p className="text-gray-500 mb-4">No rooms added yet</p>
+            <Button
+              type="button"
+              onClick={addNewRoom}
+              variant="outline"
+              className="inline-flex items-center gap-2"
+            >
+              <PlusCircle className="size-4" />
+              Add Your First Room
+            </Button>
           </div>
-        ))}
+        ) : (
+          rooms.map((room, i) => (
+            <div key={room.id}>
+              <RoomCardInput
+                {...room}
+                onUpdate={(updatedRoom) => updateRoom(room.id, updatedRoom)}
+                onRemove={removeRoom}
+              />
+            </div>
+          ))
+        )}
       </section>
 
       {/* Submit Button */}
@@ -117,7 +195,10 @@ export function CreateHotelForm({ hotel }: CreateHotelFormProps) {
         >
           Cancel
         </Button>
-        <Button type="submit" disabled={isSubmitting || images.length === 0}>
+        <Button
+          type="submit"
+          disabled={isSubmitting || images.length === 0 || rooms.length === 0}
+        >
           {isSubmitting ? "Creating..." : "Create Hotel"}
         </Button>
       </section>

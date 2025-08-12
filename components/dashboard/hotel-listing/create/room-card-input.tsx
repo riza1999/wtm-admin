@@ -1,27 +1,30 @@
-import { RoomCardProps } from "@/app/(dashboard)/hotel-listing/create/types";
+import { Room } from "@/app/(dashboard)/hotel-listing/create/types";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import {
-  Bed,
-  ChevronRight,
-  Eye,
-  PlusCircle,
-  Square,
-  Trash2,
-  Users,
-} from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
+import { Bed, Eye, PlusCircle, Square, Trash2, Users } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { ImageUpload } from "./image-upload";
 
+interface RoomCardInputProps extends Room {
+  onUpdate?: (room: Room) => void;
+  onRemove?: (id: string) => void;
+}
+
 export function RoomCardInput({
+  id,
   name,
   images,
   options,
   features,
-}: RoomCardProps) {
+  onUpdate,
+  onRemove,
+}: RoomCardInputProps) {
+  // Ensure room has an ID, generate one if missing
+  const roomId =
+    id || `room-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
   const [roomName, setRoomName] = useState(name);
   const [withoutBreakfastPrice, setWithoutBreakfastPrice] = useState<number>(
     options?.[0]?.price ?? 0
@@ -38,19 +41,81 @@ export function RoomCardInput({
   );
   const [bedType, setBedType] = useState<string>("");
 
+  // Memoize the update function to prevent unnecessary re-renders
+  const updateParent = useCallback(() => {
+    if (onUpdate) {
+      const updatedRoom: Room = {
+        id: roomId,
+        name: roomName,
+        images: images,
+        options: [
+          {
+            label: "Without Breakfast",
+            price: withoutBreakfastPrice,
+          },
+          {
+            label: "With Breakfast",
+            price: withBreakfastPrice,
+          },
+        ],
+        features: features,
+      };
+      onUpdate(updatedRoom);
+    }
+  }, [
+    roomId,
+    roomName,
+    withoutBreakfastPrice,
+    withBreakfastPrice,
+    additionalLabel,
+    additionalPrice,
+    roomSizeSqm,
+    numGuests,
+    smokingPolicy,
+    bedType,
+    images,
+    features,
+    onUpdate,
+  ]);
+
+  // Only update parent when values actually change
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      updateParent();
+    }, 300); // Debounce updates to prevent excessive calls
+
+    return () => clearTimeout(timeoutId);
+  }, [updateParent]);
+
+  // Update local state when props change (e.g., when editing existing room)
+  useEffect(() => {
+    setRoomName(name);
+    setWithoutBreakfastPrice(options?.[0]?.price ?? 0);
+    setWithBreakfastPrice(options?.[1]?.price ?? 0);
+  }, [name, options]);
+
   return (
     <Card className="grid grid-cols-1 rounded px-4 py-6 lg:grid-cols-10 lg:px-6">
       <div className="col-span-full flex items-center justify-between gap-2">
-        <Input
-          id="room-name"
-          placeholder="Enter room name"
-          value={roomName}
-          className="bg-gray-200"
-          onChange={(e) => setRoomName(e.target.value)}
-        />
-        <Button type="button" size="icon" variant="destructive">
-          <Trash2 className="size-5" />
-        </Button>
+        <div className="flex items-center gap-2 flex-1">
+          <Input
+            id="room-name"
+            placeholder="Enter room name"
+            value={roomName}
+            className="bg-gray-200"
+            onChange={(e) => setRoomName(e.target.value)}
+          />
+          {onRemove && (
+            <Button
+              type="button"
+              size="icon"
+              variant="destructive"
+              onClick={() => onRemove(roomId)}
+            >
+              <Trash2 className="size-4" />
+            </Button>
+          )}
+        </div>
       </div>
       <div className="col-span-full grid grid-cols-1 gap-6 lg:col-span-4">
         <ImageUpload onImagesChange={() => {}} />
@@ -203,15 +268,15 @@ export function RoomCardInput({
               </div>
             </div>
           </div>
-          <div className="mt-2">
+          {/* <div className="mt-2">
             <Link
               href="#"
-              className="inline-flex items-center text-xs text-blue-600 hover:underline"
+              className="inline-flex items-center gap-2 text-xs text-blue-600 hover:underline"
             >
               See Room Details & Benefits
               <ChevronRight size={14} className="ml-1" />
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
     </Card>

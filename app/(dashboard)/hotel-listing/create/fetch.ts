@@ -38,6 +38,7 @@ const mockHotel: HotelDetail = {
   images: hotelImages,
   rooms: [
     {
+      id: "room-1",
       name: "Business King Suite",
       images: hotelImages.slice(0, 4),
       options: [
@@ -61,6 +62,7 @@ const mockHotel: HotelDetail = {
       ],
     },
     {
+      id: "room-2",
       name: "Business King Suite Smoking",
       images: hotelImages.slice(1, 5),
       options: [
@@ -84,6 +86,7 @@ const mockHotel: HotelDetail = {
       ],
     },
     {
+      id: "room-3",
       name: "Presidental Suite",
       images: hotelImages.slice(2, 7),
       options: [
