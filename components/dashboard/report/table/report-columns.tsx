@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DataTableRowAction, Option } from "@/types/data-table";
 import { ColumnDef } from "@tanstack/react-table";
-import { Ellipsis, EyeIcon, Text } from "lucide-react";
+import { CalendarIcon, Ellipsis, EyeIcon, Text } from "lucide-react";
 import React from "react";
 
 interface GetReportTableColumnsProps {
@@ -18,11 +18,13 @@ interface GetReportTableColumnsProps {
     React.SetStateAction<DataTableRowAction<Report> | null>
   >;
   companyOptions: Option[];
+  hotelOptions: Option[];
 }
 
 export function getReportTableColumns({
   setRowAction,
   companyOptions,
+  hotelOptions,
 }: GetReportTableColumnsProps): ColumnDef<Report>[] {
   return [
     {
@@ -79,6 +81,13 @@ export function getReportTableColumns({
         <DataTableColumnHeader column={column} title="Hotel Name" />
       ),
       cell: ({ row }) => row.original.hotel_name,
+      meta: {
+        label: "Hotel",
+        placeholder: "Search hotel...",
+        variant: "multiSelect",
+        options: hotelOptions,
+      },
+      enableColumnFilter: true,
     },
     {
       id: "detail",
@@ -99,6 +108,20 @@ export function getReportTableColumns({
       },
       enableHiding: false,
       enableSorting: false,
+    },
+    {
+      id: "period_date",
+      header: "Date",
+      cell: ({ row }) => row.index + 1,
+      size: 40,
+      enableSorting: false,
+      enableHiding: false,
+      meta: {
+        label: "Period",
+        variant: "dateRange",
+        icon: CalendarIcon,
+      },
+      enableColumnFilter: true,
     },
     {
       id: "actions",

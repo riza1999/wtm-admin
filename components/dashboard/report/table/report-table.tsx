@@ -1,6 +1,10 @@
 "use client";
 
-import { getCompanyOptions, getData } from "@/app/(dashboard)/report/fetch";
+import {
+  getCompanyOptions,
+  getData,
+  getHotelOptions,
+} from "@/app/(dashboard)/report/fetch";
 import { Report } from "@/app/(dashboard)/report/types";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
@@ -16,14 +20,16 @@ interface ReportTableProps {
   promises: Promise<
     [
       Awaited<ReturnType<typeof getData>>,
-      Awaited<ReturnType<typeof getCompanyOptions>>
+      Awaited<ReturnType<typeof getCompanyOptions>>,
+      Awaited<ReturnType<typeof getHotelOptions>>
     ]
   >;
 }
 
 const ReportTable = ({ promises }: ReportTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [{ data, pageCount }, companyOptions] = React.use(promises);
+  const [{ data, pageCount }, companyOptions, hotelOptions] =
+    React.use(promises);
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<Report> | null>(null);
 
@@ -32,6 +38,7 @@ const ReportTable = ({ promises }: ReportTableProps) => {
       getReportTableColumns({
         setRowAction,
         companyOptions,
+        hotelOptions,
       }),
     []
   );
@@ -44,6 +51,11 @@ const ReportTable = ({ promises }: ReportTableProps) => {
     shallow: false,
     clearOnDefault: true,
     startTransition,
+    initialState: {
+      columnVisibility: {
+        period_date: false,
+      },
+    },
   });
 
   return (

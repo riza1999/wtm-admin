@@ -4,13 +4,14 @@ import ReportTable from "@/components/dashboard/report/table/report-table";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { Separator } from "@/components/ui/separator";
 import React from "react";
-import { getCompanyOptions, getData } from "./fetch";
+import { getCompanyOptions, getData, getHotelOptions } from "./fetch";
 import { ReportPageProps } from "./types";
 
 const ReportPage = async (props: ReportPageProps) => {
   const promises = Promise.all([
     getData({ searchParams: await props.searchParams }),
     getCompanyOptions(),
+    getHotelOptions(),
   ]);
 
   return (

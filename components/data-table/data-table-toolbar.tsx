@@ -29,7 +29,7 @@ export function DataTableToolbar<TData>({
     () =>
       table
         .getAllColumns()
-        .filter((column) => column.getCanFilter())
+        .filter((column) => column.columnDef.enableColumnFilter)
         .sort((a, b) => {
           const aIsText = a.columnDef.meta?.variant === "text";
           const bIsText = b.columnDef.meta?.variant === "text";
