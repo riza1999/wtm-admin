@@ -1,5 +1,5 @@
-import { updateAgentStatus } from "@/app/(dashboard)/account/agent-control/actions";
-import { AgentControl } from "@/app/(dashboard)/account/agent-control/types";
+import { updateAgentStatus } from "@/app/(dashboard)/account/agent-overview/agent-control/actions";
+import { AgentControl } from "@/app/(dashboard)/account/agent-overview/agent-control/types";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { Button } from "@/components/ui/button";
 import {

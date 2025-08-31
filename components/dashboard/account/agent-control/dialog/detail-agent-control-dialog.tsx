@@ -6,8 +6,8 @@ import { Loader } from "lucide-react";
 import * as React from "react";
 import { toast } from "sonner";
 
-import { updateAgentStatus } from "@/app/(dashboard)/account/agent-control/actions";
-import { AgentControl } from "@/app/(dashboard)/account/agent-control/types";
+import { updateAgentStatus } from "@/app/(dashboard)/account/agent-overview/agent-control/actions";
+import { AgentControl } from "@/app/(dashboard)/account/agent-overview/agent-control/types";
 import { ImageGrid } from "@/components/dashboard/account/agent-control/image-grid";
 import { Button } from "@/components/ui/button";
 import {

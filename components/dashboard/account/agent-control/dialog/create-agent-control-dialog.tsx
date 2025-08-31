@@ -1,6 +1,6 @@
 "use client";
 
-import { createAgent } from "@/app/(dashboard)/account/agent-control/actions";
+import { createAgent } from "@/app/(dashboard)/account/agent-overview/agent-control/actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

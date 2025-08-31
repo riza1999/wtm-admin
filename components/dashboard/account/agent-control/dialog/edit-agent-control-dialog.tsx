@@ -1,7 +1,7 @@
 "use client";
 
-import { editAgent } from "@/app/(dashboard)/account/agent-control/actions";
-import { AgentControl } from "@/app/(dashboard)/account/agent-control/types";
+import { editAgent } from "@/app/(dashboard)/account/agent-overview/agent-control/actions";
+import { AgentControl } from "@/app/(dashboard)/account/agent-overview/agent-control/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

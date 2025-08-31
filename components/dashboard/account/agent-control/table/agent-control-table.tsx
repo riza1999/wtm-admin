@@ -3,8 +3,8 @@
 import {
   getCompanyOptions,
   getData,
-} from "@/app/(dashboard)/account/agent-control/fetch";
-import { AgentControl } from "@/app/(dashboard)/account/agent-control/types";
+} from "@/app/(dashboard)/account/agent-overview/agent-control/fetch";
+import { AgentControl } from "@/app/(dashboard)/account/agent-overview/agent-control/types";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { useDataTable } from "@/hooks/use-data-table";
