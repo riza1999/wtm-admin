@@ -1,7 +1,7 @@
 "use server";
 
-import { CreateAgentSchema } from "@/components/dashboard/account/user-management/agent/dialog/create-agent-dialog";
-import { EditAgentSchema } from "@/components/dashboard/account/user-management/agent/dialog/edit-agent-dialog";
+import { CreateAgentSchema } from "@/components/dashboard/account/agent-overview/agent-management/dialog/create-agent-dialog";
+import { EditAgentSchema } from "@/components/dashboard/account/agent-overview/agent-management/dialog/edit-agent-dialog";
 
 export async function updatePromoGroup(agentId: string, promo_group: string) {
   console.log("Update Agent Promo Group");

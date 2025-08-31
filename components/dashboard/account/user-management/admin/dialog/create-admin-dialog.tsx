@@ -61,7 +61,7 @@ const CreateAdminDialog = () => {
       <DialogTrigger asChild>
         <Button size="sm">
           <Plus />
-          New Admin
+          Add
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl">

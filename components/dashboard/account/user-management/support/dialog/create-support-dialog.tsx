@@ -61,7 +61,7 @@ const CreateSupportDialog = () => {
       <DialogTrigger asChild>
         <Button size="sm">
           <Plus />
-          New Support
+          Add
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl">

@@ -1,5 +1,5 @@
-import { updatePromoGroup } from "@/app/(dashboard)/account/user-management/agent/actions";
-import { Agent } from "@/app/(dashboard)/account/user-management/agent/types";
+import { updatePromoGroup } from "@/app/(dashboard)/account/agent-overview/agent-management/actions";
+import { Agent } from "@/app/(dashboard)/account/agent-overview/agent-management/types";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { Button } from "@/components/ui/button";
 import {

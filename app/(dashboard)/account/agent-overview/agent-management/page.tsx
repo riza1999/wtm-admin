@@ -1,4 +1,4 @@
-import AgentTable from "@/components/dashboard/account/user-management/agent/table/agent-table";
+import AgentTable from "@/components/dashboard/account/agent-overview/agent-management/table/agent-table";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { Suspense } from "react";
 import { getAgentData } from "./fetch";

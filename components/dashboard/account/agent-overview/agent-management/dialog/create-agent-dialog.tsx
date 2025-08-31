@@ -1,6 +1,6 @@
 "use client";
 
-import { createAgent } from "@/app/(dashboard)/account/user-management/agent/actions";
+import { createAgent } from "@/app/(dashboard)/account/agent-overview/agent-management/actions";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -65,7 +65,7 @@ const CreateAgentDialog = () => {
       <DialogTrigger asChild>
         <Button size="sm">
           <Plus />
-          New Agent
+          Add
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl">

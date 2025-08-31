@@ -4,8 +4,8 @@ import type { Row } from "@tanstack/react-table";
 import { Loader, Trash } from "lucide-react";
 import * as React from "react";
 
-import { deleteAgent } from "@/app/(dashboard)/account/user-management/agent/actions";
-import { Agent } from "@/app/(dashboard)/account/user-management/agent/types";
+import { deleteAgent } from "@/app/(dashboard)/account/agent-overview/agent-management/actions";
+import { Agent } from "@/app/(dashboard)/account/agent-overview/agent-management/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

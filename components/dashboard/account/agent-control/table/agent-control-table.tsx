@@ -10,7 +10,6 @@ import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { useDataTable } from "@/hooks/use-data-table";
 import type { DataTableRowAction } from "@/types/data-table";
 import React, { useTransition } from "react";
-import CreateAgentControlDialog from "../dialog/create-agent-control-dialog";
 import { DeleteAgentControlDialog } from "../dialog/delete-agent-control-dialog";
 import { DetailAgentControlDialog } from "../dialog/detail-agent-control-dialog";
 import EditAgentControlDialog from "../dialog/edit-agent-control-dialog";
@@ -55,7 +54,7 @@ const AgentControlTable = ({ promises }: AgentControlTableProps) => {
       <div className="relative">
         <DataTable table={table} isPending={isPending}>
           <DataTableToolbar table={table} isPending={isPending}>
-            <CreateAgentControlDialog />
+            {/* <CreateAgentControlDialog /> */}
           </DataTableToolbar>
         </DataTable>
       </div>

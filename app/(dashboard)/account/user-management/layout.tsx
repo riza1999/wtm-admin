@@ -7,10 +7,6 @@ const tabItems = [
     label: "Super Admin",
   },
   {
-    href: "/account/user-management/agent",
-    label: "Agent",
-  },
-  {
     href: "/account/user-management/admin",
     label: "Admin",
   },
