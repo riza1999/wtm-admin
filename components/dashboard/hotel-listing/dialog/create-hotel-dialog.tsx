@@ -17,7 +17,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
-import { HotelForm } from "../form/hotel-form";
+import { HotelForm } from "../form/hotel-form-old";
 
 export const createHotelSchema = z.object({
   name: z.string(),

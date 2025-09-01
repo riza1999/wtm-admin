@@ -28,6 +28,7 @@ export interface ImageFile {
 // =========================
 
 export interface HotelDetail {
+  id?: string; // Optional ID for edit mode
   description: string;
   facilities: string[];
   images: string[];

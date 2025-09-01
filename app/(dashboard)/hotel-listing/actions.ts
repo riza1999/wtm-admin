@@ -1,6 +1,5 @@
 "use server";
 
-import { EditHotelSchema } from "@/components/dashboard/hotel-listing/dialog/edit-hotel-dialog";
 import { Hotel, Room } from "./types";
 
 export async function deleteHotel(hotelId: string) {
@@ -14,6 +13,8 @@ export async function deleteHotel(hotelId: string) {
 
 export async function createHotel(formData: FormData) {
   try {
+    console.log({ formData });
+
     // Simulate API delay
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
@@ -55,15 +56,55 @@ export async function createHotel(formData: FormData) {
   }
 }
 
-export async function editHotel(input: EditHotelSchema & { id: string }) {
-  console.log("Edit Hotel:");
-  console.log({ input });
+export async function updateHotel(hotelId: string, formData: FormData) {
+  try {
+    console.log({ hotelId, formData });
 
-  // Simulate API call delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Simulate API delay
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
-  // Simulate success response
-  return { success: true, message: `Hotel edited` };
+    // Extract data from FormData
+    const hotelInfo = JSON.parse(formData.get("hotelInfo") as string);
+    const rooms = JSON.parse(formData.get("rooms") as string);
+    const images = formData.getAll("images") as File[];
+    const mainImageIndex = formData.get("mainImageIndex") as string;
+    const existingImages = formData.get("existingImages")
+      ? JSON.parse(formData.get("existingImages") as string)
+      : [];
+
+    // Validate required data
+    if (!hotelInfo.name || !hotelInfo.location || !hotelInfo.description) {
+      return { success: false, error: "Missing required hotel information" };
+    }
+
+    // For updates, we allow either existing images or new images
+    if (images.length === 0 && existingImages.length === 0) {
+      return { success: false, error: "At least one image is required" };
+    }
+
+    if (rooms.length === 0) {
+      return { success: false, error: "At least one room is required" };
+    }
+
+    // Simulate successful update
+    console.log("Hotel updated successfully:", {
+      hotelId,
+      hotelInfo,
+      roomsCount: rooms.length,
+      newImagesCount: images.length,
+      existingImagesCount: existingImages.length,
+      mainImageIndex,
+      updatedAt: new Date().toISOString(),
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating hotel:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Failed to update hotel",
+    };
+  }
 }
 
 export async function importHotelsFromCsv(file: File) {

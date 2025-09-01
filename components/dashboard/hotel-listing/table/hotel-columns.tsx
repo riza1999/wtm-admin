@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { DataTableRowAction, Option } from "@/types/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { ChevronDown, Cloud, CloudOff, Ellipsis, Text } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 interface GetHotelTableColumnsProps {
@@ -140,6 +141,8 @@ export function getHotelTableColumns({
     {
       id: "actions",
       cell: function Cell({ row }) {
+        const router = useRouter();
+
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -153,7 +156,9 @@ export function getHotelTableColumns({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40">
               <DropdownMenuItem
-                onSelect={() => setRowAction({ row, variant: "update" })}
+                onSelect={() => {
+                  router.push(`/hotel-listing/${row.original.id}/edit`);
+                }}
               >
                 Edit
               </DropdownMenuItem>

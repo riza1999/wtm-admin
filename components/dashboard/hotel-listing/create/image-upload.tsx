@@ -5,11 +5,12 @@ import { cn } from "@/lib/utils";
 import { Image as ImageIcon, Loader2, Star, Upload, X } from "lucide-react";
 import React, { useCallback, useRef, useState } from "react";
 
-interface ImageFile {
+export interface ImageFile {
   id: string;
-  file: File;
+  file?: File; // Optional for existing images
   preview: string;
   isMain: boolean;
+  isExisting?: boolean; // Flag to indicate if this is an existing image
 }
 
 interface ImageUploadProps {
@@ -17,6 +18,7 @@ interface ImageUploadProps {
   maxImages?: number;
   acceptedTypes?: string[];
   maxSizeMB?: number;
+  initialImages?: string[]; // URLs of existing images for edit mode
 }
 
 export function ImageUpload({
@@ -24,12 +26,27 @@ export function ImageUpload({
   maxImages = 10,
   acceptedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"],
   maxSizeMB = 5,
+  initialImages = [],
 }: ImageUploadProps) {
   const [images, setImages] = useState<ImageFile[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
   const [error, setError] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Initialize images with existing images when component mounts
+  React.useEffect(() => {
+    if (initialImages.length > 0 && images.length === 0) {
+      const existingImages: ImageFile[] = initialImages.map((url, index) => ({
+        id: `existing-${index}`,
+        preview: url,
+        isMain: index === 0, // First image is main by default
+        isExisting: true,
+      }));
+      setImages(existingImages);
+      onImagesChange(existingImages);
+    }
+  }, [initialImages, images.length, onImagesChange]);
 
   const validateFile = (file: File): string | null => {
     if (!acceptedTypes.includes(file.type)) {
@@ -68,9 +85,10 @@ export function ImageUpload({
 
           const id = Math.random().toString(36).substr(2, 9);
           const preview = URL.createObjectURL(file);
-          const isMain = images.length === 0; // First image becomes main by default
+          const isMain =
+            images.length === 0 && !images.some((img) => img.isMain); // First image becomes main by default if no main exists
 
-          newImages.push({ id, file, preview, isMain });
+          newImages.push({ id, file, preview, isMain, isExisting: false });
         }
 
         if (newImages.length > 0) {
@@ -91,8 +109,8 @@ export function ImageUpload({
   const removeImage = useCallback(
     (id: string) => {
       const imageToRemove = images.find((img) => img.id === id);
-      if (imageToRemove) {
-        // Clean up the object URL to prevent memory leaks
+      if (imageToRemove && imageToRemove.file) {
+        // Only clean up object URL for newly uploaded files
         URL.revokeObjectURL(imageToRemove.preview);
       }
 
@@ -166,7 +184,12 @@ export function ImageUpload({
 
   // Cleanup object URLs when component unmounts
   const cleanup = useCallback(() => {
-    images.forEach((img) => URL.revokeObjectURL(img.preview));
+    images.forEach((img) => {
+      // Only cleanup object URLs for newly uploaded files
+      if (img.file) {
+        URL.revokeObjectURL(img.preview);
+      }
+    });
   }, [images]);
 
   // Cleanup on unmount
@@ -176,6 +199,16 @@ export function ImageUpload({
 
   return (
     <div className="space-y-4">
+      {/* Hidden file input - always available for Add More button */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        multiple
+        accept={acceptedTypes.join(",")}
+        onChange={handleFileSelect}
+        className="hidden"
+      />
+
       {/* Upload Area - Only show when no images or when adding more */}
       {images.length === 0 && (
         <div
@@ -189,15 +222,6 @@ export function ImageUpload({
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
         >
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            accept={acceptedTypes.join(",")}
-            onChange={handleFileSelect}
-            className="hidden"
-          />
-
           <div className="flex flex-col items-center justify-center space-y-3">
             <div className="rounded-full bg-muted p-3">
               {isProcessing ? (
@@ -259,7 +283,7 @@ export function ImageUpload({
                 onClick={handleClick}
                 disabled={images.length >= maxImages || isProcessing}
               >
-                <Upload className="h-4 w-4 mr-2" />
+                <Upload className="h-4 w-4" />
                 Add More
               </Button>
               {images.length > 0 && (
@@ -305,6 +329,13 @@ export function ImageUpload({
                   alt="Hotel preview"
                   className="w-full h-full object-cover"
                 />
+
+                {/* Existing Image Badge */}
+                {image.isExisting && (
+                  <div className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                    Existing
+                  </div>
+                )}
 
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />

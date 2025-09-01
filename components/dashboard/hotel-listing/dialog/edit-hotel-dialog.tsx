@@ -1,6 +1,5 @@
 "use client";
 
-import { editHotel } from "@/app/(dashboard)/hotel-listing/actions";
 import { Hotel } from "@/app/(dashboard)/hotel-listing/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,7 +17,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
-import { HotelForm } from "../form/hotel-form";
+import { HotelForm } from "../form/hotel-form-old";
 
 export const editHotelSchema = z.object({
   name: z.string().optional(),
@@ -47,10 +46,12 @@ const EditHotelDialog = ({ hotel, ...props }: EditHotelDialogProps) => {
     startTransition(async () => {
       if (!hotel) return;
 
-      const { success } = await editHotel({
-        id: hotel.id,
-        ...input,
-      });
+      // const { success } = await editHotel({
+      //   id: hotel.id,
+      //   ...input,
+      // });
+
+      const success = true;
 
       if (!success) {
         toast.error("Failed to edit hotel");
