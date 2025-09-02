@@ -2,8 +2,20 @@ import { Room } from "@/app/(dashboard)/hotel-listing/create/types";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Bed, Eye, PlusCircle, Square, Trash2, Users } from "lucide-react";
+import {
+  IconArrowAutofitWidth,
+  IconBed,
+  IconFriends,
+} from "@tabler/icons-react";
+import { Cigarette, CigaretteOff, Eye, PlusCircle, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { ImageUpload } from "./image-upload";
 
@@ -212,7 +224,7 @@ export function RoomCardInput({
           <div className="mt-auto pt-10 lg:pt-4">
             <div className="mb-4 flex flex-wrap gap-4 md:gap-6">
               <div className="flex items-center gap-2">
-                <Square className="h-5 w-5" />
+                <IconArrowAutofitWidth className="h-5 w-5" />
                 <div className="relative">
                   <Input
                     placeholder="0"
@@ -228,7 +240,7 @@ export function RoomCardInput({
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Users className="h-5 w-5" />
+                <IconFriends className="h-5 w-5" />
                 <div className="relative">
                   <Input
                     placeholder="0"
@@ -242,21 +254,37 @@ export function RoomCardInput({
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Users className="h-5 w-5" />
-                <div className="relative">
-                  <Input
-                    placeholder="0"
-                    className="bg-gray-200 w-26 pr-19"
-                    value={numGuests === 0 ? "" : numGuests}
-                    onChange={(e) => setNumGuests(Number(e.target.value || 0))}
-                  />
-                  <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold">
-                    Guest(s)
-                  </span>
-                </div>
+                {smokingPolicy === "smoking" ? (
+                  <Cigarette className="h-5 w-5" />
+                ) : (
+                  <CigaretteOff className="h-5 w-5" />
+                )}
+                <Select
+                  value={smokingPolicy}
+                  onValueChange={(value: "smoking" | "non-smoking") =>
+                    setSmokingPolicy(value)
+                  }
+                >
+                  <SelectTrigger className="bg-gray-200 w-32">
+                    <SelectValue placeholder="Select smoking" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="non-smoking">
+                      <div className="flex items-center gap-2">
+                        <span>Non Smoking</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="smoking">
+                      <div className="flex items-center gap-2">
+                        <span>Smoking</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
+
               <div className="flex items-center gap-2">
-                <Bed className="h-5 w-5" />
+                <IconBed className="h-5 w-5" />
                 <div className="relative">
                   <Input
                     placeholder="bed size"
