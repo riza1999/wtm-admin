@@ -28,7 +28,7 @@ export function getHistoryBookingLogTableColumns({
       size: 40,
     },
     {
-      id: "booking_id",
+      id: "search",
       accessorKey: "booking_id",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Booking ID" />
@@ -36,11 +36,11 @@ export function getHistoryBookingLogTableColumns({
       cell: ({ row }) => row.original.booking_id,
       meta: {
         label: "Booking ID",
-        placeholder: "Search booking ID...",
+        placeholder: "Search anyhting...",
         variant: "text",
         icon: Text,
       },
-      enableColumnFilter: false,
+      enableColumnFilter: true,
       enableHiding: false,
     },
     {
@@ -55,9 +55,9 @@ export function getHistoryBookingLogTableColumns({
       meta: {
         label: "Confirm Date",
         placeholder: "Filter by date...",
-        variant: "date",
+        variant: "dateRange",
       },
-      enableColumnFilter: false,
+      enableColumnFilter: true,
     },
     {
       id: "agent_name",
@@ -102,7 +102,7 @@ export function getHistoryBookingLogTableColumns({
           { label: "In Review", value: "in review" },
         ],
       },
-      enableColumnFilter: false,
+      enableColumnFilter: true,
     },
     {
       id: "payment_status",
@@ -130,7 +130,7 @@ export function getHistoryBookingLogTableColumns({
           { label: "Unpaid", value: "unpaid" },
         ],
       },
-      enableColumnFilter: false,
+      enableColumnFilter: true,
     },
     {
       id: "date_in",
@@ -144,9 +144,9 @@ export function getHistoryBookingLogTableColumns({
       meta: {
         label: "Check-in Date",
         placeholder: "Filter by check-in date...",
-        variant: "date",
+        variant: "dateRange",
       },
-      enableColumnFilter: false,
+      enableColumnFilter: true,
     },
     {
       id: "date_out",
@@ -160,9 +160,9 @@ export function getHistoryBookingLogTableColumns({
       meta: {
         label: "Check-out Date",
         placeholder: "Filter by check-out date...",
-        variant: "date",
+        variant: "dateRange",
       },
-      enableColumnFilter: false,
+      enableColumnFilter: true,
     },
     {
       id: "hotel_name",
