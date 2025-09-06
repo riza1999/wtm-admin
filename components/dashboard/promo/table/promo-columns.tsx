@@ -82,7 +82,7 @@ export function getPromoTableColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Duration (Days)" />
       ),
-      cell: ({ row }) => `${row.original.duration} Nights`,
+      cell: ({ row }) => `${row.original.nights} Nights`,
     },
     {
       id: "start_date",
