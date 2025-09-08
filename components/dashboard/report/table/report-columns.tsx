@@ -29,20 +29,19 @@ export function getReportTableColumns({
       size: 40,
     },
     {
-      id: "name",
-      accessorKey: "name",
+      id: "hotel_name",
+      accessorKey: "hotel_name",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Agent Name" />
+        <DataTableColumnHeader column={column} title="Hotel Name" />
       ),
-      cell: ({ row }) => row.original.name,
+      cell: ({ row }) => row.original.hotel_name,
       meta: {
-        label: "Name",
-        placeholder: "Search name...",
-        variant: "text",
-        icon: Text,
+        label: "Hotel",
+        placeholder: "Search hotel...",
+        variant: "multiSelect",
+        options: hotelOptions,
       },
       enableColumnFilter: true,
-      enableHiding: false,
     },
     {
       id: "company",
@@ -60,48 +59,31 @@ export function getReportTableColumns({
       enableColumnFilter: true,
     },
     {
-      id: "email",
-      accessorKey: "email",
+      id: "name",
+      accessorKey: "name",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Email" />
+        <DataTableColumnHeader column={column} title="Agent Name" />
       ),
-      cell: ({ row }) => row.original.email,
-    },
-    {
-      id: "hotel_name",
-      accessorKey: "hotel_name",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Hotel Name" />
-      ),
-      cell: ({ row }) => row.original.hotel_name,
+      cell: ({ row }) => row.original.name,
       meta: {
-        label: "Hotel",
-        placeholder: "Search hotel...",
-        variant: "multiSelect",
-        options: hotelOptions,
+        label: "Name",
+        placeholder: "Search name...",
+        variant: "text",
+        icon: Text,
       },
       enableColumnFilter: true,
-    },
-    {
-      id: "detail",
-      accessorKey: "detail",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Details" />
-      ),
-      cell: ({ row }) => {
-        return (
-          <Button
-            size={"sm"}
-            onClick={() => setRowAction({ row, variant: "detail" })}
-          >
-            <EyeIcon className="h-4 w-4" />
-            See details
-          </Button>
-        );
-      },
       enableHiding: false,
-      enableSorting: false,
     },
+
+    // {
+    //   id: "email",
+    //   accessorKey: "email",
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title="Email" />
+    //   ),
+    //   cell: ({ row }) => row.original.email,
+    // },
+
     {
       id: "period_date",
       header: "Date",
@@ -137,6 +119,26 @@ export function getReportTableColumns({
         <div className="text-center">{row.original.cancelled_bookings}</div>
       ),
       enableHiding: false,
+    },
+    {
+      id: "detail",
+      accessorKey: "detail",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Details" />
+      ),
+      cell: ({ row }) => {
+        return (
+          <Button
+            size={"sm"}
+            onClick={() => setRowAction({ row, variant: "detail" })}
+          >
+            <EyeIcon className="h-4 w-4" />
+            See details
+          </Button>
+        );
+      },
+      enableHiding: false,
+      enableSorting: false,
     },
     // {
     //   id: "actions",
