@@ -27,12 +27,26 @@ const loginSchema = z.object({
 
 type LoginSchema = z.infer<typeof loginSchema>;
 
+type LoginFormProps = React.ComponentProps<"div"> & {
+  callbackUrl?: string;
+};
+
 export function LoginForm({
   className,
+  callbackUrl,
   ...props
-}: React.ComponentProps<"div">) {
+}: LoginFormProps) {
   const [isPending, startTransition] = React.useTransition();
   const router = useRouter();
+  const safeCallbackUrl = React.useMemo(() => {
+    if (!callbackUrl) return null;
+    const trimmed = callbackUrl.trim();
+
+    if (!trimmed.startsWith("/")) return null;
+    if (trimmed.startsWith("//")) return null;
+
+    return trimmed;
+  }, [callbackUrl]);
 
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
@@ -49,6 +63,7 @@ export function LoginForm({
           redirect: false,
           username: input.username,
           password: input.password,
+          callbackUrl: safeCallbackUrl ?? undefined,
         });
 
         if (result?.error) {
@@ -62,7 +77,9 @@ export function LoginForm({
 
         if (result?.ok) {
           toast.success("Login successful");
-          router.push("/account/user-management/super-admin");
+          router.push(
+            safeCallbackUrl ?? "/account/user-management/super-admin",
+          );
         } else {
           toast.error("Login failed. Please try again.");
         }
