@@ -21,7 +21,7 @@ export default withAuth(
 
     if (isAuthenticated && pathname === "/login") {
       return NextResponse.redirect(
-        new URL(AUTHENTICATED_REDIRECT_PATH, req.url),
+        new URL(AUTHENTICATED_REDIRECT_PATH, req.url)
       );
     }
 
@@ -31,7 +31,7 @@ export default withAuth(
     callbacks: {
       authorized: () => true,
     },
-  },
+  }
 );
 
 export const config = {

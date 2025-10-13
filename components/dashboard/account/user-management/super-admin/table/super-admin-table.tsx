@@ -18,7 +18,9 @@ interface SuperAdminTableProps {
 
 const SuperAdminTable = ({ promises }: SuperAdminTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [{ data, pageCount }] = React.use(promises);
+  // const [{ data, pageCount }] = React.use(promises);
+  const [response] = React.use(promises);
+  const { data, pagination } = response;
 
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<SuperAdmin> | null>(null);
@@ -31,7 +33,7 @@ const SuperAdminTable = ({ promises }: SuperAdminTableProps) => {
   const { table } = useDataTable({
     data,
     columns,
-    pageCount,
+    pageCount: pagination?.total_pages || 0,
     getRowId: (originalRow) => originalRow.id,
     shallow: false,
     clearOnDefault: true,

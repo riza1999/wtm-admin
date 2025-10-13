@@ -4,14 +4,12 @@ export interface SuperAdmin {
   id: string;
   name: string;
   email: string;
-  phone: string;
+  phone_number: string;
   status: boolean;
-}
-
-export interface SuperAdminTableResponse {
-  success: boolean;
-  data: SuperAdmin[];
-  pageCount: number;
+  promo_group_id: number;
+  promo_group_name: string;
+  agent_company_name: string;
+  kakao_talk_id: string;
 }
 
 export interface SuperAdminPageProps {

@@ -32,7 +32,7 @@ export function getSuperAdminTableColumns({
       size: 40,
     },
     {
-      id: "name",
+      id: "search",
       accessorKey: "name",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Name" />
@@ -64,11 +64,11 @@ export function getSuperAdminTableColumns({
     },
     {
       id: "phone",
-      accessorKey: "phone",
+      accessorKey: "phone_number",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Phone" />
       ),
-      cell: ({ row }) => row.original.phone,
+      cell: ({ row }) => row.original.phone_number,
       meta: {
         label: "Phone",
         placeholder: "Search phone...",

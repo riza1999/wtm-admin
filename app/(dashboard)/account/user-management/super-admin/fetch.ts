@@ -1,33 +1,17 @@
-import { SearchParams } from "@/types";
-import { SuperAdminTableResponse } from "./types";
+import { SearchParams, ApiResponse } from "@/types";
+import { SuperAdmin } from "./types";
+import { apiCall, buildQueryParams } from "@/lib/utils";
 
 export const getSuperAdminData = async ({
   searchParams,
 }: {
   searchParams: SearchParams;
-}): Promise<SuperAdminTableResponse> => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+}): Promise<ApiResponse<SuperAdmin[]>> => {
+  const queryString = buildQueryParams(searchParams);
+  const url = `/users/by-role/super_admin${
+    queryString ? `?${queryString}` : ""
+  }`;
+  const apiResponse = await apiCall<SuperAdmin[]>(url);
 
-  const data = [
-    {
-      id: "1",
-      name: "kelvin",
-      email: "kelvin@wtmdigital.com",
-      phone: "081234567800",
-      status: true,
-    },
-    {
-      id: "2",
-      name: "budi",
-      email: "budi@wtmdigital.com",
-      phone: "081234567800",
-      status: false,
-    },
-  ];
-
-  return {
-    success: true,
-    data,
-    pageCount: 2,
-  };
+  return apiResponse;
 };
