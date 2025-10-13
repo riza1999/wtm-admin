@@ -18,7 +18,6 @@ interface SuperAdminTableProps {
 
 const SuperAdminTable = ({ promises }: SuperAdminTableProps) => {
   const [isPending, startTransition] = useTransition();
-  // const [{ data, pageCount }] = React.use(promises);
   const [response] = React.use(promises);
   const { data, pagination } = response;
 

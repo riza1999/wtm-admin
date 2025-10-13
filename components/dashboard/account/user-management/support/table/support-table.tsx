@@ -18,7 +18,8 @@ interface SupportTableProps {
 
 const SupportTable = ({ promises }: SupportTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [{ data, pageCount }] = React.use(promises);
+  const [response] = React.use(promises);
+  const { data, pagination } = response;
 
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<Support> | null>(null);
@@ -31,7 +32,7 @@ const SupportTable = ({ promises }: SupportTableProps) => {
   const { table } = useDataTable({
     data,
     columns,
-    pageCount,
+    pageCount: pagination?.total_pages || 1,
     getRowId: (originalRow) => originalRow.id,
     shallow: false,
     clearOnDefault: true,

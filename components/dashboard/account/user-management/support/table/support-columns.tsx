@@ -32,7 +32,7 @@ export function getSupportTableColumns({
       size: 40,
     },
     {
-      id: "name",
+      id: "search",
       accessorKey: "name",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Name" />
@@ -68,7 +68,7 @@ export function getSupportTableColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Phone" />
       ),
-      cell: ({ row }) => row.original.phone,
+      cell: ({ row }) => row.original.phone_number,
       meta: {
         label: "Phone",
         placeholder: "Search phone...",
