@@ -42,7 +42,7 @@ const EditSupportDialog = ({ support, ...props }: EditSupportDialogProps) => {
     defaultValues: {
       name: support?.name ?? "",
       email: support?.email,
-      phone: support?.phone,
+      phone: support?.phone_number,
       status: support?.status,
     },
   });

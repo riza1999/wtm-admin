@@ -45,7 +45,7 @@ const EditSuperAdminDialog = ({
     defaultValues: {
       name: superAdmin?.name ?? "",
       email: superAdmin?.email,
-      phone: superAdmin?.phone,
+      phone: superAdmin?.phone_number,
       status: superAdmin?.status,
     },
   });

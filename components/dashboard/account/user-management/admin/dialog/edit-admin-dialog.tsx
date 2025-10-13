@@ -42,7 +42,7 @@ const EditAdminDialog = ({ admin, ...props }: EditAdminDialogProps) => {
     defaultValues: {
       name: admin?.name ?? "",
       email: admin?.email,
-      phone: admin?.phone,
+      phone: admin?.phone_number,
       status: admin?.status,
     },
   });
