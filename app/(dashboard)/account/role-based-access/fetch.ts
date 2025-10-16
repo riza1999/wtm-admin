@@ -1,11 +1,11 @@
 import { apiCall, buildQueryParams } from "@/lib/utils";
-import {
-  GetRoleAccessResponse,
-  RoleBasedAccessTableResponse,
-  Action,
-  RoleAccessData,
-} from "./types";
 import { SearchParams } from "@/types";
+import {
+  Action,
+  GetRoleAccessResponse,
+  RoleAccessData,
+  RoleBasedAccessTableResponse,
+} from "./types";
 // Transform the backend response to match the existing table structure
 function transformRoleAccessData(
   data: GetRoleAccessResponse["data"]
@@ -21,12 +21,12 @@ function transformRoleAccessData(
   ];
 
   // Define the actions
-  const actions: Action[] = ["View", "Create", "Edit", "Delete"];
+  const actions: Action[] = ["View", "Create", "Edit", "Delete"]; // Changed back to correct values
 
   // Transform the data
   const transformedData = pages.map((page, pageIndex) => {
     return {
-      id: (pageIndex + 1).toString(),
+      id: page.id,
       name: page.name,
       actions: actions.map((action) => {
         // Get permissions for each role

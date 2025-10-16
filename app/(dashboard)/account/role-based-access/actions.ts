@@ -1,22 +1,53 @@
 "use server";
 
-export async function updateRBA({
-  pageId,
-  roleId,
-  status,
-}: {
-  pageId: string;
-  roleId: string;
-  status: boolean;
+import { apiCall } from "@/lib/utils";
+import { revalidatePath } from "next/cache";
+import { Action } from "./types";
+
+export async function updateRBA(body: {
+  action: Action;
+  page: string;
+  role: string;
+  allowed: boolean;
 }) {
-  console.log(`Update pageId:${pageId} roleId:${roleId}  Status:${status}`);
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  return {
-    success: true,
-    message: `${pageId}:${roleId} status updated to ${
-      status ? "Active" : "Inactive"
-    }`,
-  };
+  console.log({ body });
+  try {
+    const response = await apiCall("role-access", {
+      method: "PUT",
+      body: JSON.stringify(body),
+    });
+
+    console.log({ response, message: response.message });
+
+    if (response.status !== 200) {
+      return {
+        success: false,
+        message: response.message || "Failed to update",
+      };
+    }
+
+    revalidatePath("/account/role-based-access", "layout");
+
+    return {
+      success: true,
+      message: response.message ?? `Update success`,
+    };
+  } catch (error) {
+    console.error("Error updating:", error);
+
+    // Handle API error responses with specific messages
+    if (error && typeof error === "object" && "message" in error) {
+      return {
+        success: false,
+        message: error.message as string,
+      };
+    }
+
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to update",
+    };
+  }
 }
 
 export async function createRoleBasedAccessPage(input: any) {
