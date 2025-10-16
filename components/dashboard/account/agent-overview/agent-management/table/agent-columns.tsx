@@ -1,5 +1,6 @@
 import { updatePromoGroup } from "@/app/(dashboard)/account/agent-overview/agent-management/actions";
 import { Agent } from "@/app/(dashboard)/account/agent-overview/agent-management/types";
+import { PromoGroup } from "@/app/(dashboard)/promo-group/types";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,10 +30,12 @@ interface GetAgentTableColumnsProps {
   setRowAction: React.Dispatch<
     React.SetStateAction<DataTableRowAction<Agent> | null>
   >;
+  promoGroupSelect: PromoGroup[];
 }
 
 export function getAgentTableColumns({
   setRowAction,
+  promoGroupSelect,
 }: GetAgentTableColumnsProps): ColumnDef<Agent>[] {
   return [
     {
@@ -108,11 +111,13 @@ export function getAgentTableColumns({
                 <SelectValue placeholder="Assign Promo Group" />
               </SelectTrigger>
               <SelectContent align="end">
-                <SelectItem value="1">Promo Group A</SelectItem>
-                <SelectItem value="2">Promo Group B</SelectItem>
-                <SelectItem value="3">Promo Group C</SelectItem>
+                {promoGroupSelect.map((promoGroup) => (
+                  <SelectItem key={promoGroup.id} value={String(promoGroup.id)}>
+                    {promoGroup.name}
+                  </SelectItem>
+                ))}
                 <SelectSeparator />
-                <SelectItemLink href={"/dummy"}>
+                <SelectItemLink href={"/promo-group"}>
                   Create New Group
                 </SelectItemLink>
               </SelectContent>

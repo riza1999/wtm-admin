@@ -1,7 +1,7 @@
 import AgentTable from "@/components/dashboard/account/agent-overview/agent-management/table/agent-table";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { Suspense } from "react";
-import { getAgentData } from "./fetch";
+import { getAgentData, getPromoGroupSelect } from "./fetch";
 import { AgentPageProps } from "./types";
 
 const AgentPage = async (props: AgentPageProps) => {
@@ -11,6 +11,7 @@ const AgentPage = async (props: AgentPageProps) => {
     getAgentData({
       searchParams,
     }),
+    getPromoGroupSelect(),
   ]);
 
   return (
