@@ -26,13 +26,13 @@ interface RoleBasedAccessTableProps {
 const RoleBasedAccessTable = ({ promise }: RoleBasedAccessTableProps) => {
   const [isPending, startTransition] = useTransition();
   const [isUpdatePending, startUpdateTransition] = useTransition();
-  const { data, pageCount } = React.use(promise);
+  const { data, pagination } = React.use(promise);
   const columns = React.useMemo(() => getRoleBasedAccessTableColumns(), []);
 
   const { table } = useDataTable({
     data,
     columns,
-    pageCount,
+    pageCount: pagination?.total_pages || 1,
     getRowId: (originalRow) => originalRow.id,
     shallow: false,
     clearOnDefault: true,
