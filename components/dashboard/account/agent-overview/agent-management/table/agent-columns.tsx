@@ -108,9 +108,9 @@ export function getAgentTableColumns({
                 <SelectValue placeholder="Assign Promo Group" />
               </SelectTrigger>
               <SelectContent align="end">
-                <SelectItem value="promo_a">Promo Group A</SelectItem>
-                <SelectItem value="promo_b">Promo Group B</SelectItem>
-                <SelectItem value="promo_c">Promo Group C</SelectItem>
+                <SelectItem value="1">Promo Group A</SelectItem>
+                <SelectItem value="2">Promo Group B</SelectItem>
+                <SelectItem value="3">Promo Group C</SelectItem>
                 <SelectSeparator />
                 <SelectItemLink href={"/dummy"}>
                   Create New Group
