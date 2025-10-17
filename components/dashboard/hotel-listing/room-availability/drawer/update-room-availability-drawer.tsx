@@ -3,6 +3,7 @@ import { RoomAvailabilityHotel } from "@/app/(dashboard)/hotel-listing/room-avai
 import { ConfirmationDialog } from "@/components/confirmation-dialog";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { MonthPicker } from "@/components/ui/monthpicker";
 import {
   Popover,
   PopoverContent,
@@ -13,7 +14,6 @@ import { format } from "date-fns/format";
 import { CalendarIcon, ChevronsUpDown } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
-import { SelectPeriod } from "../table/room-availability-table";
 
 // --- Subcomponents ---
 
@@ -259,7 +259,12 @@ export const UpdateRoomAvailabilityDrawer = ({
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
-                <SelectPeriod date={date} setDate={setDate} />
+                <MonthPicker
+                  selectedMonth={date}
+                  onMonthSelect={setDate}
+                  // minDate={new Date("2023-01-01")}
+                  // maxDate={new Date("2024-12-31")}
+                />
               </PopoverContent>
             </Popover>
           </div>
