@@ -1,12 +1,21 @@
 import { SearchParams } from "@/types";
 import { RoomAvailabilityHotel, RoomAvailabilityTableResponse } from "./types";
+import { format } from "date-fns/format";
 
 export const getData = async ({
   searchParams,
 }: {
   searchParams: SearchParams;
 }): Promise<RoomAvailabilityTableResponse> => {
-  console.log({ searchParams });
+  // Parse the date from searchParams and format it as "MMM yyyy"
+  let formattedDate = "";
+  if (searchParams.period) {
+    const [month, year] = (searchParams.period as string)
+      .split("-")
+      .map(Number);
+    const date = new Date(year, month - 1);
+    formattedDate = format(date, "MMMM yyyy");
+  }
 
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -15,7 +24,7 @@ export const getData = async ({
       id: "1",
       name: "Ibis Hotel & Convention",
       region: "Jakarta",
-      period: "June 2025",
+      period: formattedDate || "June 2025",
       rooms: [
         {
           id: "11",
@@ -95,7 +104,7 @@ export const getData = async ({
       id: "2",
       name: "Atria Hotel",
       region: "Denpasar",
-      period: "June 2025",
+      period: formattedDate || "June 2025",
       rooms: [
         {
           id: "11",
