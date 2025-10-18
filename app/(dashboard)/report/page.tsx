@@ -36,11 +36,11 @@ const ReportPage = async (props: ReportPageProps) => {
           />
         }
       >
+        <SectionCards />
+        <ChartAreaInteractive />
+        <Separator />
         <ReportTable promises={promises} />
       </React.Suspense>
-      <Separator />
-      <SectionCards />
-      <ChartAreaInteractive />
     </div>
   );
 };
