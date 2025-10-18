@@ -49,7 +49,7 @@ export function DeleteAgentDialog({
   function onDelete() {
     startDeleteTransition(async () => {
       const agentId = agent[0].id;
-      toast.promise(deleteAgent(agentId), {
+      toast.promise(deleteAgent(String(agentId)), {
         loading: "Deleting agent...",
         success: (data) => data.message,
         error: "Failed to delete agent",
