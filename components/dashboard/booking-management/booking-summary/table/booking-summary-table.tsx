@@ -26,7 +26,7 @@ interface BookingSummaryTableProps {
 
 const BookingSummaryTable = ({ promises }: BookingSummaryTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [{ data, pageCount }, companyOptions] = React.use(promises);
+  const [{ data, pagination }, companyOptions] = React.use(promises);
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<BookingSummary> | null>(null);
 
@@ -42,8 +42,8 @@ const BookingSummaryTable = ({ promises }: BookingSummaryTableProps) => {
   const { table } = useDataTable({
     data,
     columns,
-    pageCount,
-    getRowId: (originalRow) => originalRow.id,
+    pageCount: pagination?.total_pages || 1,
+    getRowId: (originalRow) => String(originalRow.booking_id),
     shallow: false,
     clearOnDefault: true,
     startTransition,
