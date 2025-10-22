@@ -24,6 +24,7 @@ import { UpdateRoomAvailabilityDrawer } from "../drawer/update-room-availability
 import { getRoomAvailabilityTableColumns } from "./room-availability-columns";
 import { Hotel } from "@/app/(dashboard)/hotel-listing/types";
 import { useQuery } from "@tanstack/react-query";
+import { RoomAvailabilityHotel } from "@/app/(dashboard)/hotel-listing/room-availability/types";
 
 interface RoomAvailabilityTableProps {
   promises: Promise<[Awaited<ReturnType<typeof getData>>]>;
@@ -117,11 +118,14 @@ const RoomAvailabilityTable = ({ promises }: RoomAvailabilityTableProps) => {
 
       <UpdateRoomAvailabilityDrawer
         isEdit={rowAction?.variant === "update"}
-        isLoading={query.isPending}
+        isPending={query.isPending}
         open={
           rowAction?.variant === "update" || rowAction?.variant === "detail"
         }
-        roomAvailabilityHotel={query.data}
+        roomAvailabilityHotel={
+          query.data?.data || ([] as RoomAvailabilityHotel[])
+        }
+        dataHotel={rowAction?.row.original ?? null}
         onOpenChange={() => setRowAction(null)}
         date={date}
         setDate={setDate}
