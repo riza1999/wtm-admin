@@ -1,6 +1,5 @@
 import { ApiResponse, SearchParams } from "@/types";
 import { Option } from "@/types/data-table";
-import { Promo } from "../promo/types";
 import { PromoGroup, PromoGroupMembers, PromoGroupPromos } from "./types";
 import { buildQueryParams } from "@/lib/utils";
 import { apiCall } from "@/lib/api";
@@ -67,12 +66,12 @@ export const getPromoGroupMembersById = async (
 // Search promos with query (for AsyncSelect)
 export const searchPromos = async (
   query?: string
-): Promise<ApiResponse<Promo[]>> => {
+): Promise<ApiResponse<PromoGroupPromos[]>> => {
   const queryString = buildQueryParams({
     search: query,
   });
   const url = `/promos${queryString ? `?${queryString}` : ""}`;
-  const apiResponse = await apiCall<Promo[]>(url);
+  const apiResponse = await apiCall<PromoGroupPromos[]>(url);
 
   return apiResponse;
 };

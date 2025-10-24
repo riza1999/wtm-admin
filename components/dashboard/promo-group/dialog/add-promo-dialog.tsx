@@ -1,7 +1,7 @@
 "use client";
 
 import { searchPromos } from "@/app/(dashboard)/promo-group/fetch";
-import { Promo } from "@/app/(dashboard)/promo/types";
+import { PromoGroupPromos } from "@/app/(dashboard)/promo-group/types";
 import { AsyncSelect } from "@/components/async-select";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,8 +37,8 @@ export const addPromoSchema = z.object({
 export type AddPromoSchemaType = z.infer<typeof addPromoSchema>;
 
 interface AddPromoDialogProps {
-  onAdd: (promo: Promo) => void;
-  currentPromos: Promo[];
+  onAdd: (promo: PromoGroupPromos) => void;
+  currentPromos: PromoGroupPromos[];
 }
 
 const AddPromoDialog = ({ onAdd, currentPromos }: AddPromoDialogProps) => {
@@ -54,34 +54,39 @@ const AddPromoDialog = ({ onAdd, currentPromos }: AddPromoDialogProps) => {
 
   // Filter out promos that are already in the current group
   const currentPromoIds = React.useMemo(
-    () => new Set((currentPromos || []).map((p) => p.id)),
+    () => new Set((currentPromos || []).map((p) => p.promo_id)),
     [currentPromos]
   );
 
   // Create async fetcher that filters out current promos
   const promoFetcher = React.useCallback(
-    async (query?: string): Promise<Promo[]> => {
+    async (query?: string): Promise<PromoGroupPromos[]> => {
       const allPromos = await searchPromos(query);
-      return allPromos.data.filter((promo) => !currentPromoIds.has(promo.id));
+      return allPromos.data.filter(
+        (promo) => !currentPromoIds.has(promo.promo_id)
+      );
     },
     [currentPromoIds]
   );
 
   // Additional filter function for client-side filtering
-  const filterFn = React.useCallback((promo: Promo, query: string) => {
-    const searchQuery = query.toLowerCase();
-    return (
-      promo.promo_name.toLowerCase().includes(searchQuery) ||
-      promo.promo_code.toLowerCase().includes(searchQuery)
-    );
-  }, []);
+  const filterFn = React.useCallback(
+    (promo: PromoGroupPromos, query: string) => {
+      const searchQuery = query.toLowerCase();
+      return (
+        promo.promo_name.toLowerCase().includes(searchQuery) ||
+        promo.promo_code.toLowerCase().includes(searchQuery)
+      );
+    },
+    []
+  );
 
   async function onSubmit(input: AddPromoSchemaType) {
     startTransition(async () => {
       // Fetch the selected promo from the server to ensure we have the latest data
       const allPromos = await searchPromos();
       const selectedPromo = allPromos.data.find(
-        (p) => String(p.id) === input.promoId
+        (p) => String(p.promo_id) === input.promoId
       );
 
       if (!selectedPromo) {
@@ -123,7 +128,7 @@ const AddPromoDialog = ({ onAdd, currentPromos }: AddPromoDialogProps) => {
                 <FormItem>
                   <FormLabel>Select Promo</FormLabel>
                   <FormControl>
-                    <AsyncSelect<Promo>
+                    <AsyncSelect<PromoGroupPromos>
                       triggerClassName="py-6"
                       fetcher={promoFetcher}
                       preload={false}
@@ -138,7 +143,7 @@ const AddPromoDialog = ({ onAdd, currentPromos }: AddPromoDialogProps) => {
                           </div>
                         </div>
                       )}
-                      getOptionValue={(promo) => String(promo.id)}
+                      getOptionValue={(promo) => String(promo.promo_id)}
                       getDisplayValue={(promo) => (
                         <div className="flex flex-col items-start">
                           <div className="font-medium">{promo.promo_name}</div>

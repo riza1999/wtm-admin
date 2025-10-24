@@ -51,7 +51,7 @@ const AddAgentCompanyDialog = ({
   function onSubmit(input: AddAgentCompanySchema) {
     startTransition(async () => {
       const selectedMembers = members.filter(
-        (m) => m.company === input.company
+        (m) => m.agent_company === input.company
       );
       if (selectedMembers.length === 0) {
         toast.error("No members found for the selected company");

@@ -48,7 +48,7 @@ export function AddAgentCompanyForm<T extends FieldValues>({
           render={({ field }) => {
             const selectedCompany = field.value;
             const companyMembers = selectedCompany
-              ? members.filter((m) => m.company === selectedCompany)
+              ? members.filter((m) => m.agent_company === selectedCompany)
               : [];
 
             return (

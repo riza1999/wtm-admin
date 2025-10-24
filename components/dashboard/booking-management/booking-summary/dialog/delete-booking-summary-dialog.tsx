@@ -48,9 +48,9 @@ export function DeleteBookingSummaryDialog({
 
   function onDelete() {
     startDeleteTransition(async () => {
-      const bookingId = bookingSummary[0].id;
+      const bookingId = bookingSummary[0].booking_id;
 
-      toast.promise(deleteBooking(bookingId), {
+      toast.promise(deleteBooking(String(bookingId)), {
         success: (data) => data.message,
         error: "Failed to delete booking",
       });

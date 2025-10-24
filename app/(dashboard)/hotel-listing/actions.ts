@@ -217,8 +217,8 @@ export async function importHotelsFromCsv(file: File) {
           name: rowData.name,
           region: rowData.region,
           email: rowData.email,
-          approval_status: rowData.approval_status,
-          api_status: rowData.api_status?.toLowerCase() === "true",
+          status: rowData.approval_status,
+          is_api: rowData.api_status?.toLowerCase() === "true",
           rooms: [],
         };
         hotels.push(hotel);

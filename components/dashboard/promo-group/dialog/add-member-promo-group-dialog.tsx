@@ -55,14 +55,14 @@ const AddMemberPromoGroupDialog = ({
   const selectedCompany = form.watch("company");
   const memberOptions = React.useMemo<Option[]>(() => {
     const pool = selectedCompany
-      ? members.filter((m) => m.company === selectedCompany)
+      ? members.filter((m) => m.agent_company === selectedCompany)
       : members;
-    return pool.map((m) => ({ label: m.name, value: m.id }));
+    return pool.map((m) => ({ label: m.name, value: String(m.id) }));
   }, [members, selectedCompany]);
 
   async function onSubmit(input: AddMemberPromoGroupSchemaType) {
     startTransition(async () => {
-      const full = members.find((m) => m.id === input.memberId);
+      const full = members.find((m) => String(m.id) === input.memberId);
       if (!full) {
         toast.error("Member data unavailable");
         return;

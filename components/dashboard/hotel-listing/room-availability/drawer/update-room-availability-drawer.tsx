@@ -38,7 +38,9 @@ function AvailabilityLegend() {
 interface AvailabilityTableProps {
   localHotel: RoomAvailabilityHotel[] | null;
   roomAvailabilityHotel: RoomAvailabilityHotel[] | null;
-  setLocalHotel: (hotel: RoomAvailabilityHotel[]) => void;
+  setLocalHotel: React.Dispatch<
+    React.SetStateAction<RoomAvailabilityHotel[] | null>
+  >;
   isEdit?: boolean;
 }
 

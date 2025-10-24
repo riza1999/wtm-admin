@@ -17,7 +17,7 @@ const exportColumns: ExportColumn<HistoryBookingLog>[] = [
   {
     key: "booking_id",
     header: "Booking ID",
-    accessor: (item) => item.booking_id,
+    accessor: (item) => item.booking_code,
     width: 12,
   },
   {
@@ -53,7 +53,7 @@ const exportColumns: ExportColumn<HistoryBookingLog>[] = [
   {
     key: "date_in",
     header: "Check-in Date",
-    accessor: (item) => item.date_in,
+    accessor: (item) => item.check_in_date,
     formatter: (value) =>
       formatDate(value, {
         year: "numeric",
@@ -65,7 +65,7 @@ const exportColumns: ExportColumn<HistoryBookingLog>[] = [
   {
     key: "date_out",
     header: "Check-out Date",
-    accessor: (item) => item.date_out,
+    accessor: (item) => item.check_out_date,
     formatter: (value) =>
       formatDate(value, {
         year: "numeric",
@@ -83,13 +83,13 @@ const exportColumns: ExportColumn<HistoryBookingLog>[] = [
   {
     key: "room_type",
     header: "Room Type",
-    accessor: (item) => item.room_type,
+    accessor: (item) => item.room_type_name,
     width: 20,
   },
   {
     key: "room_night",
     header: "Room Nights",
-    accessor: (item) => item.room_night,
+    accessor: (item) => item.room_nights,
     width: 12,
   },
   {
@@ -105,10 +105,10 @@ const createBookingLogFilter = (): FilterFunction<HistoryBookingLog> => {
   return ExportService.combineFilters(
     // Global search filter
     ExportService.createGlobalSearchFilter<HistoryBookingLog>([
-      "booking_id",
+      "booking_code",
       "agent_name",
       "hotel_name",
-      "room_type",
+      "room_type_name",
     ]),
     // Status filters
     ExportService.createMultiSelectFilter<HistoryBookingLog>(
@@ -125,12 +125,12 @@ const createBookingLogFilter = (): FilterFunction<HistoryBookingLog> => {
       "confirm_date"
     ),
     ExportService.createDateRangeFilter<HistoryBookingLog>(
-      "date_in",
-      "date_in"
+      "check_in_date",
+      "check_in_date"
     ),
     ExportService.createDateRangeFilter<HistoryBookingLog>(
-      "date_out",
-      "date_out"
+      "check_out_date",
+      "check_out_date"
     )
   );
 };
@@ -139,68 +139,68 @@ const createBookingLogFilter = (): FilterFunction<HistoryBookingLog> => {
 function getSampleData(): HistoryBookingLog[] {
   return [
     {
-      booking_id: "BK-001",
+      booking_code: "BK-001",
       confirm_date: "2024-01-15T10:30:00Z",
       agent_name: "Agent Smith",
       booking_status: "confirmed",
       payment_status: "paid",
-      date_in: "2024-02-01T14:00:00Z",
-      date_out: "2024-02-03T12:00:00Z",
+      check_in_date: "2024-02-01T14:00:00Z",
+      check_out_date: "2024-02-03T12:00:00Z",
       hotel_name: "Grand Hotel Jakarta",
-      room_type: "Deluxe Room",
-      room_night: 2,
+      room_type_name: "Deluxe Room",
+      room_nights: 2,
       capacity: "2 Adults",
     },
     {
-      booking_id: "BK-002",
+      booking_code: "BK-002",
       confirm_date: "2024-01-16T09:15:00Z",
       agent_name: "Agent Jane",
       booking_status: "in review",
       payment_status: "unpaid",
-      date_in: "2024-02-05T15:00:00Z",
-      date_out: "2024-02-07T11:00:00Z",
+      check_in_date: "2024-02-05T15:00:00Z",
+      check_out_date: "2024-02-07T11:00:00Z",
       hotel_name: "Mercure Hotel Bandung",
-      room_type: "Superior Room",
-      room_night: 2,
+      room_type_name: "Superior Room",
+      room_nights: 2,
       capacity: "1 Adult, 1 Child",
     },
     {
-      booking_id: "BK-003",
+      booking_code: "BK-003",
       confirm_date: "2024-01-17T14:45:00Z",
       agent_name: "Agent Mike",
       booking_status: "rejected",
       payment_status: "unpaid",
-      date_in: "2024-02-10T16:00:00Z",
-      date_out: "2024-02-12T10:00:00Z",
+      check_in_date: "2024-02-10T16:00:00Z",
+      check_out_date: "2024-02-12T10:00:00Z",
       hotel_name: "Novotel Surabaya",
-      room_type: "Executive Suite",
-      room_night: 2,
+      room_type_name: "Executive Suite",
+      room_nights: 2,
       capacity: "2 Adults, 1 Child",
     },
     {
-      booking_id: "BK-004",
+      booking_code: "BK-004",
       confirm_date: "2024-01-18T11:20:00Z",
       agent_name: "Agent Sarah",
       booking_status: "confirmed",
       payment_status: "paid",
-      date_in: "2024-02-15T14:00:00Z",
-      date_out: "2024-02-17T12:00:00Z",
+      check_in_date: "2024-02-15T14:00:00Z",
+      check_out_date: "2024-02-17T12:00:00Z",
       hotel_name: "Hilton Bali Resort",
-      room_type: "Ocean View Suite",
-      room_night: 2,
+      room_type_name: "Ocean View Suite",
+      room_nights: 2,
       capacity: "2 Adults",
     },
     {
-      booking_id: "BK-005",
+      booking_code: "BK-005",
       confirm_date: "2024-01-19T16:30:00Z",
       agent_name: "Agent David",
       booking_status: "confirmed",
       payment_status: "paid",
-      date_in: "2024-02-20T15:00:00Z",
-      date_out: "2024-02-22T11:00:00Z",
+      check_in_date: "2024-02-20T15:00:00Z",
+      check_out_date: "2024-02-22T11:00:00Z",
       hotel_name: "Sheraton Yogyakarta",
-      room_type: "Premium Room",
-      room_night: 2,
+      room_type_name: "Premium Room",
+      room_nights: 2,
       capacity: "1 Adult",
     },
   ];

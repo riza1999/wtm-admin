@@ -86,20 +86,6 @@ const ReportTable = ({ promises }: ReportTableProps) => {
         onSuccess={() => rowAction?.row.toggleSelected(false)}
         query={query}
       />
-      {rowAction?.variant === "update" && (
-        <EditReportDialog
-          open={rowAction?.variant === "update"}
-          onOpenChange={() => setRowAction(null)}
-          report={rowAction?.row.original ?? null}
-        />
-      )}
-      <DeleteReportDialog
-        open={rowAction?.variant === "delete"}
-        onOpenChange={() => setRowAction(null)}
-        report={rowAction?.row.original ? [rowAction.row.original] : []}
-        showTrigger={false}
-        onSuccess={() => rowAction?.row.toggleSelected(false)}
-      />
     </>
   );
 };

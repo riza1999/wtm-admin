@@ -47,14 +47,16 @@ const EditBookingSummaryDialog = ({
   const form = useForm<EditBookingSummarySchema>({
     resolver: zodResolver(editBookingSummarySchema),
     defaultValues: {
-      guest_name: booking?.guest_name ?? "",
+      guest_name: Array.isArray(booking?.guest_name)
+        ? booking?.guest_name.join(", ")
+        : booking?.guest_name ?? "",
       agent_name: booking?.agent_name ?? "",
       agent_company: booking?.agent_company ?? "",
       group_promo: booking?.group_promo ?? "",
-      booking_id: booking?.booking_id ?? "",
+      booking_id: String(booking?.booking_id) ?? "",
       booking_status: booking?.booking_status ?? "confirmed",
       payment_status: booking?.payment_status ?? "paid",
-      promo_id: booking?.promo_id ?? "",
+      promo_id: booking?.group_promo ?? "",
     },
   });
 
@@ -63,7 +65,7 @@ const EditBookingSummaryDialog = ({
       if (!booking) return;
 
       const { success } = await editBooking({
-        id: booking.id,
+        id: String(booking.booking_id),
         ...input,
       });
 

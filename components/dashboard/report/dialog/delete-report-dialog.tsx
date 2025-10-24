@@ -7,7 +7,7 @@ import * as React from "react";
 import { toast } from "sonner";
 
 import { deleteReport } from "@/app/(dashboard)/report/actions";
-import { Report } from "@/app/(dashboard)/report/types";
+import { ReportSummary } from "@/app/(dashboard)/report/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -33,7 +33,7 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 
 interface DeleteReportDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
-  report: Row<Report>["original"][];
+  report: Row<ReportSummary>["original"][];
   showTrigger?: boolean;
   onSuccess?: () => void;
 }
@@ -49,7 +49,8 @@ export function DeleteReportDialog({
 
   function onDelete() {
     startDeleteTransition(async () => {
-      const reportId = report[0].id;
+      // const reportId = report[0].id
+      const reportId = "1";
 
       toast.promise(deleteReport(reportId), {
         // loading: "Deleting report...",

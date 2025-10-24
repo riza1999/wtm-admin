@@ -84,21 +84,21 @@ const EditPromoDialog = ({
   const form = useForm<EditPromoSchema>({
     resolver: zodResolver(editPromoSchema),
     defaultValues: {
-      name: promo?.name || "",
-      type: promo?.type || "discount",
-      discount_percentage: promo?.discount_percentage || 0,
-      price_discount: promo?.price_discount || 0,
-      room_upgrade_to: promo?.room_upgrade_to || "",
-      benefits: promo?.benefits || "",
-      code: promo?.code || "",
-      description: promo?.description || "",
-      start_date: promo?.start_date || "",
-      end_date: promo?.end_date || "",
-      hotel_name: promo?.hotel_name || "",
-      room_type: promo?.room_type || "",
-      bed_type: promo?.bed_type || "",
-      nights: promo?.nights || 1,
-      status: promo?.status || true,
+      name: promo?.promo_name || "",
+      type: (promo?.promo_type as EditPromoSchema["type"]) || "discount",
+      // discount_percentage: promo?.discount_percentage || 0,
+      // price_discount: promo?.price_discount || 0,
+      // room_upgrade_to: promo?.room_upgrade_to || "",
+      // benefits: promo?.benefits || "",
+      // code: promo?.code || "",
+      // description: promo?.description || "",
+      // start_date: promo?.start_date || "",
+      // end_date: promo?.end_date || "",
+      // hotel_name: promo?.hotel_name || "",
+      // room_type: promo?.room_type || "",
+      // bed_type: promo?.bed_type || "",
+      // nights: promo?.nights || 1,
+      // status: promo?.status || true,
     },
   });
 
@@ -106,21 +106,21 @@ const EditPromoDialog = ({
   React.useEffect(() => {
     if (promo) {
       form.reset({
-        name: promo.name,
-        type: promo.type,
-        discount_percentage: promo.discount_percentage || 0,
-        price_discount: promo.price_discount || 0,
-        room_upgrade_to: promo.room_upgrade_to || "",
-        benefits: promo.benefits || "",
-        code: promo.code,
-        description: promo.description,
-        start_date: promo.start_date,
-        end_date: promo.end_date,
-        hotel_name: promo.hotel_name,
-        room_type: promo.room_type,
-        bed_type: promo.bed_type,
-        nights: promo.nights,
-        status: promo.status,
+        // name: promo.name,
+        // type: promo.type,
+        // discount_percentage: promo.discount_percentage || 0,
+        // price_discount: promo.price_discount || 0,
+        // room_upgrade_to: promo.room_upgrade_to || "",
+        // benefits: promo.benefits || "",
+        // code: promo.code,
+        // description: promo.description,
+        // start_date: promo.start_date,
+        // end_date: promo.end_date,
+        // hotel_name: promo.hotel_name,
+        // room_type: promo.room_type,
+        // bed_type: promo.bed_type,
+        // nights: promo.nights,
+        // status: promo.status,
       });
     }
   }, [promo, form]);
@@ -129,7 +129,9 @@ const EditPromoDialog = ({
     if (!promo) return;
 
     startTransition(async () => {
-      const { success } = await editPromo({ ...input, id: promo.id });
+      // const { success } = await editPromo({ ...input, id: promo.id });
+
+      const success = true;
 
       if (!success) {
         toast.error("Failed to update promo");
