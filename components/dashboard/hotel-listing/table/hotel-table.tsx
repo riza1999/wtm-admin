@@ -30,7 +30,7 @@ interface HotelTableProps {
 
 const HotelTable = ({ promises }: HotelTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [{ data, pageCount }, companyOptions] = React.use(promises);
+  const [{ data, pagination }, companyOptions] = React.use(promises);
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<Hotel> | null>(null);
 
@@ -44,9 +44,9 @@ const HotelTable = ({ promises }: HotelTableProps) => {
   );
 
   const { table } = useDataTable({
-    data,
+    data: data || [],
     columns,
-    pageCount,
+    pageCount: pagination?.total_pages || 1,
     getRowId: (originalRow) => originalRow.id,
     shallow: false,
     clearOnDefault: true,

@@ -21,10 +21,10 @@ import z from "zod";
 import { SupportForm } from "../form/support-form";
 
 export const editSupportSchema = z.object({
-  name: z.string().optional(),
+  full_name: z.string().optional(),
   email: z.string().email().optional(),
   phone: z.string().optional(),
-  status: z.boolean().optional(),
+  is_active: z.boolean().optional(),
 });
 
 export type EditSupportSchema = z.infer<typeof editSupportSchema>;
@@ -40,10 +40,10 @@ const EditSupportDialog = ({ support, ...props }: EditSupportDialogProps) => {
   const form = useForm<EditSupportSchema>({
     resolver: zodResolver(editSupportSchema),
     defaultValues: {
-      name: support?.name ?? "",
+      full_name: support?.name ?? "",
       email: support?.email,
-      phone: support?.phone,
-      status: support?.status,
+      phone: support?.phone_number,
+      is_active: support?.status === "Active" ? true : false,
     },
   });
 
@@ -55,7 +55,7 @@ const EditSupportDialog = ({ support, ...props }: EditSupportDialogProps) => {
         ...input,
       });
       if (!success) {
-        toast.error("Failed to edit support");
+        toast.error(message ?? "Failed to edit support");
         return;
       }
       form.reset(input);
@@ -73,7 +73,11 @@ const EditSupportDialog = ({ support, ...props }: EditSupportDialogProps) => {
             Edit details below and save the changes
           </DialogDescription>
         </DialogHeader>
-        <SupportForm<EditSupportSchema> form={form} onSubmit={onSubmit}>
+        <SupportForm<EditSupportSchema>
+          form={form}
+          onSubmit={onSubmit}
+          isEdit={true}
+        >
           <DialogFooter className="gap-2 pt-2 sm:space-x-0">
             <DialogClose asChild>
               <Button type="button" variant="outline">

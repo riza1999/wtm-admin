@@ -1,4 +1,4 @@
-import { Report } from "@/app/(dashboard)/report/types";
+import { ReportAgent } from "@/app/(dashboard)/report/types";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { Button } from "@/components/ui/button";
 import { DataTableRowAction, Option } from "@/types/data-table";
@@ -8,7 +8,7 @@ import React from "react";
 
 interface GetReportTableColumnsProps {
   setRowAction: React.Dispatch<
-    React.SetStateAction<DataTableRowAction<Report> | null>
+    React.SetStateAction<DataTableRowAction<ReportAgent> | null>
   >;
   companyOptions: Option[];
   hotelOptions: Option[];
@@ -18,7 +18,7 @@ export function getReportTableColumns({
   setRowAction,
   companyOptions,
   hotelOptions,
-}: GetReportTableColumnsProps): ColumnDef<Report>[] {
+}: GetReportTableColumnsProps): ColumnDef<ReportAgent>[] {
   return [
     {
       id: "no",
@@ -49,7 +49,7 @@ export function getReportTableColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Agent Company" />
       ),
-      cell: ({ row }) => row.original.company,
+      cell: ({ row }) => row.original.agent_company,
       meta: {
         label: "Company",
         placeholder: "Search company...",
@@ -64,7 +64,7 @@ export function getReportTableColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Agent Name" />
       ),
-      cell: ({ row }) => row.original.name,
+      cell: ({ row }) => row.original.agent_name,
       meta: {
         label: "Name",
         placeholder: "Search name...",
@@ -105,7 +105,7 @@ export function getReportTableColumns({
         <DataTableColumnHeader column={column} title="Confirmed Bookings" />
       ),
       cell: ({ row }) => (
-        <div className="text-center">{row.original.confirmed_bookings}</div>
+        <div className="text-center">{row.original.confirmed_booking}</div>
       ),
       enableHiding: false,
     },
@@ -116,7 +116,7 @@ export function getReportTableColumns({
         <DataTableColumnHeader column={column} title="Cancelled Bookings" />
       ),
       cell: ({ row }) => (
-        <div className="text-center">{row.original.cancelled_bookings}</div>
+        <div className="text-center">{row.original.cancelled_booking}</div>
       ),
       enableHiding: false,
     },

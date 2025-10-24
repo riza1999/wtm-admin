@@ -8,7 +8,6 @@ import { useDataTable } from "@/hooks/use-data-table";
 import type { DataTableRowAction } from "@/types/data-table";
 import React, { useTransition } from "react";
 import CreateSuperAdminDialog from "../dialog/create-super-admin-dialog";
-import { DeleteSuperAdminDialog } from "../dialog/delete-super-admin-dialog";
 import EditSuperAdminDialog from "../dialog/edit-super-admin-dialog";
 import { getSuperAdminTableColumns } from "./super-admin-columns";
 
@@ -18,7 +17,8 @@ interface SuperAdminTableProps {
 
 const SuperAdminTable = ({ promises }: SuperAdminTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [{ data, pageCount }] = React.use(promises);
+  const [response] = React.use(promises);
+  const { status, data, pagination } = response;
 
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<SuperAdmin> | null>(null);
@@ -29,14 +29,18 @@ const SuperAdminTable = ({ promises }: SuperAdminTableProps) => {
   );
 
   const { table } = useDataTable({
-    data,
+    data: data || [],
     columns,
-    pageCount,
+    pageCount: pagination?.total_pages || 0,
     getRowId: (originalRow) => originalRow.id,
     shallow: false,
     clearOnDefault: true,
     startTransition,
   });
+
+  if (status !== 200) {
+    return <div>Failed to load data</div>;
+  }
 
   return (
     <>
@@ -54,13 +58,6 @@ const SuperAdminTable = ({ promises }: SuperAdminTableProps) => {
           superAdmin={rowAction?.row.original ?? null}
         />
       )}
-      <DeleteSuperAdminDialog
-        open={rowAction?.variant === "delete"}
-        onOpenChange={() => setRowAction(null)}
-        superAdmin={rowAction?.row.original ? [rowAction.row.original] : []}
-        showTrigger={false}
-        onSuccess={() => rowAction?.row.toggleSelected(false)}
-      />
     </>
   );
 };

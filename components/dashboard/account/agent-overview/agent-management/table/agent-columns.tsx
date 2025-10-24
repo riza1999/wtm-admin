@@ -1,6 +1,14 @@
 import { updatePromoGroup } from "@/app/(dashboard)/account/agent-overview/agent-management/actions";
 import { Agent } from "@/app/(dashboard)/account/agent-overview/agent-management/types";
+import { PromoGroup } from "@/app/(dashboard)/promo-group/types";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -13,7 +21,7 @@ import {
 import { cn } from "@/lib/utils";
 import { DataTableRowAction } from "@/types/data-table";
 import { ColumnDef } from "@tanstack/react-table";
-import { Text } from "lucide-react";
+import { Ellipsis, Text } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { toast } from "sonner";
@@ -22,10 +30,12 @@ interface GetAgentTableColumnsProps {
   setRowAction: React.Dispatch<
     React.SetStateAction<DataTableRowAction<Agent> | null>
   >;
+  promoGroupSelect: PromoGroup[];
 }
 
 export function getAgentTableColumns({
   setRowAction,
+  promoGroupSelect,
 }: GetAgentTableColumnsProps): ColumnDef<Agent>[] {
   return [
     {
@@ -37,7 +47,7 @@ export function getAgentTableColumns({
       size: 40,
     },
     {
-      id: "name",
+      id: "search",
       accessorKey: "name",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Name" />
@@ -58,7 +68,7 @@ export function getAgentTableColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Agent Company" />
       ),
-      cell: ({ row }) => row.original.company,
+      cell: ({ row }) => row.original.agent_company_name,
     },
     {
       id: "Promo Group",
@@ -79,14 +89,17 @@ export function getAgentTableColumns({
             </Label>
             <Select
               disabled={isUpdatePending}
-              defaultValue={row.original.promo_group}
+              defaultValue={String(row.original.promo_group_id)}
               onValueChange={(value) => {
                 startUpdateTransition(() => {
-                  toast.promise(updatePromoGroup(row.original.id, value), {
-                    loading: "Updating promo group...",
-                    success: (data) => data.message,
-                    error: "Failed to change promo group",
-                  });
+                  toast.promise(
+                    updatePromoGroup(row.original.id, Number(value)),
+                    {
+                      loading: "Updating promo group...",
+                      success: (data) => data.message,
+                      error: "Failed to change promo group",
+                    }
+                  );
                 });
               }}
             >
@@ -98,11 +111,13 @@ export function getAgentTableColumns({
                 <SelectValue placeholder="Assign Promo Group" />
               </SelectTrigger>
               <SelectContent align="end">
-                <SelectItem value="promo_a">Promo Group A</SelectItem>
-                <SelectItem value="promo_b">Promo Group B</SelectItem>
-                <SelectItem value="promo_c">Promo Group C</SelectItem>
+                {promoGroupSelect.map((promoGroup) => (
+                  <SelectItem key={promoGroup.id} value={String(promoGroup.id)}>
+                    {promoGroup.name}
+                  </SelectItem>
+                ))}
                 <SelectSeparator />
-                <SelectItemLink href={"/dummy"}>
+                <SelectItemLink href={"/promo-group"}>
                   Create New Group
                 </SelectItemLink>
               </SelectContent>
@@ -133,7 +148,7 @@ export function getAgentTableColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Phone" />
       ),
-      cell: ({ row }) => row.original.phone,
+      cell: ({ row }) => row.original.phone_number,
       meta: {
         label: "Phone",
         placeholder: "Search phone...",
@@ -142,39 +157,56 @@ export function getAgentTableColumns({
       },
       enableColumnFilter: false,
     },
-    // {
-    //   id: "actions",
-    //   cell: function Cell({ row }) {
-    //     return (
-    //       <DropdownMenu>
-    //         <DropdownMenuTrigger asChild>
-    //           <Button
-    //             aria-label="Open menu"
-    //             variant="ghost"
-    //             className="flex size-8 p-0 data-[state=open]:bg-muted"
-    //           >
-    //             <Ellipsis className="size-4" aria-hidden="true" />
-    //           </Button>
-    //         </DropdownMenuTrigger>
-    //         <DropdownMenuContent align="end" className="w-40">
-    //           <DropdownMenuItem
-    //             onSelect={() => setRowAction({ row, variant: "update" })}
-    //           >
-    //             Edit
-    //           </DropdownMenuItem>
-    //           <DropdownMenuSeparator />
-    //           <DropdownMenuItem
-    //             variant="destructive"
-    //             onSelect={() => setRowAction({ row, variant: "delete" })}
-    //           >
-    //             Delete
-    //           </DropdownMenuItem>
-    //         </DropdownMenuContent>
-    //       </DropdownMenu>
-    //     );
-    //   },
-    //   size: 40,
-    // },
+    {
+      id: "status",
+      accessorKey: "status",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Status" />
+      ),
+      cell: ({ row }) => {
+        return row.original.status ? "Active" : "Inactive";
+      },
+      meta: {
+        label: "Status",
+        placeholder: "Search status...",
+        variant: "text",
+        icon: Text,
+      },
+      enableColumnFilter: false,
+    },
+    {
+      id: "actions",
+      cell: function Cell({ row }) {
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                aria-label="Open menu"
+                variant="ghost"
+                className="flex size-8 p-0 data-[state=open]:bg-muted"
+              >
+                <Ellipsis className="size-4" aria-hidden="true" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40">
+              <DropdownMenuItem
+                onSelect={() => setRowAction({ row, variant: "update" })}
+              >
+                Edit
+              </DropdownMenuItem>
+              {/* <DropdownMenuSeparator />
+              <DropdownMenuItem
+                variant="destructive"
+                onSelect={() => setRowAction({ row, variant: "delete" })}
+              >
+                Delete
+              </DropdownMenuItem> */}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+      size: 40,
+    },
   ];
 }
 

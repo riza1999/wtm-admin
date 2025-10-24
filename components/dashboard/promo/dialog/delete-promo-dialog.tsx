@@ -37,7 +37,9 @@ const DeletePromoDialog = ({
     if (promos.length === 0) return;
 
     startTransition(async () => {
-      const deletePromises = promos.map((promo) => deletePromo(promo.id));
+      const deletePromises = promos.map((promo) =>
+        deletePromo(String(promo.id))
+      );
       const results = await Promise.all(deletePromises);
 
       const hasError = results.some((result) => !result.success);
@@ -69,7 +71,7 @@ const DeletePromoDialog = ({
             Are you sure you want to delete{" "}
             {promos.length === 1 ? (
               <>
-                <strong>{promos[0]?.name}</strong>?
+                <strong>{promos[0]?.promo_name}</strong>?
               </>
             ) : (
               <>

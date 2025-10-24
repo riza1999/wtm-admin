@@ -1,15 +1,21 @@
 import { updateRoomAvailability } from "@/app/(dashboard)/hotel-listing/room-availability/actions";
 import { RoomAvailabilityHotel } from "@/app/(dashboard)/hotel-listing/room-availability/types";
+import { Hotel } from "@/app/(dashboard)/hotel-listing/types";
 import { ConfirmationDialog } from "@/components/confirmation-dialog";
 import { Button } from "@/components/ui/button";
-import { Dialog } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Item, ItemContent, ItemMedia, ItemTitle } from "@/components/ui/item";
+import { MonthPicker } from "@/components/ui/monthpicker";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
-import React from "react";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Spinner } from "@/components/ui/spinner";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns/format";
+import { CalendarIcon, ChevronsUpDown } from "lucide-react";
+import React, { useCallback } from "react";
 import { toast } from "sonner";
 
 // --- Subcomponents ---
@@ -30,21 +36,48 @@ function AvailabilityLegend() {
 }
 
 interface AvailabilityTableProps {
-  localHotel: RoomAvailabilityHotel | null;
-  roomAvailabilityHotel: RoomAvailabilityHotel | null;
-  days: string[];
-  setLocalHotel: (hotel: RoomAvailabilityHotel) => void;
+  localHotel: RoomAvailabilityHotel[] | null;
+  roomAvailabilityHotel: RoomAvailabilityHotel[] | null;
+  setLocalHotel: React.Dispatch<
+    React.SetStateAction<RoomAvailabilityHotel[] | null>
+  >;
   isEdit?: boolean;
 }
 
 function AvailabilityTable({
   localHotel,
   roomAvailabilityHotel,
-  days,
   setLocalHotel,
   isEdit = false,
 }: AvailabilityTableProps) {
+  const handleCellClick = useCallback(
+    (roomIndex: number, dayIndex: number) => {
+      if (!isEdit || !localHotel) return;
+
+      setLocalHotel((prev) => {
+        if (!prev) return prev;
+
+        const updatedHotel = [...prev];
+        const room = { ...updatedHotel[roomIndex] };
+        const availability = [...room.available];
+
+        availability[dayIndex] = {
+          ...availability[dayIndex],
+          available: !availability[dayIndex].available,
+        };
+
+        room.available = availability;
+        updatedHotel[roomIndex] = room;
+
+        return updatedHotel;
+      });
+    },
+    [isEdit, localHotel, setLocalHotel]
+  );
+
   if (!localHotel) return null;
+  if (!roomAvailabilityHotel) return null;
+
   return (
     <div className="rounded-lg border overflow-hidden">
       <div className="overflow-x-auto">
@@ -59,31 +92,31 @@ function AvailabilityTable({
               </th>
               <th
                 className="text-center p-2 font-semibold"
-                colSpan={days.length}
+                colSpan={roomAvailabilityHotel?.[0]?.available.length}
               >
-                {localHotel.period}
+                Date
               </th>
             </tr>
             <tr className="border-b">
-              {days.map((day) => (
+              {roomAvailabilityHotel?.[0]?.available.map((avail) => (
                 <th
-                  key={day}
+                  key={`d-${avail.day}`}
                   className="text-center p-2 font-semibold min-w-[40px]"
                 >
-                  {day}
+                  {avail.day}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {localHotel.rooms.map((roomType, roomIndex) => (
+            {localHotel.map((room, roomIndex) => (
               <tr key={roomIndex} className="border-b">
-                <td className="p-4 font-medium">{roomType.name}</td>
-                {roomType.availability.map((isAvailable, dayIndex) => {
+                <td className="p-4 font-medium">{room.room_type_name}</td>
+                {room.available.map((roomDay, dayIndex) => {
+                  const isAvailable = roomDay.available;
                   const original =
-                    roomAvailabilityHotel?.rooms?.[roomIndex]?.availability?.[
-                      dayIndex
-                    ];
+                    roomAvailabilityHotel?.[roomIndex]?.available?.[dayIndex]
+                      ?.available;
                   const isEdited =
                     original !== undefined && isAvailable !== original;
                   return (
@@ -102,23 +135,11 @@ function AvailabilityTable({
                               : "cursor-default"
                           }
                         `}
-                        onClick={
-                          isEdit
-                            ? () => {
-                                const updatedHotel = JSON.parse(
-                                  JSON.stringify(localHotel)
-                                );
-                                updatedHotel.rooms[roomIndex].availability[
-                                  dayIndex
-                                ] = !isAvailable;
-                                setLocalHotel(updatedHotel);
-                              }
-                            : undefined
-                        }
+                        onClick={() => handleCellClick(roomIndex, dayIndex)}
                         title={
                           isEdit
                             ? `Click to toggle availability for ${
-                                roomType.name
+                                room.room_type_name
                               } on day ${dayIndex + 1}`
                             : undefined
                         }
@@ -135,29 +156,36 @@ function AvailabilityTable({
   );
 }
 
-// --- Main Drawer Component ---
+// --- Main Dialog Component ---
 
 interface UpdateRoomAvailabilityDrawerProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
-  roomAvailabilityHotel: RoomAvailabilityHotel | null;
-  period: string | null;
+  roomAvailabilityHotel: RoomAvailabilityHotel[] | null;
   showTrigger?: boolean;
   onSuccess?: () => void;
   isEdit?: boolean;
+  date: Date;
+  dataHotel: Hotel | null;
+  isPending: boolean;
+  setDate: React.Dispatch<React.SetStateAction<Date>>;
 }
 
 export const UpdateRoomAvailabilityDrawer = ({
   roomAvailabilityHotel,
-  period,
   onSuccess,
   isEdit = false,
+  date,
+  dataHotel,
+  isPending,
+  setDate,
   ...props
 }: UpdateRoomAvailabilityDrawerProps) => {
   // State
   const [isUpdatePending, startUpdateTransition] = React.useTransition();
   const [open, setOpen] = React.useState(false);
-  const [localHotel, setLocalHotel] =
-    React.useState<RoomAvailabilityHotel | null>(null);
+  const [localHotel, setLocalHotel] = React.useState<
+    RoomAvailabilityHotel[] | null
+  >(null);
 
   // Sync localHotel with prop
   React.useEffect(() => {
@@ -168,25 +196,18 @@ export const UpdateRoomAvailabilityDrawer = ({
     );
   }, [roomAvailabilityHotel]);
 
-  // Days array for table header
-  const days =
-    localHotel?.rooms?.length && localHotel?.rooms[0]?.availability
-      ? Array.from(
-          { length: localHotel.rooms[0].availability.length },
-          (_, i) => String(i + 1).padStart(2, "0")
-        )
-      : [];
-
   // Check if there are any changes
   const hasChanges = React.useMemo(() => {
     if (!localHotel || !roomAvailabilityHotel) return false;
 
-    return localHotel.rooms.some((room, roomIndex) => {
-      const originalRoom = roomAvailabilityHotel.rooms[roomIndex];
+    return localHotel.some((room, roomIndex) => {
+      const originalRoom = roomAvailabilityHotel[roomIndex];
       if (!originalRoom) return false;
 
-      return room.availability.some((isAvailable, dayIndex) => {
-        const originalAvailability = originalRoom.availability[dayIndex];
+      return room.available.some((avail, dayIndex) => {
+        const isAvailable = avail.available;
+        const originalAvailability =
+          originalRoom?.available?.[dayIndex]?.available;
         return (
           originalAvailability !== undefined &&
           isAvailable !== originalAvailability
@@ -197,7 +218,7 @@ export const UpdateRoomAvailabilityDrawer = ({
 
   // Handle update
   function onUpdate() {
-    if (!period) {
+    if (!date) {
       toast.error("Please select a period");
       return;
     }
@@ -206,11 +227,14 @@ export const UpdateRoomAvailabilityDrawer = ({
       return;
     }
     startUpdateTransition(async () => {
-      const hotelId = String(localHotel.id);
-      toast.promise(updateRoomAvailability(hotelId, period, localHotel), {
-        success: (data) => data.message,
-        error: "Failed to update room availability",
-      });
+      const hotelId = String(1);
+      toast.promise(
+        updateRoomAvailability(hotelId, date.toISOString(), localHotel),
+        {
+          success: (data) => data.message,
+          error: "Failed to update room availability",
+        }
+      );
       setOpen(false);
       props.onOpenChange?.(false);
       onSuccess?.();
@@ -222,38 +246,82 @@ export const UpdateRoomAvailabilityDrawer = ({
   }
 
   return (
-    <Drawer {...props}>
-      <DrawerHeader>
-        <DrawerTitle className="sr-only">Update Room Availability</DrawerTitle>
-      </DrawerHeader>
-      <DrawerContent aria-describedby="update-room-availability-drawer">
-        <div className="max-w-full lg:max-w-7xl mx-auto px-6 pt-10 pb-12 space-y-8">
-          {/* Hotel Name */}
-          <h3 className="text-2xl font-semibold text-center">
-            {localHotel?.name}
-          </h3>
+    <Dialog {...props}>
+      <DialogContent
+        aria-describedby="update-room-availability-dialog"
+        className="sm:max-w-7xl max-h-[85vh] overflow-hidden p-0 gap-0"
+      >
+        <DialogTitle className="sr-only">Update Room Availability</DialogTitle>
+        <div
+          id="update-room-availability-dialog"
+          className="max-h-[85vh] overflow-y-auto px-6 pt-10 pb-12 space-y-8"
+        >
+          <div className="flex items-center justify-between">
+            {/* Hotel Name */}
+            <h3 className="text-2xl font-semibold text-left">
+              {dataHotel?.name}
+            </h3>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  className={cn(
+                    "justify-start text-left font-normal",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date ? format(date, "MMM yyyy") : <span>Select Period</span>}
+                  <ChevronsUpDown className="ml-auto text-white opacity-100" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <MonthPicker
+                  selectedMonth={date}
+                  onMonthSelect={setDate}
+                  // minDate={new Date("2023-01-01")}
+                  // maxDate={new Date("2024-12-31")}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
 
           {/* Availability Table */}
-          <AvailabilityTable
-            localHotel={localHotel}
-            roomAvailabilityHotel={roomAvailabilityHotel}
-            days={days}
-            setLocalHotel={setLocalHotel}
-            isEdit={isEdit}
-          />
+          {isPending && (
+            <div className="flex w-full max-w-xs flex-col gap-4 [--radius:1rem]">
+              <Item>
+                <ItemMedia>
+                  <Spinner />
+                </ItemMedia>
+                <ItemContent>
+                  <ItemTitle className="line-clamp-1">Loading...</ItemTitle>
+                </ItemContent>
+              </Item>
+            </div>
+          )}
+          {!isPending && (
+            <AvailabilityTable
+              localHotel={localHotel}
+              roomAvailabilityHotel={roomAvailabilityHotel}
+              setLocalHotel={setLocalHotel}
+              isEdit={isEdit}
+            />
+          )}
 
           {/* Legend and Save Button */}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <AvailabilityLegend />
             {/* Trigger Button */}
             {isEdit && (
-              <Button
-                size="sm"
-                onClick={() => setOpen(true)}
-                disabled={!hasChanges}
-              >
-                Save Changes
-              </Button>
+              <div className="flex items-center justify-end">
+                <Button
+                  size="sm"
+                  onClick={() => setOpen(true)}
+                  disabled={!hasChanges}
+                >
+                  Save Changes
+                </Button>
+              </div>
             )}
             {/* Confirmation Dialog */}
             {isEdit && (
@@ -269,7 +337,7 @@ export const UpdateRoomAvailabilityDrawer = ({
             )}
           </div>
         </div>
-      </DrawerContent>
-    </Drawer>
+      </DialogContent>
+    </Dialog>
   );
 };

@@ -1,7 +1,10 @@
 "use client";
 
 import { exportAgent } from "@/app/(dashboard)/account/agent-overview/agent-management/actions";
-import { getAgentData } from "@/app/(dashboard)/account/agent-overview/agent-management/fetch";
+import {
+  getAgentData,
+  getPromoGroupSelect,
+} from "@/app/(dashboard)/account/agent-overview/agent-management/fetch";
 import { Agent } from "@/app/(dashboard)/account/agent-overview/agent-management/types";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
@@ -16,12 +19,18 @@ import EditAgentDialog from "../dialog/edit-agent-dialog";
 import { getAgentTableColumns } from "./agent-columns";
 
 interface AgentTableProps {
-  promises: Promise<[Awaited<ReturnType<typeof getAgentData>>]>;
+  promises: Promise<
+    [
+      Awaited<ReturnType<typeof getAgentData>>,
+      Awaited<ReturnType<typeof getPromoGroupSelect>>
+    ]
+  >;
 }
 
 const AgentTable = ({ promises }: AgentTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [{ data, pageCount }] = React.use(promises);
+  const [{ data, pagination }, { data: promoGroupSelect }] =
+    React.use(promises);
 
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<Agent> | null>(null);
@@ -30,15 +39,15 @@ const AgentTable = ({ promises }: AgentTableProps) => {
   const { isExporting, handleDownload } = useExport(exportAgent);
 
   const columns = React.useMemo(
-    () => getAgentTableColumns({ setRowAction }),
+    () => getAgentTableColumns({ setRowAction, promoGroupSelect }),
     []
   );
 
   const { table } = useDataTable({
-    data,
+    data: data || [],
     columns,
-    pageCount,
-    getRowId: (originalRow) => originalRow.id,
+    pageCount: pagination?.total_pages || 1,
+    getRowId: (originalRow) => String(originalRow.id),
     shallow: false,
     clearOnDefault: true,
     startTransition,

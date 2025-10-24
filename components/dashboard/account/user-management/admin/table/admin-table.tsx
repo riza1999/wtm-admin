@@ -8,7 +8,6 @@ import { useDataTable } from "@/hooks/use-data-table";
 import type { DataTableRowAction } from "@/types/data-table";
 import React, { useTransition } from "react";
 import CreateAdminDialog from "../dialog/create-admin-dialog";
-import { DeleteAdminDialog } from "../dialog/delete-admin-dialog";
 import EditAdminDialog from "../dialog/edit-admin-dialog";
 import { getAdminTableColumns } from "./admin-columns";
 
@@ -18,7 +17,8 @@ interface AdminTableProps {
 
 const AdminTable = ({ promises }: AdminTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [{ data, pageCount }] = React.use(promises);
+  const [response] = React.use(promises);
+  const { status, data, pagination } = response;
 
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<Admin> | null>(null);
@@ -29,14 +29,18 @@ const AdminTable = ({ promises }: AdminTableProps) => {
   );
 
   const { table } = useDataTable({
-    data,
+    data: data || [],
     columns,
-    pageCount,
+    pageCount: pagination?.total_pages || 0,
     getRowId: (originalRow) => originalRow.id,
     shallow: false,
     clearOnDefault: true,
     startTransition,
   });
+
+  if (status !== 200) {
+    return <div>Failed to load data</div>;
+  }
 
   return (
     <>
@@ -54,13 +58,6 @@ const AdminTable = ({ promises }: AdminTableProps) => {
           admin={rowAction?.row.original ?? null}
         />
       )}
-      <DeleteAdminDialog
-        open={rowAction?.variant === "delete"}
-        onOpenChange={() => setRowAction(null)}
-        admin={rowAction?.row.original ? [rowAction.row.original] : []}
-        showTrigger={false}
-        onSuccess={() => rowAction?.row.toggleSelected(false)}
-      />
     </>
   );
 };

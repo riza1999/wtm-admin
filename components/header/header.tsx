@@ -1,6 +1,7 @@
 "use client";
 
 import { Menu, X } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
 import { Logo } from "../logo";
@@ -34,21 +35,28 @@ const menuItems = [
   { name: "Promo Group", href: "/promo-group" },
 ];
 
-const user = {
-  name: "Riza Kurniawanda",
-  email: "riza@gmail.com",
-  avatar: "/avatars/shadcn.jpg",
-};
-
 export const HeroHeader = () => {
   const [menuState, setMenuState] = React.useState(false);
+  const { data: session, status } = useSession();
+
+  const navUser = React.useMemo(() => {
+    if (!session?.user) return null;
+
+    return {
+      name: session.user.name ?? null,
+      email: session.user.username ?? null,
+      username: session.user.username ?? null,
+      avatar: session.user.photo_url ?? null,
+    };
+  }, [session?.user]);
+
   return (
     <header>
       <nav
         data-state={menuState && "active"}
         className="bg-primary fixed z-20 w-full border-b backdrop-blur-3xl"
       >
-        <div className="mx-auto max-w-7xl px-6 transition-all duration-300">
+        <div className="px-6 transition-all duration-300">
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
             <div className="flex w-full items-center justify-between gap-12 lg:w-auto">
               {/* <Link
@@ -129,7 +137,7 @@ export const HeroHeader = () => {
                 </ul>
               </div>
               <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                <NavUser user={user} />
+                {status === "loading" ? null : <NavUser user={navUser} />}
               </div>
             </div>
           </div>

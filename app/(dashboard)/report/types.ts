@@ -1,36 +1,42 @@
 import { SearchParams } from "@/types";
 
-export interface ReportBooking {
+export interface ReportSummary {
+  summary_data: {
+    confirmed_booking: {
+      count: number;
+      percent: number;
+      message: string;
+    };
+    cancellation_booking: {
+      count: number;
+      percent: number;
+      message: string;
+    };
+    new_customer: {
+      count: number;
+      percent: number;
+      message: string;
+    };
+  };
+  graphic_data: null;
+}
+
+export interface ReportAgent {
+  agent_name: string;
+  agent_company: string;
+  hotel_name: string;
+  confirmed_booking: number;
+  cancelled_booking: number;
+}
+
+export interface ReportAgentDetail {
+  additional: string;
+  capacity: string;
+  date_in: string;
+  date_out: string;
   guest_name: string;
   room_type: string;
-  date_in: string; // ISO string
-  date_out: string; // ISO string
-  capacity: string;
-  additional: string;
-}
-
-export interface Report {
-  id: string;
-  name: string;
-  company: string;
-  email: string;
-  hotel_name: string;
-  confirmed_bookings: number;
-  cancelled_bookings: number;
-  status: string;
-  bookings: ReportBooking[];
-}
-
-export interface ReportTableResponse {
-  success: boolean;
-  data: Report[];
-  pageCount: number;
-}
-
-export interface ReportBookingsPaginatedResponse {
-  data: ReportBooking[];
-  pageCount: number;
-  totalCount: number;
+  status_booking: string;
 }
 
 export interface ReportPageProps {

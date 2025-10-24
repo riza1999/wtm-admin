@@ -18,7 +18,7 @@ interface PromoTableProps {
 
 const PromoTable = ({ promises }: PromoTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [{ data, pageCount }] = React.use(promises);
+  const [{ data, pagination }] = React.use(promises);
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<Promo> | null>(null);
 
@@ -31,10 +31,10 @@ const PromoTable = ({ promises }: PromoTableProps) => {
   );
 
   const { table } = useDataTable({
-    data,
+    data: data || [],
     columns,
-    pageCount,
-    getRowId: (originalRow) => originalRow.id,
+    pageCount: pagination?.total_pages || 1,
+    getRowId: (originalRow) => String(originalRow.id),
     shallow: false,
     clearOnDefault: true,
     startTransition,

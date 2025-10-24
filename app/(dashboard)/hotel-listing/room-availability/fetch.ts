@@ -1,143 +1,31 @@
-import { SearchParams } from "@/types";
-import { RoomAvailabilityHotel, RoomAvailabilityTableResponse } from "./types";
+"use server";
+
+import { ApiResponse, SearchParams } from "@/types";
+import { Hotel } from "../types";
+import { buildQueryParams } from "@/lib/utils";
+import { apiCall } from "@/lib/api";
+import { RoomAvailabilityHotel } from "./types";
 
 export const getData = async ({
   searchParams,
 }: {
   searchParams: SearchParams;
-}): Promise<RoomAvailabilityTableResponse> => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+}): Promise<ApiResponse<Hotel[]>> => {
+  const queryString = buildQueryParams(searchParams);
+  const url = `/hotels${queryString ? `?${queryString}` : ""}`;
+  const apiResponse = await apiCall<Hotel[]>(url);
 
-  const data = [
-    {
-      id: "1",
-      name: "Ibis Hotel & Convention",
-      region: "Jakarta",
-      period: "June 2025",
-      rooms: [
-        {
-          id: "11",
-          name: "Superior Room",
-          availability: [
-            true,
-            false,
-            true,
-            true,
-            false,
-            true,
-            true,
-            true,
-            false,
-            true,
-            true,
-            false,
-            true,
-            true,
-            true,
-            false,
-            true,
-            true,
-            false,
-            true,
-            true,
-            true,
-            false,
-            true,
-            true,
-            false,
-            true,
-            true,
-            true,
-            true,
-          ],
-        },
-        {
-          id: "12",
-          name: "Deluxe Room",
-          availability: [
-            true,
-            true,
-            false,
-            true,
-            false,
-            true,
-            false,
-            true,
-            false,
-            true,
-            true,
-            false,
-            true,
-            false,
-            true,
-            false,
-            false,
-            false,
-            false,
-            true,
-            true,
-            true,
-            false,
-            true,
-            true,
-            false,
-            true,
-            false,
-            false,
-            false,
-          ],
-        },
-      ],
-    },
-    {
-      id: "2",
-      name: "Atria Hotel",
-      region: "Denpasar",
-      period: "June 2025",
-      rooms: [
-        {
-          id: "11",
-          name: "Superior Room",
-          availability: [
-            true,
-            true,
-            false,
-            true,
-            false,
-            true,
-            false,
-            true,
-            true,
-            false,
-            true,
-            false,
-            true,
-            false,
-            true,
-            true,
-            false,
-            true,
-            false,
-            true,
-            false,
-            true,
-            true,
-            false,
-            true,
-            false,
-            true,
-            false,
-            true,
-            false,
-          ],
-        },
-      ],
-    },
-  ] as RoomAvailabilityHotel[];
+  return apiResponse;
+};
 
-  return {
-    success: true,
-    data,
-    pageCount: 2,
-  };
+export const getRoomAvaliableByHotelId = async ({
+  hotel_id,
+  period,
+}: {
+  hotel_id: string;
+  period: string;
+}): Promise<ApiResponse<RoomAvailabilityHotel[]>> => {
+  const url = `/hotels/room-available?hotel_id=${hotel_id}&month=${period}`;
+  const apiResponse = await apiCall<RoomAvailabilityHotel[]>(url);
+  return apiResponse;
 };

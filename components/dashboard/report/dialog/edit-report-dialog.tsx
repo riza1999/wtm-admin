@@ -1,7 +1,7 @@
 "use client";
 
 import { editReport } from "@/app/(dashboard)/report/actions";
-import { Report } from "@/app/(dashboard)/report/types";
+import { ReportSummary } from "@/app/(dashboard)/report/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -31,27 +31,15 @@ export type EditReportSchema = z.infer<typeof editReportSchema>;
 
 interface EditReportDialogProps
   extends React.ComponentPropsWithRef<typeof Dialog> {
-  report: Report | null;
+  report: ReportSummary | null;
 }
 
 const EditReportDialog = ({ report, ...props }: EditReportDialogProps) => {
   const [isPending, startTransition] = React.useTransition();
 
-  console.log({
-    name: report?.name,
-    company: report?.company,
-    email: report?.email,
-    hotel_name: report?.hotel_name,
-  });
-
   const form = useForm<EditReportSchema>({
     resolver: zodResolver(editReportSchema),
-    defaultValues: {
-      name: report?.name ?? "",
-      company: report?.company ?? "",
-      email: report?.email ?? "",
-      hotel_name: report?.hotel_name ?? "",
-    },
+    defaultValues: {},
   });
 
   function onSubmit(input: EditReportSchema) {
@@ -59,7 +47,7 @@ const EditReportDialog = ({ report, ...props }: EditReportDialogProps) => {
       if (!report) return;
 
       const { success } = await editReport({
-        id: report.id,
+        id: "1",
         ...input,
       });
 

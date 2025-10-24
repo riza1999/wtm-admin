@@ -1,14 +1,14 @@
 import { SearchParams } from "@/types";
 
 export interface Agent {
-  id: string;
+  id: number;
   name: string;
-  company: string;
-  promo_group: string;
+  agent_company_name: string;
+  promo_group_id: number;
   email: string;
   kakao_id: string;
-  phone: string;
-  status: boolean;
+  phone_number: string;
+  status: string;
 }
 
 export interface AgentTableResponse {

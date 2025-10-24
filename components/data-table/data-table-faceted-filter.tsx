@@ -2,7 +2,7 @@
 
 import type { Option } from "@/types/data-table";
 import type { Column } from "@tanstack/react-table";
-import { Check, PlusCircle, XCircle } from "lucide-react";
+import { Check, Funnel, XCircle } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -90,7 +90,7 @@ export function DataTableFacetedFilter<TData, TValue>({
               <XCircle />
             </div>
           ) : (
-            <PlusCircle />
+            <Funnel />
           )}
           {title}
           {selectedValues?.size > 0 && (

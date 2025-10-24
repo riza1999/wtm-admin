@@ -8,7 +8,6 @@ import { useDataTable } from "@/hooks/use-data-table";
 import type { DataTableRowAction } from "@/types/data-table";
 import React, { useTransition } from "react";
 import CreateSupportDialog from "../dialog/create-support-dialog";
-import { DeleteSupportDialog } from "../dialog/delete-support-dialog";
 import EditSupportDialog from "../dialog/edit-support-dialog";
 import { getSupportTableColumns } from "./support-columns";
 
@@ -18,7 +17,8 @@ interface SupportTableProps {
 
 const SupportTable = ({ promises }: SupportTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [{ data, pageCount }] = React.use(promises);
+  const [response] = React.use(promises);
+  const { status, data, pagination } = response;
 
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<Support> | null>(null);
@@ -29,14 +29,18 @@ const SupportTable = ({ promises }: SupportTableProps) => {
   );
 
   const { table } = useDataTable({
-    data,
+    data: data || [],
     columns,
-    pageCount,
+    pageCount: pagination?.total_pages || 1,
     getRowId: (originalRow) => originalRow.id,
     shallow: false,
     clearOnDefault: true,
     startTransition,
   });
+
+  if (status !== 200) {
+    return <div>Failed to load data</div>;
+  }
 
   return (
     <>
@@ -54,13 +58,6 @@ const SupportTable = ({ promises }: SupportTableProps) => {
           support={rowAction?.row.original ?? null}
         />
       )}
-      <DeleteSupportDialog
-        open={rowAction?.variant === "delete"}
-        onOpenChange={() => setRowAction(null)}
-        support={rowAction?.row.original ? [rowAction.row.original] : []}
-        showTrigger={false}
-        onSuccess={() => rowAction?.row.toggleSelected(false)}
-      />
     </>
   );
 };

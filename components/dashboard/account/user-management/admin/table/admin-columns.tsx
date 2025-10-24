@@ -5,7 +5,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTableRowAction } from "@/types/data-table";
@@ -32,7 +31,7 @@ export function getAdminTableColumns({
       size: 40,
     },
     {
-      id: "name",
+      id: "search",
       accessorKey: "name",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Name" />
@@ -63,12 +62,12 @@ export function getAdminTableColumns({
       enableColumnFilter: false,
     },
     {
-      id: "phone",
-      accessorKey: "phone",
+      id: "phone_number",
+      accessorKey: "phone_number",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Phone" />
       ),
-      cell: ({ row }) => row.original.phone,
+      cell: ({ row }) => row.original.phone_number,
       meta: {
         label: "Phone",
         placeholder: "Search phone...",
@@ -83,9 +82,7 @@ export function getAdminTableColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Status" />
       ),
-      cell: ({ row }) => (
-        <span>{row.original.status ? "Active" : "Inactive"}</span>
-      ),
+      cell: ({ row }) => <span>{row.original.status}</span>,
       enableHiding: false,
       enableSorting: false,
     },
@@ -109,13 +106,12 @@ export function getAdminTableColumns({
               >
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
+              {/* <DropdownMenuItem
                 variant="destructive"
                 onSelect={() => setRowAction({ row, variant: "delete" })}
               >
                 Delete
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
         );

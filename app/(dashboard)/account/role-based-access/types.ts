@@ -18,3 +18,30 @@ export interface RoleBasedAccessTableResponse {
   data: RoleBasedAccessPageData[];
   pageCount: number;
 }
+
+export interface AccessControl {
+  create: boolean;
+  delete: boolean;
+  read: boolean;
+  update: boolean;
+}
+
+export interface RoleAccess {
+  account: AccessControl;
+  booking: AccessControl;
+  hotel: AccessControl;
+  promo: AccessControl;
+  ["promo-group"]: AccessControl;
+  report: AccessControl;
+}
+
+export interface RoleAccessData {
+  role: Role;
+  access: RoleAccess;
+}
+
+export interface GetRoleAccessResponse {
+  status: number;
+  message: string;
+  data: RoleAccessData[];
+}

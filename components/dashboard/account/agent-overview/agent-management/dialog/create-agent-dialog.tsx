@@ -21,12 +21,18 @@ import z from "zod";
 import { AgentForm } from "../form/agent-form";
 
 export const createAgentSchema = z.object({
-  name: z.string(),
-  company: z.string(),
-  promo_group: z.string(),
+  full_name: z.string(),
+  agent_company: z.string(),
+  promo_group_id: z.string(),
   email: z.string().email(),
   phone: z.string(),
-  status: z.boolean(),
+  is_active: z.boolean(),
+  kakao_talk_id: z.string().min(1).max(25),
+  username: z.string().min(1).max(25),
+  agent_selfie_photo: z.instanceof(File).optional(),
+  identity_card: z.instanceof(File).optional(),
+  certificate: z.instanceof(File).optional(),
+  name_card: z.instanceof(File).optional(),
 });
 
 export type CreateAgentSchema = z.infer<typeof createAgentSchema>;
@@ -38,20 +44,37 @@ const CreateAgentDialog = () => {
   const form = useForm<CreateAgentSchema>({
     resolver: zodResolver(createAgentSchema),
     defaultValues: {
-      name: "",
-      company: "",
-      promo_group: "",
+      full_name: "",
+      agent_company: "",
+      promo_group_id: "0",
       email: "",
       phone: "",
-      status: true,
+      is_active: true,
+      kakao_talk_id: "",
+      username: "",
+      agent_selfie_photo: undefined,
+      identity_card: undefined,
+      certificate: undefined,
+      name_card: undefined,
     },
   });
 
   function onSubmit(input: CreateAgentSchema) {
+    // Check if required file fields are present
+    if (
+      !input.agent_selfie_photo ||
+      !input.identity_card ||
+      !input.certificate ||
+      !input.name_card
+    ) {
+      toast.error("Please upload all required documents");
+      return;
+    }
+
     startTransition(async () => {
       const { success, message } = await createAgent(input);
       if (!success) {
-        toast.error("Failed to create agent");
+        toast.error(message ?? "Failed to create agent");
         return;
       }
       form.reset();
@@ -68,7 +91,7 @@ const CreateAgentDialog = () => {
           Add
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-xl">
+      <DialogContent className="sm:max-w-xl sm:max-h-[90vh] overflow-auto">
         <DialogHeader>
           <DialogTitle>Create Agent</DialogTitle>
           <DialogDescription>

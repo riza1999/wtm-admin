@@ -9,29 +9,53 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ReportSummary } from "@/app/(dashboard)/report/types";
 
-export function SectionCards() {
+interface TrendingIndicatorProps {
+  percent: number;
+}
+
+function TrendingIndicator({ percent }: TrendingIndicatorProps) {
+  if (percent > 0) {
+    return (
+      <>
+        <IconTrendingUp />+{percent}%
+      </>
+    );
+  } else if (percent < 0) {
+    return (
+      <>
+        <IconTrendingDown />
+        {percent}%
+      </>
+    );
+  } else {
+    return <>0%</>;
+  }
+}
+
+export function SectionCards({
+  data,
+}: {
+  data: ReportSummary["summary_data"];
+}) {
   return (
-    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+    <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 *:data-[slot=card]:shadow-xs @5xl/main:grid-cols-3">
       <Card className="@container/card">
         <CardHeader>
           <CardDescription>Confirmed Bookings</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            264
+            {data.confirmed_booking.count}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
-              <IconTrendingUp />
-              +12.5%
+              <TrendingIndicator percent={data.confirmed_booking.percent} />
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Trending up this month <IconTrendingUp className="size-4" />
-          </div>
-          <div className="text-muted-foreground">
-            Visitors for the last 6 months
+            {data.confirmed_booking.message}
           </div>
         </CardFooter>
       </Card>
@@ -39,21 +63,17 @@ export function SectionCards() {
         <CardHeader>
           <CardDescription>Cancellations Bookings</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            7
+            {data.cancellation_booking.count}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
-              <IconTrendingDown />
-              -20%
+              <TrendingIndicator percent={data.cancellation_booking.percent} />
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Down 20% this period <IconTrendingDown className="size-4" />
-          </div>
-          <div className="text-muted-foreground">
-            Acquisition needs attention
+            {data.cancellation_booking.message}
           </div>
         </CardFooter>
       </Card>
@@ -61,40 +81,18 @@ export function SectionCards() {
         <CardHeader>
           <CardDescription>New Customer</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            752
+            {data.new_customer.count}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
-              <IconTrendingUp />
-              +12.5%
+              <TrendingIndicator percent={data.new_customer.percent} />
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Strong user retention <IconTrendingUp className="size-4" />
+            {data.new_customer.message}
           </div>
-          <div className="text-muted-foreground">Engagement exceed targets</div>
-        </CardFooter>
-      </Card>
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>Growth Rate</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            4.5%
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconTrendingUp />
-              +4.5%
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Steady performance increase <IconTrendingUp className="size-4" />
-          </div>
-          <div className="text-muted-foreground">Meets growth projections</div>
         </CardFooter>
       </Card>
     </div>

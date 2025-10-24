@@ -9,7 +9,6 @@ import {
 } from "@tanstack/react-table";
 import * as React from "react";
 
-import { Report, ReportBooking } from "@/app/(dashboard)/report/types";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import {
@@ -19,20 +18,20 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import {
-  useReportBookingsPaginated,
-  useReportWithBookings,
-} from "@/hooks/use-report-queries";
+
 import { format } from "date-fns";
+import { ReportAgentDetail } from "@/app/(dashboard)/report/types";
+import { UseQueryResult } from "@tanstack/react-query";
+import { ApiResponse } from "@/types";
 
 interface DetailReportDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
-  report: Report | null;
   onSuccess?: () => void;
+  query: UseQueryResult<ApiResponse<ReportAgentDetail[]>, Error>;
 }
 
 // Column definitions for the booking details table
-const columns: ColumnDef<ReportBooking>[] = [
+const columns: ColumnDef<ReportAgentDetail>[] = [
   {
     id: "no",
     header: "No",
@@ -81,7 +80,7 @@ const columns: ColumnDef<ReportBooking>[] = [
     ),
     cell: ({ row }) => {
       const dateIn = new Date(row.original.date_in);
-      return <div className="text-sm">{format(dateIn, "MMM dd, yyyy")}</div>;
+      return <div className="text-sm">{format(dateIn, "dd MMMM yyyy")}</div>;
     },
     enableSorting: true,
     enableHiding: false,
@@ -94,7 +93,7 @@ const columns: ColumnDef<ReportBooking>[] = [
     ),
     cell: ({ row }) => {
       const dateOut = new Date(row.original.date_out);
-      return <div className="text-sm">{format(dateOut, "MMM dd, yyyy")}</div>;
+      return <div className="text-sm">{format(dateOut, "dd MMMM yyyy")}</div>;
     },
     enableSorting: true,
   },
@@ -133,8 +132,8 @@ const columns: ColumnDef<ReportBooking>[] = [
 ];
 
 export function DetailReportDialog({
-  report,
   onSuccess,
+  query,
   ...props
 }: DetailReportDialogProps) {
   // State for server-side pagination and sorting
@@ -147,32 +146,10 @@ export function DetailReportDialog({
     { id: "date_in", desc: false },
   ]);
 
-  // Use server-side paginated query
-  const {
-    data: paginatedData,
-    isLoading,
-    error,
-    isFetching,
-  } = useReportBookingsPaginated({
-    reportId: report?.id,
-    pagination,
-    sorting,
-    enabled: props.open,
-  });
-
-  // Use basic report data for header info
-  const { data: reportWithBookings } = useReportWithBookings(
-    report?.id,
-    props.open
-  );
-
-  // Calculate page count from server response
-  const pageCount = paginatedData?.pageCount ?? 0;
-
   const table = useReactTable({
-    data: paginatedData?.data ?? [],
+    data: query.data?.data || [],
     columns,
-    pageCount,
+    pageCount: query.data?.pagination?.total_pages || 1,
     state: {
       pagination,
       sorting,
@@ -184,43 +161,14 @@ export function DetailReportDialog({
     manualSorting: true,
   });
 
-  if (!report) return null;
-
-  const displayReport = reportWithBookings || report;
-
   return (
     <Dialog {...props}>
       <DialogContent className="sm:max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader className="flex-shrink-0">
-          <DialogTitle>Report Details - {displayReport.name}</DialogTitle>
-          <div className="grid grid-cols-2 gap-4 pt-2 text-sm text-muted-foreground">
-            <div>
-              <span className="font-medium">Company:</span>{" "}
-              {displayReport.company}
-            </div>
-            <div>
-              <span className="font-medium">Email:</span> {displayReport.email}
-            </div>
-            <div>
-              <span className="font-medium">Hotel:</span>{" "}
-              {displayReport.hotel_name}
-            </div>
-            <div>
-              <span className="font-medium">Status:</span>{" "}
-              {displayReport.status}
-            </div>
-            <div>
-              <span className="font-medium">Confirmed Bookings:</span>{" "}
-              {displayReport.confirmed_bookings}
-            </div>
-            <div>
-              <span className="font-medium">Cancelled Bookings:</span>{" "}
-              {displayReport.cancelled_bookings}
-            </div>
-          </div>
+          <DialogTitle className="sr-only">Report Details </DialogTitle>
         </DialogHeader>
         <div className="flex-1 overflow-hidden flex flex-col">
-          {isLoading ? (
+          {query.isLoading ? (
             <div className="flex items-center justify-center h-48">
               <div className="flex items-center gap-2">
                 <LoadingSpinner className="h-4 w-4" />
@@ -229,21 +177,18 @@ export function DetailReportDialog({
                 </span>
               </div>
             </div>
-          ) : error ? (
+          ) : query.isError ? (
             <div className="flex items-center justify-center h-48">
               <div className="text-center">
                 <p className="text-sm text-destructive mb-2">
                   Failed to load booking details
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {error instanceof Error ? error.message : "An error occurred"}
                 </p>
               </div>
             </div>
           ) : (
             <>
               <div className="flex-1 overflow-auto relative">
-                {isFetching && (
+                {query.isPending && (
                   <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50 backdrop-blur-sm">
                     <div className="flex items-center gap-2 rounded-lg bg-background p-3 shadow-lg border">
                       <LoadingSpinner className="h-4 w-4" />
@@ -253,17 +198,8 @@ export function DetailReportDialog({
                     </div>
                   </div>
                 )}
-                <DataTable table={table} />
+                <DataTable table={table} showPagination={false} />
               </div>
-              {/* <div className="flex-shrink-0 border-t pt-4">
-                <DataTablePagination table={table} />
-                {paginatedData && (
-                  <div className="text-sm text-muted-foreground mt-2 text-center">
-                    Total: {paginatedData.totalCount} booking
-                    {paginatedData.totalCount !== 1 ? "s" : ""}
-                  </div>
-                )}
-              </div> */}
             </>
           )}
         </div>

@@ -5,7 +5,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTableRowAction } from "@/types/data-table";
@@ -32,7 +31,7 @@ export function getSupportTableColumns({
       size: 40,
     },
     {
-      id: "name",
+      id: "search",
       accessorKey: "name",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Name" />
@@ -68,7 +67,7 @@ export function getSupportTableColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Phone" />
       ),
-      cell: ({ row }) => row.original.phone,
+      cell: ({ row }) => row.original.phone_number,
       meta: {
         label: "Phone",
         placeholder: "Search phone...",
@@ -83,9 +82,7 @@ export function getSupportTableColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Status" />
       ),
-      cell: ({ row }) => (
-        <span>{row.original.status ? "Active" : "Inactive"}</span>
-      ),
+      cell: ({ row }) => <span>{row.original.status}</span>,
       enableHiding: false,
       enableSorting: false,
     },
@@ -109,13 +106,13 @@ export function getSupportTableColumns({
               >
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
+              {/* <DropdownMenuSeparator /> */}
+              {/* <DropdownMenuItem
                 variant="destructive"
                 onSelect={() => setRowAction({ row, variant: "delete" })}
               >
                 Delete
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuContent>
           </DropdownMenu>
         );

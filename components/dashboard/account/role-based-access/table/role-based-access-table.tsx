@@ -2,7 +2,10 @@
 
 import { updateRBA } from "@/app/(dashboard)/account/role-based-access/actions";
 import { getRoleBasedAccessData } from "@/app/(dashboard)/account/role-based-access/fetch";
-import { RoleBasedAccessPageData } from "@/app/(dashboard)/account/role-based-access/types";
+import {
+  Action,
+  RoleBasedAccessPageData,
+} from "@/app/(dashboard)/account/role-based-access/types";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import {
@@ -26,13 +29,13 @@ interface RoleBasedAccessTableProps {
 const RoleBasedAccessTable = ({ promise }: RoleBasedAccessTableProps) => {
   const [isPending, startTransition] = useTransition();
   const [isUpdatePending, startUpdateTransition] = useTransition();
-  const { data, pageCount } = React.use(promise);
+  const { data } = React.use(promise);
   const columns = React.useMemo(() => getRoleBasedAccessTableColumns(), []);
 
   const { table } = useDataTable({
-    data,
+    data: data || [],
     columns,
-    pageCount,
+    pageCount: 1,
     getRowId: (originalRow) => originalRow.id,
     shallow: false,
     clearOnDefault: true,
@@ -40,16 +43,18 @@ const RoleBasedAccessTable = ({ promise }: RoleBasedAccessTableProps) => {
   });
 
   const handleChangePermission = ({
-    pageId,
-    roleId,
-    status,
+    action,
+    page,
+    role,
+    allowed,
   }: {
-    pageId: string;
-    roleId: string;
-    status: boolean;
+    action: Action;
+    page: string;
+    role: string;
+    allowed: boolean;
   }) => {
     startUpdateTransition(() => {
-      toast.promise(updateRBA({ pageId, roleId, status }), {
+      toast.promise(updateRBA({ action, page, role, allowed }), {
         loading: "Updating role based...",
         success: (data) => data.message,
         error: "Failed to update role based",
@@ -76,9 +81,10 @@ const RoleBasedAccessTable = ({ promise }: RoleBasedAccessTableProps) => {
                         defaultValue={String(allowed)}
                         onValueChange={(value) =>
                           handleChangePermission({
-                            pageId: String(index),
-                            roleId: role,
-                            status: value === "true",
+                            action: action.action.toLowerCase() as Action,
+                            page: page.id.toLowerCase(),
+                            role: role.toLowerCase(),
+                            allowed: value === "true",
                           })
                         }
                       >

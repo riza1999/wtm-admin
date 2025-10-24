@@ -2,10 +2,11 @@
 
 import {
   getCompanyOptions,
-  getData,
+  getReportAgent,
   getHotelOptions,
+  getReportAgentDetail,
 } from "@/app/(dashboard)/report/fetch";
-import { Report } from "@/app/(dashboard)/report/types";
+import { ReportAgent } from "@/app/(dashboard)/report/types";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { useDataTable } from "@/hooks/use-data-table";
@@ -15,11 +16,12 @@ import { DeleteReportDialog } from "../dialog/delete-report-dialog";
 import { DetailReportDialog } from "../dialog/detail-report-dialog";
 import EditReportDialog from "../dialog/edit-report-dialog";
 import { getReportTableColumns } from "./report-columns";
+import { useQuery } from "@tanstack/react-query";
 
 interface ReportTableProps {
   promises: Promise<
     [
-      Awaited<ReturnType<typeof getData>>,
+      Awaited<ReturnType<typeof getReportAgent>>,
       Awaited<ReturnType<typeof getCompanyOptions>>,
       Awaited<ReturnType<typeof getHotelOptions>>
     ]
@@ -28,10 +30,10 @@ interface ReportTableProps {
 
 const ReportTable = ({ promises }: ReportTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [{ data, pageCount }, companyOptions, hotelOptions] =
+  const [{ data, pagination }, companyOptions, hotelOptions] =
     React.use(promises);
   const [rowAction, setRowAction] =
-    React.useState<DataTableRowAction<Report> | null>(null);
+    React.useState<DataTableRowAction<ReportAgent> | null>(null);
 
   const columns = React.useMemo(
     () =>
@@ -44,10 +46,10 @@ const ReportTable = ({ promises }: ReportTableProps) => {
   );
 
   const { table } = useDataTable({
-    data,
+    data: data || [],
     columns,
-    pageCount,
-    getRowId: (originalRow) => originalRow.id,
+    pageCount: pagination?.total_pages || 1,
+    getRowId: (originalRow) => originalRow.hotel_name,
     shallow: false,
     clearOnDefault: true,
     startTransition,
@@ -56,6 +58,17 @@ const ReportTable = ({ promises }: ReportTableProps) => {
         period_date: false,
       },
     },
+  });
+
+  const query = useQuery({
+    queryKey: ["report-agent-details"],
+    queryFn: async () => {
+      const data = await getReportAgentDetail();
+      return data;
+    },
+    retry: 2,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    enabled: rowAction?.variant === "detail",
   });
 
   return (
@@ -70,22 +83,8 @@ const ReportTable = ({ promises }: ReportTableProps) => {
       <DetailReportDialog
         open={rowAction?.variant === "detail"}
         onOpenChange={() => setRowAction(null)}
-        report={rowAction?.row.original ? rowAction.row.original : null}
         onSuccess={() => rowAction?.row.toggleSelected(false)}
-      />
-      {rowAction?.variant === "update" && (
-        <EditReportDialog
-          open={rowAction?.variant === "update"}
-          onOpenChange={() => setRowAction(null)}
-          report={rowAction?.row.original ?? null}
-        />
-      )}
-      <DeleteReportDialog
-        open={rowAction?.variant === "delete"}
-        onOpenChange={() => setRowAction(null)}
-        report={rowAction?.row.original ? [rowAction.row.original] : []}
-        showTrigger={false}
-        onSuccess={() => rowAction?.row.toggleSelected(false)}
+        query={query}
       />
     </>
   );

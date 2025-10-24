@@ -1,33 +1,16 @@
-import { SearchParams } from "@/types";
-import { SupportTableResponse } from "./types";
+import { apiCall } from "@/lib/api";
+import { buildQueryParams } from "@/lib/utils";
+import { ApiResponse, SearchParams } from "@/types";
+import { Support } from "./types";
 
 export const getSupportData = async ({
   searchParams,
 }: {
   searchParams: SearchParams;
-}): Promise<SupportTableResponse> => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+}): Promise<ApiResponse<Support[]>> => {
+  const queryString = buildQueryParams(searchParams);
+  const url = `/users?role=support${queryString ? `&${queryString}` : ""}`;
+  const apiResponse = await apiCall<Support[]>(url);
 
-  const data = [
-    {
-      id: "1",
-      name: "kelvin support",
-      email: "kelvin_support@wtmdigital.com",
-      phone: "081234567800",
-      status: false,
-    },
-    {
-      id: "2",
-      name: "budi support",
-      email: "budi_support@wtmdigital.com",
-      phone: "081234567800",
-      status: false,
-    },
-  ];
-
-  return {
-    success: true,
-    data,
-    pageCount: 2,
-  };
+  return apiResponse;
 };

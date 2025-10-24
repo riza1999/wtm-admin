@@ -1,6 +1,6 @@
 "use client";
 
-import { Member } from "@/app/(dashboard)/promo-group/types";
+import { PromoGroupMembers } from "@/app/(dashboard)/promo-group/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -31,9 +31,9 @@ export type AddMemberPromoGroupSchemaType = z.infer<
 >;
 
 interface AddMemberPromoGroupDialogProps {
-  onAdd: (member: Member) => void;
+  onAdd: (member: PromoGroupMembers) => void;
   companyOptions: Option[];
-  members: Member[];
+  members: PromoGroupMembers[];
 }
 
 const AddMemberPromoGroupDialog = ({
@@ -55,14 +55,14 @@ const AddMemberPromoGroupDialog = ({
   const selectedCompany = form.watch("company");
   const memberOptions = React.useMemo<Option[]>(() => {
     const pool = selectedCompany
-      ? members.filter((m) => m.company === selectedCompany)
+      ? members.filter((m) => m.agent_company === selectedCompany)
       : members;
-    return pool.map((m) => ({ label: m.name, value: m.id }));
+    return pool.map((m) => ({ label: m.name, value: String(m.id) }));
   }, [members, selectedCompany]);
 
   async function onSubmit(input: AddMemberPromoGroupSchemaType) {
     startTransition(async () => {
-      const full = members.find((m) => m.id === input.memberId);
+      const full = members.find((m) => String(m.id) === input.memberId);
       if (!full) {
         toast.error("Member data unavailable");
         return;

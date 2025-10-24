@@ -26,7 +26,7 @@ interface HistoryBookingLogTableProps {
 
 const HistoryBookingLogTable = ({ promises }: HistoryBookingLogTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [{ data, pageCount }, companyOptions] = React.use(promises);
+  const [{ data, pagination }, companyOptions] = React.use(promises);
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<HistoryBookingLog> | null>(null);
 
@@ -43,10 +43,10 @@ const HistoryBookingLogTable = ({ promises }: HistoryBookingLogTableProps) => {
   );
 
   const { table } = useDataTable({
-    data,
+    data: data || [],
     columns,
-    pageCount,
-    getRowId: (originalRow) => originalRow.booking_id,
+    pageCount: pagination?.total_pages || 1,
+    getRowId: (originalRow) => originalRow.booking_code,
     shallow: false,
     clearOnDefault: true,
     startTransition,

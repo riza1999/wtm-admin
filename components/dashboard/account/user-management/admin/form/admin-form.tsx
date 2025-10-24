@@ -17,12 +17,14 @@ interface AdminFormProps<T extends FieldValues>
   children: React.ReactNode;
   form: UseFormReturn<T>;
   onSubmit: (data: T) => void;
+  isEdit?: boolean;
 }
 
 export function AdminForm<T extends FieldValues>({
   form,
   onSubmit,
   children,
+  isEdit = false,
 }: AdminFormProps<T>) {
   return (
     <Form {...form}>
@@ -32,7 +34,7 @@ export function AdminForm<T extends FieldValues>({
       >
         <FormField
           control={form.control}
-          name={"name" as FieldPath<T>}
+          name={"full_name" as FieldPath<T>}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Name</FormLabel>
@@ -50,7 +52,12 @@ export function AdminForm<T extends FieldValues>({
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="Enter email" {...field} />
+                <Input
+                  placeholder="Enter email"
+                  {...field}
+                  readOnly={isEdit}
+                  disabled={isEdit}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -71,7 +78,7 @@ export function AdminForm<T extends FieldValues>({
         />
         <FormField
           control={form.control}
-          name={"status" as FieldPath<T>}
+          name={"is_active" as FieldPath<T>}
           render={({ field }) => (
             <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
               <div className="space-y-0.5">

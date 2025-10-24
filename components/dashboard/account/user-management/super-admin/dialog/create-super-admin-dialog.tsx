@@ -21,10 +21,12 @@ import z from "zod";
 import { SuperAdminForm } from "../form/super-admin-form";
 
 export const createSuperAdminSchema = z.object({
-  name: z.string(),
+  full_name: z.string(),
   email: z.string().email(),
-  phone: z.string(),
-  status: z.boolean(),
+  phone: z.string().regex(/^\+[1-9]\d{1,14}$/, {
+    message: "Phone number must be in E.164 format (e.g., +1234567890)",
+  }),
+  is_active: z.boolean(),
 });
 
 export type CreateSuperAdminSchema = z.infer<typeof createSuperAdminSchema>;
@@ -36,20 +38,25 @@ const CreateSuperAdminDialog = () => {
   const form = useForm<CreateSuperAdminSchema>({
     resolver: zodResolver(createSuperAdminSchema),
     defaultValues: {
-      name: "",
+      full_name: "",
       email: "",
       phone: "",
-      status: true,
+      is_active: true,
     },
   });
 
   function onSubmit(input: CreateSuperAdminSchema) {
     startTransition(async () => {
       const { success, message } = await createSuperAdmin(input);
+
       if (!success) {
-        toast.error("Failed to create super admin");
+        console.log("failed super admin");
+        toast.error(message ?? "Failed to create super admin");
         return;
       }
+
+      console.log("created super admin");
+
       form.reset();
       setOpen(false);
       toast.success(message || "Super Admin created");

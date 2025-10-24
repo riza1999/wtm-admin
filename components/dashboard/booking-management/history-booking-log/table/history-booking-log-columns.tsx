@@ -33,7 +33,7 @@ export function getHistoryBookingLogTableColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Booking ID" />
       ),
-      cell: ({ row }) => row.original.booking_id,
+      cell: ({ row }) => row.original.booking_code,
       meta: {
         label: "Booking ID",
         placeholder: "Search anyhting...",
@@ -50,7 +50,7 @@ export function getHistoryBookingLogTableColumns({
         <DataTableColumnHeader column={column} title="Confirm Date" />
       ),
       cell: ({ row }) => {
-        return formatDate(row.original.confirm_date);
+        return formatDate(row.original.confirm_date || new Date());
       },
       meta: {
         label: "Confirm Date",
@@ -139,7 +139,7 @@ export function getHistoryBookingLogTableColumns({
         <DataTableColumnHeader column={column} title="Check-in Date" />
       ),
       cell: ({ row }) => {
-        return formatDate(row.original.date_in);
+        return formatDate(row.original.check_in_date);
       },
       meta: {
         label: "Check-in Date",
@@ -155,7 +155,7 @@ export function getHistoryBookingLogTableColumns({
         <DataTableColumnHeader column={column} title="Check-out Date" />
       ),
       cell: ({ row }) => {
-        return formatDate(row.original.date_out);
+        return formatDate(row.original.check_out_date);
       },
       meta: {
         label: "Check-out Date",
@@ -185,7 +185,7 @@ export function getHistoryBookingLogTableColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Room Type" />
       ),
-      cell: ({ row }) => row.original.room_type,
+      cell: ({ row }) => row.original.room_type_name,
       meta: {
         label: "Room Type",
         placeholder: "Search room type...",
@@ -200,7 +200,7 @@ export function getHistoryBookingLogTableColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Room Nights" />
       ),
-      cell: ({ row }) => row.original.room_night,
+      cell: ({ row }) => row.original.room_nights,
       meta: {
         label: "Room Nights",
         placeholder: "Filter by room nights...",
@@ -214,7 +214,7 @@ export function getHistoryBookingLogTableColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Capacity" />
       ),
-      cell: ({ row }) => row.original.capacity,
+      cell: ({ row }) => row.original.capacity || 0,
       meta: {
         label: "Capacity",
         placeholder: "Search capacity...",

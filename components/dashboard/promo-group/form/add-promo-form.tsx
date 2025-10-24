@@ -73,21 +73,23 @@ export function AddPromoForm<T extends FieldValues>({
                   defaultValue={field.value}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue 
+                    <SelectValue
                       placeholder={
-                        promos.length === 0 
-                          ? "No promos available" 
+                        promos.length === 0
+                          ? "No promos available"
                           : "Select a promo"
-                      } 
+                      }
                     />
                   </SelectTrigger>
                   <SelectContent>
                     {promos.map((promo) => (
-                      <SelectItem key={promo.id} value={promo.id}>
+                      <SelectItem key={promo.id} value={String(promo.id)}>
                         <div className="flex flex-col items-start">
-                          <div className="font-medium">{promo.name}</div>
+                          <div className="font-medium">{promo.promo_name}</div>
                           <div className="text-xs text-muted-foreground">
-                            {promo.code} • {formatDate(new Date(promo.start_date))} - {formatDate(new Date(promo.end_date))}
+                            {promo.promo_code} •{" "}
+                            {formatDate(new Date(promo.promo_start_date))} -{" "}
+                            {formatDate(new Date(promo.promo_end_date))}
                           </div>
                         </div>
                       </SelectItem>
@@ -103,10 +105,9 @@ export function AddPromoForm<T extends FieldValues>({
         {/* Show message when no promos available */}
         {promos.length === 0 && (
           <div className="text-sm text-muted-foreground text-center py-4">
-            {searchQuery 
-              ? "No promos found matching your search." 
-              : "All available promos have been added to this group."
-            }
+            {searchQuery
+              ? "No promos found matching your search."
+              : "All available promos have been added to this group."}
           </div>
         )}
 

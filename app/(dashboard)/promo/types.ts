@@ -6,27 +6,24 @@ export type PromoType =
   | "room_upgrade"
   | "benefits";
 
-// Default promo type
-export const DEFAULT_PROMO_TYPE: PromoType = "discount";
-
 export interface Promo {
-  id: string;
-  name: string;
-  type: PromoType;
-  // Conditional fields based on type
-  discount_percentage?: number; // for type "discount"
-  price_discount?: number; // for type "fixed_price"
-  room_upgrade_to?: string; // for type "room_upgrade"
-  benefits?: string; // for type "benefits"
-  code: string;
-  description: string;
-  start_date: string; //ISO string
-  end_date: string; //ISO string
-  hotel_name: string;
-  room_type: string;
-  bed_type: string;
-  nights: number;
-  status: boolean;
+  duration: number;
+  id: number;
+  is_active: boolean;
+  promo_code: string;
+  promo_description: string;
+  promo_detail: PromoDetail;
+  promo_end_date: string;
+  promo_name: string;
+  promo_start_date: string;
+  promo_type: string;
+}
+
+interface PromoDetail {
+  benefit_note: string;
+  discount_percentage: number;
+  fixed_price: number;
+  upgraded_to_id: number;
 }
 
 export interface PromoTableResponse {
@@ -41,40 +38,28 @@ export interface PromoPageProps {
 
 // Schema for creating a new promo
 export interface CreatePromoSchema {
-  name: string;
-  type: PromoType;
-  // Conditional fields based on type
-  discount_percentage?: number;
-  price_discount?: number;
-  room_upgrade_to?: string;
-  benefits?: string;
-  code: string;
-  description: string;
-  start_date: string;
-  end_date: string;
-  hotel_name: string;
-  room_type: string;
-  bed_type: string;
-  nights: number;
-  status: boolean;
+  duration: number;
+  id: number;
+  is_active: boolean;
+  promo_code: string;
+  promo_description: string;
+  promo_detail: PromoDetail;
+  promo_end_date: string;
+  promo_name: string;
+  promo_start_date: string;
+  promo_type: string;
 }
 
 // Schema for editing an existing promo
 export interface EditPromoSchema {
-  name: string;
-  type: PromoType;
-  // Conditional fields based on type
-  discount_percentage?: number;
-  price_discount?: number;
-  room_upgrade_to?: string;
-  benefits?: string;
-  code: string;
-  description: string;
-  start_date: string;
-  end_date: string;
-  hotel_name: string;
-  room_type: string;
-  bed_type: string;
-  nights: number;
-  status: boolean;
+  duration: number;
+  id: number;
+  is_active: boolean;
+  promo_code: string;
+  promo_description: string;
+  promo_detail: PromoDetail;
+  promo_end_date: string;
+  promo_name: string;
+  promo_start_date: string;
+  promo_type: string;
 }

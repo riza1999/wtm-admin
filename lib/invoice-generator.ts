@@ -104,7 +104,7 @@ export class InvoiceGenerator {
 
     return {
       // Basic booking information
-      bookingId: booking.booking_id,
+      bookingId: booking.booking_code,
       guestName: booking.agent_name, // Using agent_name as guest name since guestName doesn't exist
       bookingDate: this.generateBookingDate(),
       checkInDate,

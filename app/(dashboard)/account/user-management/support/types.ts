@@ -4,14 +4,12 @@ export interface Support {
   id: string;
   name: string;
   email: string;
-  phone: string;
-  status: boolean;
-}
-
-export interface SupportTableResponse {
-  success: boolean;
-  data: Support[];
-  pageCount: number;
+  phone_number: string;
+  status: string;
+  promo_group_id: number;
+  promo_group_name: string;
+  agent_company_name: string;
+  kakao_talk_id: string;
 }
 
 export interface SupportPageProps {

@@ -2,9 +2,15 @@ import RoleBasedAccessTable from "@/components/dashboard/account/role-based-acce
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import React from "react";
 import { getRoleBasedAccessData } from "./fetch";
+import { SearchParams } from "@/types";
 
-const RoleBasedAccessPage = async () => {
-  const promise = getRoleBasedAccessData();
+const RoleBasedAccessPage = async (props: {
+  searchParams: Promise<SearchParams>;
+}) => {
+  const searchParams = await props.searchParams;
+  const promise = getRoleBasedAccessData({
+    searchParams,
+  });
 
   return (
     <div className="space-y-8">

@@ -1,7 +1,9 @@
 "use client";
 
-import { getData } from "@/app/(dashboard)/hotel-listing/room-availability/fetch";
-import { RoomAvailabilityHotel } from "@/app/(dashboard)/hotel-listing/room-availability/types";
+import {
+  getData,
+  getRoomAvaliableByHotelId,
+} from "@/app/(dashboard)/hotel-listing/room-availability/fetch";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { Button } from "@/components/ui/button";
@@ -20,6 +22,9 @@ import { createParser, useQueryState } from "nuqs";
 import React, { useTransition } from "react";
 import { UpdateRoomAvailabilityDrawer } from "../drawer/update-room-availability-drawer";
 import { getRoomAvailabilityTableColumns } from "./room-availability-columns";
+import { Hotel } from "@/app/(dashboard)/hotel-listing/types";
+import { useQuery } from "@tanstack/react-query";
+import { RoomAvailabilityHotel } from "@/app/(dashboard)/hotel-listing/room-availability/types";
 
 interface RoomAvailabilityTableProps {
   promises: Promise<[Awaited<ReturnType<typeof getData>>]>;
@@ -27,24 +32,42 @@ interface RoomAvailabilityTableProps {
 
 const monthYearParser = createParser({
   parse: (value) => {
-    const [month, year] = value.split("-").map(Number);
+    const [year, month] = value.split("-").map(Number);
     return new Date(year, month - 1);
   },
   serialize: (value) => {
-    return format(value, "MM-yyyy");
+    return format(value, "yyyy-MM");
   },
 });
 
 const RoomAvailabilityTable = ({ promises }: RoomAvailabilityTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [{ data, pageCount }] = React.use(promises);
+  const [{ data, pagination }] = React.use(promises);
   const [rowAction, setRowAction] =
-    React.useState<DataTableRowAction<RoomAvailabilityHotel> | null>(null);
+    React.useState<DataTableRowAction<Hotel> | null>(null);
 
   const [date, setDate] = useQueryState(
     "period",
-    monthYearParser.withDefault(new Date())
+    monthYearParser.withDefault(new Date()).withOptions({
+      shallow: false,
+      clearOnDefault: true,
+      startTransition,
+    })
   );
+
+  const query = useQuery({
+    queryKey: ["room-availability", format(date, "yyyy-MM")],
+    queryFn: async () => {
+      const data = await getRoomAvaliableByHotelId({
+        hotel_id: "1",
+        period: format(date, "yyyy-MM"),
+      });
+      return data;
+    },
+    retry: 2,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    enabled: rowAction?.variant === "update" || rowAction?.variant === "detail",
+  });
 
   const columns = React.useMemo(
     () =>
@@ -55,9 +78,9 @@ const RoomAvailabilityTable = ({ promises }: RoomAvailabilityTableProps) => {
   );
 
   const { table } = useDataTable({
-    data,
+    data: data || [],
     columns,
-    pageCount,
+    pageCount: pagination?.total_pages || 1,
     getRowId: (originalRow) => originalRow.id,
     shallow: false,
     clearOnDefault: true,
@@ -82,7 +105,12 @@ const RoomAvailabilityTable = ({ promises }: RoomAvailabilityTableProps) => {
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
-              <MonthPicker onMonthSelect={setDate} selectedMonth={date} />
+              <MonthPicker
+                selectedMonth={date}
+                onMonthSelect={setDate}
+                // minDate={new Date("2023-01-01")}
+                // maxDate={new Date("2024-12-31")}
+              />
             </PopoverContent>
           </Popover>
         </DataTableToolbar>
@@ -90,12 +118,17 @@ const RoomAvailabilityTable = ({ promises }: RoomAvailabilityTableProps) => {
 
       <UpdateRoomAvailabilityDrawer
         isEdit={rowAction?.variant === "update"}
+        isPending={query.isPending}
         open={
           rowAction?.variant === "update" || rowAction?.variant === "detail"
         }
-        roomAvailabilityHotel={rowAction?.row.original ?? null}
+        roomAvailabilityHotel={
+          query.data?.data || ([] as RoomAvailabilityHotel[])
+        }
+        dataHotel={rowAction?.row.original ?? null}
         onOpenChange={() => setRowAction(null)}
-        period={date ? format(date, "MM-yyyy") : null}
+        date={date}
+        setDate={setDate}
       />
     </div>
   );

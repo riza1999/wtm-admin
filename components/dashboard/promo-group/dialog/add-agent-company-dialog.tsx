@@ -1,6 +1,6 @@
 "use client";
 
-import { Member } from "@/app/(dashboard)/promo-group/types";
+import { PromoGroupMembers } from "@/app/(dashboard)/promo-group/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -29,8 +29,8 @@ type AddAgentCompanySchema = z.infer<typeof addAgentCompanySchema>;
 
 interface AddAgentCompanyDialogProps {
   companyOptions: Option[];
-  members: Member[];
-  onAddMany: (members: Member[]) => void;
+  members: PromoGroupMembers[];
+  onAddMany: (members: PromoGroupMembers[]) => void;
 }
 
 const AddAgentCompanyDialog = ({
@@ -51,7 +51,7 @@ const AddAgentCompanyDialog = ({
   function onSubmit(input: AddAgentCompanySchema) {
     startTransition(async () => {
       const selectedMembers = members.filter(
-        (m) => m.company === input.company
+        (m) => m.agent_company === input.company
       );
       if (selectedMembers.length === 0) {
         toast.error("No members found for the selected company");

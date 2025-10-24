@@ -21,10 +21,10 @@ import z from "zod";
 import { AdminForm } from "../form/admin-form";
 
 export const createAdminSchema = z.object({
-  name: z.string(),
+  full_name: z.string(),
   email: z.string().email(),
   phone: z.string(),
-  status: z.boolean(),
+  is_active: z.boolean(),
 });
 
 export type CreateAdminSchema = z.infer<typeof createAdminSchema>;
@@ -36,10 +36,10 @@ const CreateAdminDialog = () => {
   const form = useForm<CreateAdminSchema>({
     resolver: zodResolver(createAdminSchema),
     defaultValues: {
-      name: "",
+      full_name: "",
       email: "",
       phone: "",
-      status: true,
+      is_active: true,
     },
   });
 
@@ -47,7 +47,7 @@ const CreateAdminDialog = () => {
     startTransition(async () => {
       const { success, message } = await createAdmin(input);
       if (!success) {
-        toast.error("Failed to create admin");
+        toast.error(message ?? "Failed to create admin");
         return;
       }
       form.reset();

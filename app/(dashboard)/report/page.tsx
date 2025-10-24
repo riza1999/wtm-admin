@@ -4,15 +4,26 @@ import ReportTable from "@/components/dashboard/report/table/report-table";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { Separator } from "@/components/ui/separator";
 import React from "react";
-import { getCompanyOptions, getData, getHotelOptions } from "./fetch";
+import {
+  getCompanyOptions,
+  getReportAgent,
+  getHotelOptions,
+  getReportSummary,
+} from "./fetch";
 import { ReportPageProps } from "./types";
 
 const ReportPage = async (props: ReportPageProps) => {
+  const searchParams = await props.searchParams;
+
   const promises = Promise.all([
-    getData({ searchParams: await props.searchParams }),
+    getReportAgent({ searchParams }),
     getCompanyOptions(),
     getHotelOptions(),
   ]);
+
+  const reportSummary = await getReportSummary({
+    searchParams,
+  });
 
   return (
     <div className="flex flex-col gap-4 md:gap-6">
@@ -36,11 +47,11 @@ const ReportPage = async (props: ReportPageProps) => {
           />
         }
       >
+        <SectionCards data={reportSummary.data.summary_data} />
+        <ChartAreaInteractive />
+        <Separator />
         <ReportTable promises={promises} />
       </React.Suspense>
-      <Separator />
-      <SectionCards />
-      <ChartAreaInteractive />
     </div>
   );
 };

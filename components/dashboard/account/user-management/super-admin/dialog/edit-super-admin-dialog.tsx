@@ -21,10 +21,10 @@ import z from "zod";
 import { SuperAdminForm } from "../form/super-admin-form";
 
 export const editSuperAdminSchema = z.object({
-  name: z.string().optional(),
+  full_name: z.string().optional(),
   email: z.string().email().optional(),
   phone: z.string().optional(),
-  status: z.boolean().optional(),
+  is_active: z.boolean().optional(),
 });
 
 export type EditSuperAdminSchema = z.infer<typeof editSuperAdminSchema>;
@@ -43,10 +43,10 @@ const EditSuperAdminDialog = ({
   const form = useForm<EditSuperAdminSchema>({
     resolver: zodResolver(editSuperAdminSchema),
     defaultValues: {
-      name: superAdmin?.name ?? "",
+      full_name: superAdmin?.name ?? "",
       email: superAdmin?.email,
-      phone: superAdmin?.phone,
-      status: superAdmin?.status,
+      phone: superAdmin?.phone_number,
+      is_active: superAdmin?.status === "Active" ? true : false,
     },
   });
 
@@ -58,7 +58,7 @@ const EditSuperAdminDialog = ({
         ...input,
       });
       if (!success) {
-        toast.error("Failed to edit super admin");
+        toast.error(message ?? "Failed to edit super admin");
         return;
       }
       form.reset(input);
@@ -76,7 +76,11 @@ const EditSuperAdminDialog = ({
             Edit details below and save the changes
           </DialogDescription>
         </DialogHeader>
-        <SuperAdminForm<EditSuperAdminSchema> form={form} onSubmit={onSubmit}>
+        <SuperAdminForm<EditSuperAdminSchema>
+          form={form}
+          onSubmit={onSubmit}
+          isEdit={true}
+        >
           <DialogFooter className="gap-2 pt-2 sm:space-x-0">
             <DialogClose asChild>
               <Button type="button" variant="outline">

@@ -2,32 +2,93 @@
 
 import { CreateSupportSchema } from "@/components/dashboard/account/user-management/support/dialog/create-support-dialog";
 import { EditSupportSchema } from "@/components/dashboard/account/user-management/support/dialog/edit-support-dialog";
-
-export async function updateSupportStatus(supportId: string, status: boolean) {
-  console.log("Update Support Status");
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  return {
-    success: true,
-    message: `Support status updated to ${status ? "Active" : "Inactive"}`,
-  };
-}
-
-export async function deleteSupport(supportId: string) {
-  console.log("Delete Support");
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  return { success: true, message: `Support deleted` };
-}
+import { apiCall } from "@/lib/api";
+import { revalidatePath } from "next/cache";
 
 export async function createSupport(input: CreateSupportSchema) {
-  console.log("Create Support:");
-  console.log({ input });
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  return { success: true, message: `Support created` };
+  try {
+    const body = {
+      ...input,
+      role: "support",
+    };
+
+    const response = await apiCall("users", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+
+    if (response.status !== 200) {
+      return {
+        success: false,
+        message: response.message || "Failed to create support",
+      };
+    }
+
+    revalidatePath("/account/user-management", "layout");
+
+    return {
+      success: true,
+      message: response.message ?? `Support created`,
+    };
+  } catch (error) {
+    console.error("Error creating support:", error);
+
+    // Handle API error responses with specific messages
+    if (error && typeof error === "object" && "message" in error) {
+      return {
+        success: false,
+        message: error.message as string,
+      };
+    }
+
+    return {
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Failed to create support",
+    };
+  }
 }
 
 export async function editSupport(input: EditSupportSchema & { id: string }) {
-  console.log("Edit Support:");
-  console.log({ input });
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  return { success: true, message: `Support edited` };
+  try {
+    const body = {
+      ...input,
+      user_id: input.id,
+    };
+
+    const response = await apiCall("users", {
+      method: "PUT",
+      body: JSON.stringify(body),
+    });
+
+    if (response.status !== 200) {
+      return {
+        success: false,
+        message: response.message || "Failed to update support",
+      };
+    }
+
+    revalidatePath("/account/user-management", "layout");
+
+    return {
+      success: true,
+      message: response.message ?? `Support updated`,
+    };
+  } catch (error) {
+    console.error("Error updating support:", error);
+
+    // Handle API error responses with specific messages
+    if (error && typeof error === "object" && "message" in error) {
+      return {
+        success: false,
+        message: error.message as string,
+      };
+    }
+
+    return {
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Failed to update support",
+    };
+  }
 }

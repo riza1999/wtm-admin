@@ -1,17 +1,14 @@
 import { SearchParams } from "@/types";
 
 export interface RoomAvailability {
-  id: string;
-  name: string;
-  availability: boolean[];
+  available: boolean;
+  day: number;
 }
 
 export interface RoomAvailabilityHotel {
-  id: string;
-  name: string;
-  region: string;
-  period: string;
-  rooms: RoomAvailability[];
+  room_type_id: string;
+  room_type_name: string;
+  available: RoomAvailability[];
 }
 
 export interface RoomAvailabilityTableResponse {

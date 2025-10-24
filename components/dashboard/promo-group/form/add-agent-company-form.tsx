@@ -1,6 +1,6 @@
 "use client";
 
-import { Member } from "@/app/(dashboard)/promo-group/types";
+import { PromoGroupMembers } from "@/app/(dashboard)/promo-group/types";
 import {
   Form,
   FormControl,
@@ -26,7 +26,7 @@ interface AddAgentCompanyFormProps<T extends FieldValues>
   form: UseFormReturn<T>;
   onSubmit: (data: T) => void;
   companyOptions: Option[];
-  members: Member[];
+  members: PromoGroupMembers[];
 }
 
 export function AddAgentCompanyForm<T extends FieldValues>({
@@ -48,7 +48,7 @@ export function AddAgentCompanyForm<T extends FieldValues>({
           render={({ field }) => {
             const selectedCompany = field.value;
             const companyMembers = selectedCompany
-              ? members.filter((m) => m.company === selectedCompany)
+              ? members.filter((m) => m.agent_company === selectedCompany)
               : [];
 
             return (

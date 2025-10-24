@@ -4,42 +4,132 @@ import { CreateAgentSchema } from "@/components/dashboard/account/agent-overview
 import { EditAgentSchema } from "@/components/dashboard/account/agent-overview/agent-management/dialog/edit-agent-dialog";
 import { ExportConfigs } from "@/lib/export-client";
 import { ExportService } from "@/lib/export-service";
-import {
-  ExportColumn,
-  ExportFormat,
-  ExportResult,
-  FilterFunction,
-} from "@/lib/export-types";
+import { ExportColumn, ExportFormat, ExportResult } from "@/lib/export-types";
+import { apiCall } from "@/lib/api";
 import { SearchParams } from "@/types";
+import { revalidatePath } from "next/cache";
 import { Agent } from "./types";
+import { getAgentData } from "./fetch";
 
-export async function updatePromoGroup(agentId: string, promo_group: string) {
+export async function updatePromoGroup(
+  agentId: number,
+  promo_group_id: number
+) {
   console.log("Update Agent Promo Group");
   await new Promise((resolve) => setTimeout(resolve, 1000));
   return {
     success: true,
-    message: `Agent Promo Group updated to ${promo_group}`,
+    message: `Agent(${agentId}) Promo Group updated to ${promo_group_id}`,
   };
 }
 
 export async function deleteAgent(agentId: string) {
-  console.log("Delete Agent");
+  console.log(`Delete Agent: ${agentId}`);
   await new Promise((resolve) => setTimeout(resolve, 1000));
   return { success: true, message: `Agent deleted` };
 }
 
 export async function createAgent(input: CreateAgentSchema) {
-  console.log("Create Agent:");
-  console.log({ input });
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  return { success: true, message: `Agent created` };
+  try {
+    const body = {
+      ...input,
+      role: "agent",
+      promo_group_id: Number(input.promo_group_id),
+    };
+
+    console.log({ body });
+
+    return {
+      success: false,
+      message: "Failed to create agent",
+    };
+
+    const response = await apiCall("users", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+
+    console.log({ response, message: response.message });
+
+    if (response.status !== 200) {
+      return {
+        success: false,
+        message: response.message || "Failed to create agent",
+      };
+    }
+
+    revalidatePath("/account/agent-overview", "layout");
+
+    return {
+      success: true,
+      message: response.message ?? `Agent created`,
+    };
+  } catch (error) {
+    console.error("Error creating agent:", error);
+
+    // Handle API error responses with specific messages
+    if (error && typeof error === "object" && "message" in error) {
+      return {
+        success: false,
+        message: error.message as string,
+      };
+    }
+
+    return {
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Failed to create admin",
+    };
+  }
 }
 
-export async function editAgent(input: EditAgentSchema & { id: string }) {
+export async function editAgent(input: EditAgentSchema & { id: number }) {
   console.log("Edit Agent:");
   console.log({ input });
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  return { success: true, message: `Agent edited` };
+
+  try {
+    const body = {
+      ...input,
+      user_id: input.id,
+      promo_group_id: Number(input.promo_group_id),
+    };
+
+    const response = await apiCall("users", {
+      method: "PUT",
+      body: JSON.stringify(body),
+    });
+
+    console.log({ response, message: response.message });
+
+    if (response.status !== 200) {
+      return {
+        success: false,
+        message: response.message || "Failed to edit agent",
+      };
+    }
+
+    revalidatePath("/account/agent-overview", "layout");
+
+    return {
+      success: true,
+      message: response.message ?? `Agent edited`,
+    };
+  } catch (error) {
+    console.error("Error editing agent:", error);
+
+    // Handle API error responses with specific messages
+    if (error && typeof error === "object" && "message" in error) {
+      return {
+        success: false,
+        message: error.message as string,
+      };
+    }
+
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to edit admin",
+    };
+  }
 }
 
 // Define columns for export
@@ -59,13 +149,13 @@ const exportColumns: ExportColumn<Agent>[] = [
   {
     key: "company",
     header: "Company",
-    accessor: (item) => item.company,
+    accessor: (item) => item.agent_company_name,
     width: 25,
   },
   {
     key: "promo_group",
     header: "Promo Group",
-    accessor: (item) => item.promo_group,
+    accessor: (item) => item.promo_group_id,
     width: 15,
   },
   {
@@ -83,7 +173,7 @@ const exportColumns: ExportColumn<Agent>[] = [
   {
     key: "phone",
     header: "Phone",
-    accessor: (item) => item.phone,
+    accessor: (item) => item.phone_number,
     width: 15,
   },
   {
@@ -95,112 +185,36 @@ const exportColumns: ExportColumn<Agent>[] = [
   },
 ];
 
-// Create filtering function
-const createAgentFilter = (): FilterFunction<Agent> => {
-  return ExportService.combineFilters(
-    // Global search filter
-    ExportService.createGlobalSearchFilter<Agent>([
-      "name",
-      "company",
-      "email",
-      "kakao_id",
-      "phone",
-    ]),
-    // Filters
-    ExportService.createMultiSelectFilter<Agent>("promo_group", "promo_group"),
-    ExportService.createMultiSelectFilter<Agent>("company", "company"),
-    // Custom status filter (boolean to string conversion)
-    (data: Agent[], searchParams: SearchParams) => {
-      if (!searchParams.status) return data;
-      const statuses = Array.isArray(searchParams.status)
-        ? searchParams.status
-        : [searchParams.status];
-      return data.filter((item) => statuses.includes(item.status.toString()));
-    }
-  );
-};
-
-// Get sample data (in real implementation, this would fetch from database)
-function getSampleData(): Agent[] {
-  return [
-    {
-      id: "1",
-      name: "Riza",
-      company: "WTM Digital",
-      promo_group: "promo_a",
-      email: "riza@wtmdigital.com",
-      kakao_id: "riza_kakao",
-      phone: "081234567801",
-      status: true,
-    },
-    {
-      id: "2",
-      name: "Andi",
-      company: "WTM Digital",
-      promo_group: "promo_b",
-      email: "andi@wtmdigital.com",
-      kakao_id: "andi_kakao",
-      phone: "081234567802",
-      status: false,
-    },
-    {
-      id: "3",
-      name: "Budi",
-      company: "ABC Travel",
-      promo_group: "promo_a",
-      email: "budi@abctravel.com",
-      kakao_id: "budi_kakao",
-      phone: "081234567803",
-      status: true,
-    },
-    {
-      id: "4",
-      name: "Sari",
-      company: "XYZ Tours",
-      promo_group: "promo_c",
-      email: "sari@xyztours.com",
-      kakao_id: "sari_kakao",
-      phone: "081234567804",
-      status: true,
-    },
-    {
-      id: "5",
-      name: "Deni",
-      company: "Travel Plus",
-      promo_group: "promo_b",
-      email: "deni@travelplus.com",
-      kakao_id: "deni_kakao",
-      phone: "081234567805",
-      status: false,
-    },
-  ];
-}
-
 export async function exportAgent(
   searchParams: SearchParams,
   format: ExportFormat = "csv"
 ): Promise<ExportResult> {
   try {
+    // Override limit to 9999 to get all data for export
+    const exportSearchParams = {
+      ...searchParams,
+      limit: "9999",
+    };
+
     // Log export attempt for debugging
     console.log("Export request:", { searchParams, format });
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
     // Get data (in real implementation, this would fetch from database)
-    const data = getSampleData();
+    const { data, status, message } = await getAgentData({
+      searchParams: exportSearchParams,
+    });
 
-    // Create filter function
-    const filterFn = createAgentFilter();
+    if (status !== 200) {
+      throw new Error(message);
+      // return { success: false, message: message || "Failed to export data" };
+    }
 
     // Use the reusable export service
     return await ExportService.exportData(
       data,
       exportColumns,
       ExportConfigs.agentList,
-      format,
-      filterFn,
-      searchParams
+      format
     );
   } catch (error) {
     console.error("Error exporting agent data:", error);

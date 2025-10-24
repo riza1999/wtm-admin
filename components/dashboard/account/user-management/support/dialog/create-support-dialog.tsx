@@ -21,10 +21,10 @@ import z from "zod";
 import { SupportForm } from "../form/support-form";
 
 export const createSupportSchema = z.object({
-  name: z.string(),
+  full_name: z.string(),
   email: z.string().email(),
   phone: z.string(),
-  status: z.boolean(),
+  is_active: z.boolean(),
 });
 
 export type CreateSupportSchema = z.infer<typeof createSupportSchema>;
@@ -36,10 +36,10 @@ const CreateSupportDialog = () => {
   const form = useForm<CreateSupportSchema>({
     resolver: zodResolver(createSupportSchema),
     defaultValues: {
-      name: "",
+      full_name: "",
       email: "",
       phone: "",
-      status: true,
+      is_active: true,
     },
   });
 
@@ -47,7 +47,7 @@ const CreateSupportDialog = () => {
     startTransition(async () => {
       const { success, message } = await createSupport(input);
       if (!success) {
-        toast.error("Failed to create support");
+        toast.error(message ?? "Failed to create support");
         return;
       }
       form.reset();
