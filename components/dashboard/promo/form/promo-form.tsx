@@ -1,9 +1,9 @@
 "use client";
 
 import {
+  getBedTypeOptionsByRoomTypeId,
   getHotelOptions,
   getRoomTypeOptionsByHotelId,
-  getBedTypeOptionsByRoomTypeId,
 } from "@/app/(dashboard)/promo/fetch";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
   Popover,
   PopoverContent,
@@ -35,7 +36,6 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import type * as React from "react";
 import type { FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 interface PromoFormProps<T extends FieldValues>
   extends Omit<React.ComponentPropsWithRef<"form">, "onSubmit"> {
@@ -80,7 +80,7 @@ export function PromoForm<T extends FieldValues>({
   });
 
   // Get selected room type ID
-  const selectedRoomTypeId = form.watch("room_type" as FieldPath<T>);
+  const selectedRoomTypeId = form.watch("room_type_id" as FieldPath<T>);
 
   // Fetch bed types based on selected room type
   const {
@@ -121,7 +121,7 @@ export function PromoForm<T extends FieldValues>({
           />
           <FormField
             control={form.control}
-            name={"type" as FieldPath<T>}
+            name={"promo_type" as FieldPath<T>}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Promo Type</FormLabel>
@@ -135,10 +135,10 @@ export function PromoForm<T extends FieldValues>({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="discount">Discount</SelectItem>
-                    <SelectItem value="fixed_price">Fixed Price</SelectItem>
-                    <SelectItem value="room_upgrade">Room Upgrade</SelectItem>
-                    <SelectItem value="benefits">Benefits</SelectItem>
+                    <SelectItem value="1">Discount</SelectItem>
+                    <SelectItem value="2">Fixed Price</SelectItem>
+                    <SelectItem value="3">Room Upgrade</SelectItem>
+                    <SelectItem value="4">Benefits</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -146,11 +146,10 @@ export function PromoForm<T extends FieldValues>({
             )}
           />
           {/* Extra Input Based on Promo Type */}
-          {(form.watch("type" as FieldPath<T>) || "discount") ===
-            "discount" && (
+          {(form.watch("promo_type" as FieldPath<T>) || "1") === "1" && (
             <FormField
               control={form.control}
-              name={"discount_percentage" as FieldPath<T>}
+              name={"detail" as FieldPath<T>}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Discount Percentage (%)</FormLabel>
@@ -171,10 +170,10 @@ export function PromoForm<T extends FieldValues>({
               )}
             />
           )}
-          {form.watch("type" as FieldPath<T>) === "fixed_price" && (
+          {form.watch("promo_type" as FieldPath<T>) === "2" && (
             <FormField
               control={form.control}
-              name={"price_discount" as FieldPath<T>}
+              name={"detail" as FieldPath<T>}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Price Discount (IDR)</FormLabel>
@@ -194,10 +193,10 @@ export function PromoForm<T extends FieldValues>({
               )}
             />
           )}
-          {form.watch("type" as FieldPath<T>) === "room_upgrade" && (
+          {form.watch("promo_type" as FieldPath<T>) === "3" && (
             <FormField
               control={form.control}
-              name={"room_upgrade_to" as FieldPath<T>}
+              name={"detail" as FieldPath<T>}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Room Upgrade To</FormLabel>
@@ -232,10 +231,10 @@ export function PromoForm<T extends FieldValues>({
               )}
             />
           )}
-          {form.watch("type" as FieldPath<T>) === "benefits" && (
+          {form.watch("promo_type" as FieldPath<T>) === "4" && (
             <FormField
               control={form.control}
-              name={"benefits" as FieldPath<T>}
+              name={"detail" as FieldPath<T>}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Benefits</FormLabel>
@@ -428,7 +427,7 @@ export function PromoForm<T extends FieldValues>({
           />
           <FormField
             control={form.control}
-            name={"room_type" as FieldPath<T>}
+            name={"room_type_id" as FieldPath<T>}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Room Type</FormLabel>
@@ -530,7 +529,7 @@ export function PromoForm<T extends FieldValues>({
           />
           <FormField
             control={form.control}
-            name={"nights" as FieldPath<T>}
+            name={"total_night" as FieldPath<T>}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Nights</FormLabel>

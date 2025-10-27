@@ -1,7 +1,8 @@
 "use server";
 
+import { CreatePromoSchema } from "@/components/dashboard/promo/dialog/create-promo-dialog";
+import { EditPromoSchema } from "@/components/dashboard/promo/dialog/edit-promo-dialog";
 import { apiCall } from "@/lib/api";
-import { CreatePromoSchema, EditPromoSchema } from "./types";
 import { revalidatePath } from "next/cache";
 
 export async function updatePromoStatus(promoId: string, status: boolean) {
@@ -22,17 +23,23 @@ export async function deletePromo(promoId: string) {
   return { success: true, message: `Promo deleted` };
 }
 
-export async function createPromo(input: any) {
+export async function createPromo(input: CreatePromoSchema) {
   try {
     const body = {
-      ...input,
-    };
-
-    console.log({ body });
-
-    return {
-      success: false,
-      message: "force error",
+      description: input.description,
+      detail: input.detail.toString(),
+      end_date: input.end_date,
+      is_active: input.is_active,
+      promo_code: input.promo_code,
+      promo_name: input.promo_name,
+      promo_type: Number(input.promo_type),
+      room_types: [
+        {
+          room_type_id: input.room_type_id,
+          total_night: input.total_night,
+        },
+      ],
+      start_date: input.start_date,
     };
 
     const response = await apiCall("promos", {
@@ -73,37 +80,58 @@ export async function createPromo(input: any) {
 }
 
 export async function editPromo(input: EditPromoSchema & { id: string }) {
-  console.log("Edit Promo:");
+  try {
+    const body = {
+      description: input.description,
+      detail: input.detail.toString(),
+      end_date: input.end_date,
+      is_active: input.is_active,
+      promo_code: input.promo_code,
+      promo_name: input.promo_name,
+      promo_type: Number(input.promo_type),
+      room_types: [
+        {
+          room_type_id: input.room_type_id,
+          total_night: input.total_night,
+        },
+      ],
+      start_date: input.start_date,
+    };
 
-  // Validate conditional fields based on type
-  // if (input.type === "discount" && !input.discount_percentage) {
-  //   return {
-  //     success: false,
-  //     message: "Discount percentage is required for discount type",
-  //   };
-  // }
-  // if (input.type === "fixed_price" && !input.price_discount) {
-  //   return {
-  //     success: false,
-  //     message: "Price discount is required for fixed price type",
-  //   };
-  // }
-  // if (input.type === "room_upgrade" && !input.room_upgrade_to) {
-  //   return {
-  //     success: false,
-  //     message: "Room upgrade destination is required for room upgrade type",
-  //   };
-  // }
-  // if (input.type === "benefits" && !input.benefits) {
-  //   return {
-  //     success: false,
-  //     message: "Benefits description is required for benefits type",
-  //   };
-  // }
+    console.log({ body });
 
-  // Simulate API call delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+    const response = await apiCall(`promos/${input.id}`, {
+      method: "PUT",
+      body: JSON.stringify(body),
+    });
 
-  // Simulate success response
-  return { success: true, message: "Promo updated successfully" };
+    if (response.status !== 200) {
+      return {
+        success: false,
+        message: response.message || "Failed to edit promo",
+      };
+    }
+
+    revalidatePath("/promo", "layout");
+
+    return {
+      success: true,
+      message: response.message || "Promo edited",
+    };
+  } catch (error) {
+    console.error("Error editing promo:", error);
+
+    // Handle API error responses with specific messages
+    if (error && typeof error === "object" && "message" in error) {
+      return {
+        success: false,
+        message: error.message as string,
+      };
+    }
+
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to edit promo",
+    };
+  }
 }

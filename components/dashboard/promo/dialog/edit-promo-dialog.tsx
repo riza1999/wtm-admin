@@ -20,51 +20,18 @@ import { toast } from "sonner";
 import z from "zod";
 import { PromoForm } from "../form/promo-form";
 
-export const editPromoSchema = z
-  .object({
-    name: z.string().min(1, "Promo name is required"),
-    type: z.enum(["discount", "fixed_price", "room_upgrade", "benefits"]),
-    // Conditional fields based on type
-    discount_percentage: z.number().min(0).max(100).optional(),
-    price_discount: z.number().min(0).optional(),
-    room_upgrade_to: z.string().optional(),
-    benefits: z.string().optional(),
-    code: z.string().min(1, "Promo code is required"),
-    description: z.string().min(1, "Description is required"),
-    start_date: z.string().min(1, "Start date is required"),
-    end_date: z.string().min(1, "End date is required"),
-    hotel_name: z.string().min(1, "Hotel name is required"),
-    room_type: z.string().min(1, "Room type is required"),
-    bed_type: z.string().min(1, "Bed type is required"),
-    nights: z.number().min(1, "Nights must be at least 1"),
-    status: z.boolean(),
-  })
-  .refine(
-    (data) => {
-      // Conditional validation based on type
-      if (data.type === "discount") {
-        return (
-          data.discount_percentage !== undefined && data.discount_percentage > 0
-        );
-      }
-      if (data.type === "fixed_price") {
-        return data.price_discount !== undefined && data.price_discount > 0;
-      }
-      if (data.type === "room_upgrade") {
-        return (
-          data.room_upgrade_to !== undefined && data.room_upgrade_to.length > 0
-        );
-      }
-      if (data.type === "benefits") {
-        return data.benefits !== undefined && data.benefits.length > 0;
-      }
-      return true;
-    },
-    {
-      message: "Required field for selected promo type is missing",
-      path: ["type"],
-    }
-  );
+export const editPromoSchema = z.object({
+  description: z.string().min(1, "Description is required"),
+  detail: z.union([z.string(), z.number()]),
+  promo_name: z.string().min(1, "Promo name is required"),
+  promo_code: z.string().min(1, "Promo code is required"),
+  promo_type: z.string().min(1, "Promo type is required"),
+  room_type_id: z.coerce.number().min(1, "Room type is required"),
+  total_night: z.number().min(1, "Total night is required"),
+  start_date: z.string().min(1, "Start date is required"),
+  end_date: z.string().min(1, "End date is required"),
+  is_active: z.boolean(),
+});
 
 export type EditPromoSchema = z.infer<typeof editPromoSchema>;
 
@@ -73,6 +40,40 @@ interface EditPromoDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
+
+const promoTypeConversion = (promoType: string | undefined) => {
+  if (!promoType) return "1";
+
+  switch (promoType.toLowerCase()) {
+    case "discount":
+      return "1";
+    case "fixed price":
+      return "2";
+    case "room upgrade":
+      return "3";
+    case "benefits":
+      return "4";
+    default:
+      return "1";
+  }
+};
+
+const promoDetailConversion = (promoType: string, promoDetail: any) => {
+  if (!promoType) return "";
+
+  switch (promoType) {
+    case "1":
+      return promoDetail.discount_percentage;
+    case "2":
+      return promoDetail.fixed_price;
+    case "3":
+      return promoDetail.upgraded_to_id;
+    case "4":
+      return promoDetail.benefit_note;
+    default:
+      return "";
+  }
+};
 
 const EditPromoDialog = ({
   promo,
@@ -84,54 +85,27 @@ const EditPromoDialog = ({
   const form = useForm<EditPromoSchema>({
     resolver: zodResolver(editPromoSchema),
     defaultValues: {
-      name: promo?.promo_name || "",
-      type: (promo?.promo_type as EditPromoSchema["type"]) || "discount",
-      // discount_percentage: promo?.discount_percentage || 0,
-      // price_discount: promo?.price_discount || 0,
-      // room_upgrade_to: promo?.room_upgrade_to || "",
-      // benefits: promo?.benefits || "",
-      // code: promo?.code || "",
-      // description: promo?.description || "",
-      // start_date: promo?.start_date || "",
-      // end_date: promo?.end_date || "",
-      // hotel_name: promo?.hotel_name || "",
-      // room_type: promo?.room_type || "",
-      // bed_type: promo?.bed_type || "",
-      // nights: promo?.nights || 1,
-      // status: promo?.status || true,
+      description: promo?.promo_description || "",
+      detail:
+        promoDetailConversion(
+          promoTypeConversion(promo?.promo_type),
+          promo?.promo_detail
+        ) || "",
+      promo_name: promo?.promo_name || "",
+      promo_code: promo?.promo_code || "",
+      promo_type: promoTypeConversion(promo?.promo_type) || "1",
+      total_night: 0,
+      start_date: promo?.promo_start_date || "",
+      end_date: promo?.promo_end_date || "",
+      is_active: promo?.is_active || true,
     },
   });
-
-  // Update form values when promo changes
-  React.useEffect(() => {
-    if (promo) {
-      form.reset({
-        // name: promo.name,
-        // type: promo.type,
-        // discount_percentage: promo.discount_percentage || 0,
-        // price_discount: promo.price_discount || 0,
-        // room_upgrade_to: promo.room_upgrade_to || "",
-        // benefits: promo.benefits || "",
-        // code: promo.code,
-        // description: promo.description,
-        // start_date: promo.start_date,
-        // end_date: promo.end_date,
-        // hotel_name: promo.hotel_name,
-        // room_type: promo.room_type,
-        // bed_type: promo.bed_type,
-        // nights: promo.nights,
-        // status: promo.status,
-      });
-    }
-  }, [promo, form]);
 
   function onSubmit(input: EditPromoSchema) {
     if (!promo) return;
 
     startTransition(async () => {
-      // const { success } = await editPromo({ ...input, id: promo.id });
-
-      const success = true;
+      const { success } = await editPromo({ ...input, id: String(promo.id) });
 
       if (!success) {
         toast.error("Failed to update promo");

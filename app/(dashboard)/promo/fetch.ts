@@ -3,9 +3,9 @@
 import { Option } from "@/types/data-table";
 import { Promo } from "./types";
 
-import { ApiResponse, SearchParams } from "@/types";
-import { buildQueryParams } from "@/lib/utils";
 import { apiCall } from "@/lib/api";
+import { buildQueryParams } from "@/lib/utils";
+import { ApiResponse, SearchParams } from "@/types";
 import { Hotel } from "../hotel-listing/types";
 
 export const getData = async ({
