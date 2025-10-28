@@ -19,7 +19,7 @@ const PromoGroupEditPage = async ({
   const [promoGroup, companyOptions, allMembers] = await Promise.all([
     getPromoGroupPromosById(id, { limit: "10" }),
     getCompanyOptions(),
-    getPromoGroupMembersById(id, { limit: "10" }),
+    getPromoGroupMembersById({ promo_group_id: id, limit: "10" }),
   ]);
 
   if (!promoGroup) {
@@ -42,8 +42,7 @@ const PromoGroupEditPage = async ({
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
         <MembersCard
-          members={[]}
-          allMembers={allMembers.data}
+          members={allMembers.data || []}
           companyOptions={companyOptions}
         />
         <PromoDetailsCard

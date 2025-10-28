@@ -1,53 +1,44 @@
 "use client";
 
-import { editPromoGroupMembers } from "@/app/(dashboard)/promo-group/actions";
 import { PromoGroupMembers } from "@/app/(dashboard)/promo-group/types";
-import { ConfirmationDialog } from "@/components/confirmation-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Option } from "@/types/data-table";
 import { X } from "lucide-react";
-import React from "react";
-import { toast } from "sonner";
 import AddAgentCompanyDialog from "./dialog/add-agent-company-dialog";
 import AddMemberPromoGroupDialog from "./dialog/add-member-promo-group-dialog";
 
 interface MembersCardProps {
   members: PromoGroupMembers[];
-  allMembers: PromoGroupMembers[];
   companyOptions: Option[];
 }
 
-export function MembersCard({
-  members,
-  allMembers,
-  companyOptions,
-}: MembersCardProps) {
-  const [localMembers, setLocalMembers] =
-    React.useState<PromoGroupMembers[]>(members);
+export function MembersCard({ members, companyOptions }: MembersCardProps) {
+  // const [localMembers, setLocalMembers] =
+  //   React.useState<PromoGroupMembers[]>(members);
 
-  const [openSaveDialog, setOpenSaveDialog] = React.useState(false);
-  const [isSavePending, startSaveTransition] = React.useTransition();
+  // const [openSaveDialog, setOpenSaveDialog] = React.useState(false);
+  // const [isSavePending, startSaveTransition] = React.useTransition();
 
-  const onAddAgentCompany = () => {
-    console.log("Add agent company clicked");
-  };
+  // const onAddAgentCompany = () => {
+  //   console.log("Add agent company clicked");
+  // };
 
-  const onSaveChanges = () => {
-    startSaveTransition(async () => {
-      toast.promise(editPromoGroupMembers("1", localMembers), {
-        success: (data) => data.message,
-        error: "Failed to edit members",
-      });
-      setOpenSaveDialog(false);
-      console.log("Save changes clicked");
-    });
-  };
+  // const onSaveChanges = () => {
+  //   startSaveTransition(async () => {
+  //     toast.promise(editPromoGroupMembers("1", localMembers), {
+  //       success: (data) => data.message,
+  //       error: "Failed to edit members",
+  //     });
+  //     setOpenSaveDialog(false);
+  //     console.log("Save changes clicked");
+  //   });
+  // };
 
   const onRemoveMember = (id: number) => {
-    setLocalMembers((prevMembers) =>
-      prevMembers.filter((member) => member.id !== id)
-    );
+    // setLocalMembers((prevMembers) =>
+    //   prevMembers.filter((member) => member.id !== id)
+    // );
   };
 
   return (
@@ -58,40 +49,18 @@ export function MembersCard({
       <CardContent className="space-y-4">
         {/* Action Buttons */}
         <div className="flex gap-2">
-          <AddMemberPromoGroupDialog
-            onAdd={(member) =>
-              setLocalMembers((prev) => {
-                if (prev.some((m) => m.id === member.id)) return prev;
-                return [...prev, member];
-              })
-            }
-            companyOptions={companyOptions}
-            members={allMembers}
-          />
-          <AddAgentCompanyDialog
-            companyOptions={companyOptions}
-            members={allMembers}
-            onAddMany={(newMembers) =>
-              setLocalMembers((prev) => {
-                const existingIds = new Set(prev.map((m) => m.id));
-                const merged = [...prev];
-                for (const m of newMembers) {
-                  if (!existingIds.has(m.id)) merged.push(m);
-                }
-                return merged;
-              })
-            }
-          />
+          <AddMemberPromoGroupDialog companyOptions={companyOptions} />
+          <AddAgentCompanyDialog companyOptions={companyOptions} />
         </div>
 
         {/* Members List */}
         <div className="space-y-2">
-          {localMembers.length === 0 && (
+          {members.length === 0 && (
             <div className="text-sm text-muted-foreground py-4 text-center">
               No members found.
             </div>
           )}
-          {localMembers.map((member, index) => (
+          {members.map((member, index) => (
             <div
               key={member.id}
               className="flex items-center justify-between py-2 border-b border-gray-200 last:border-b-0"
@@ -114,7 +83,7 @@ export function MembersCard({
         </div>
 
         {/* Save Changes Button */}
-        <div className="pt-4">
+        {/* <div className="pt-4">
           <Button
             size="sm"
             className="text-xs "
@@ -129,7 +98,7 @@ export function MembersCard({
             onCancel={() => setOpenSaveDialog(false)}
             isLoading={isSavePending}
           />
-        </div>
+        </div> */}
       </CardContent>
     </Card>
   );

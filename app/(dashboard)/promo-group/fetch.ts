@@ -1,7 +1,6 @@
 import { apiCall } from "@/lib/api";
 import { buildQueryParams } from "@/lib/utils";
 import { ApiResponse, SearchParams } from "@/types";
-import { Option } from "@/types/data-table";
 import { PromoGroup, PromoGroupMembers, PromoGroupPromos } from "./types";
 
 export const getPromoGroups = async ({
@@ -29,35 +28,39 @@ export const getPromoGroupPromosById = async (
 };
 
 export const getCompanyOptions = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  const url = `/users/agent-companies?limit=0`;
+  const apiResponse = await apiCall<{ id: number; name: string }[]>(url);
 
-  const data = [
-    {
-      label: "Esensi Digital",
-      value: "1",
-    },
-    {
-      label: "Vevo",
-      value: "2",
-    },
-    {
-      label: "88 Rising",
-      value: "3",
-    },
-  ] as Option[];
+  if (apiResponse.status === 200 && Array.isArray(apiResponse.data)) {
+    return apiResponse.data.map((company) => ({
+      label: company.name,
+      value: company.id.toString(),
+    }));
+  }
 
-  return data;
+  return [];
+};
+
+export const getAgentByCompanyId = async (id: string) => {
+  const url = `/users/by-agent-company/${id}`;
+  const apiResponse = await apiCall<{ id: number; name: string }[]>(url);
+
+  if (apiResponse.status === 200 && Array.isArray(apiResponse.data)) {
+    return apiResponse.data.map((agent) => ({
+      label: agent.name,
+      value: agent.id.toString(),
+    }));
+  }
+
+  return [];
 };
 
 // Return Member[] optionally filtered by company label
 export const getPromoGroupMembersById = async (
-  id: string,
   searchParams: SearchParams
 ): Promise<ApiResponse<PromoGroupMembers[]>> => {
   const queryString = buildQueryParams(searchParams);
-  const url = `/promo-groups/members/${id}${
-    queryString ? `?${queryString}` : ""
-  }`;
+  const url = `/promo-groups/members${queryString ? `?${queryString}` : ""}`;
   const apiResponse = await apiCall<PromoGroupMembers[]>(url);
 
   return apiResponse;

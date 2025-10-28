@@ -1,6 +1,5 @@
 "use client";
 
-import { PromoGroupMembers } from "@/app/(dashboard)/promo-group/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -29,14 +28,10 @@ type AddAgentCompanySchema = z.infer<typeof addAgentCompanySchema>;
 
 interface AddAgentCompanyDialogProps {
   companyOptions: Option[];
-  members: PromoGroupMembers[];
-  onAddMany: (members: PromoGroupMembers[]) => void;
 }
 
 const AddAgentCompanyDialog = ({
   companyOptions,
-  members,
-  onAddMany,
 }: AddAgentCompanyDialogProps) => {
   const [open, setOpen] = React.useState(false);
   const [isPending, startTransition] = React.useTransition();
@@ -50,14 +45,14 @@ const AddAgentCompanyDialog = ({
 
   function onSubmit(input: AddAgentCompanySchema) {
     startTransition(async () => {
-      const selectedMembers = members.filter(
-        (m) => m.agent_company === input.company
-      );
-      if (selectedMembers.length === 0) {
-        toast.error("No members found for the selected company");
-        return;
-      }
-      onAddMany(selectedMembers);
+      // const selectedMembers = members.filter(
+      //   (m) => m.agent_company === input.company
+      // );
+      // if (selectedMembers.length === 0) {
+      //   toast.error("No members found for the selected company");
+      //   return;
+      // }
+      // onAddMany(selectedMembers);
       form.reset();
       setOpen(false);
       toast.success("All members from the company have been added");
@@ -83,7 +78,6 @@ const AddAgentCompanyDialog = ({
           form={form}
           onSubmit={onSubmit}
           companyOptions={companyOptions}
-          members={members}
         >
           <DialogFooter className="gap-2 pt-2 sm:space-x-0">
             <DialogClose asChild>

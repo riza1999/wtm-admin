@@ -1,6 +1,5 @@
 "use client";
 
-import { PromoGroupMembers } from "@/app/(dashboard)/promo-group/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -31,15 +30,11 @@ export type AddMemberPromoGroupSchemaType = z.infer<
 >;
 
 interface AddMemberPromoGroupDialogProps {
-  onAdd: (member: PromoGroupMembers) => void;
   companyOptions: Option[];
-  members: PromoGroupMembers[];
 }
 
 const AddMemberPromoGroupDialog = ({
-  onAdd,
   companyOptions,
-  members,
 }: AddMemberPromoGroupDialogProps) => {
   const [open, setOpen] = React.useState(false);
   const [isPending, startTransition] = React.useTransition();
@@ -52,22 +47,14 @@ const AddMemberPromoGroupDialog = ({
     },
   });
 
-  const selectedCompany = form.watch("company");
-  const memberOptions = React.useMemo<Option[]>(() => {
-    const pool = selectedCompany
-      ? members.filter((m) => m.agent_company === selectedCompany)
-      : members;
-    return pool.map((m) => ({ label: m.name, value: String(m.id) }));
-  }, [members, selectedCompany]);
-
   async function onSubmit(input: AddMemberPromoGroupSchemaType) {
     startTransition(async () => {
-      const full = members.find((m) => String(m.id) === input.memberId);
-      if (!full) {
-        toast.error("Member data unavailable");
-        return;
-      }
-      onAdd(full);
+      // const full = members.find((m) => String(m.id) === input.memberId);
+      // if (!full) {
+      //   toast.error("Member data unavailable");
+      //   return;
+      // }
+      // onAdd(full);
       form.reset();
       setOpen(false);
       toast.success("Member added");
@@ -93,7 +80,6 @@ const AddMemberPromoGroupDialog = ({
           form={form}
           onSubmit={onSubmit}
           companyOptions={companyOptions}
-          memberOptions={memberOptions}
           onCompanyChange={(label) => {
             // reset member selection when company changes
             form.setValue("memberId", "");

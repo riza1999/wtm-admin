@@ -1,5 +1,6 @@
 "use client";
 
+import { getAgentByCompanyId } from "@/app/(dashboard)/promo-group/fetch";
 import {
   Form,
   FormControl,
@@ -8,6 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
   Select,
   SelectContent,
@@ -16,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Option } from "@/types/data-table";
+import { useQuery } from "@tanstack/react-query";
 import type * as React from "react";
 import type { FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
 
@@ -25,7 +28,6 @@ interface AddMemberPromoGroupFormProps<T extends FieldValues>
   form: UseFormReturn<T>;
   onSubmit: (data: T) => void;
   companyOptions: Option[];
-  memberOptions: Option[];
   onCompanyChange: (companyLabel: string) => void;
 }
 
@@ -34,9 +36,24 @@ export function AddMemberPromoGroupForm<T extends FieldValues>({
   onSubmit,
   children,
   companyOptions,
-  memberOptions,
   onCompanyChange,
 }: AddMemberPromoGroupFormProps<T>) {
+  const selectedCompany = form.watch("company" as FieldPath<T>);
+  const {
+    data: agentOptions,
+    isLoading: isLoadingAgents,
+    isError: isErrorAgents,
+  } = useQuery({
+    queryKey: ["bed-type-options", selectedCompany],
+    queryFn: async () => {
+      if (!selectedCompany) return [];
+      return getAgentByCompanyId(selectedCompany);
+    },
+    enabled: !!selectedCompany,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    retry: 2,
+  });
+
   return (
     <Form {...form}>
       <form
@@ -62,7 +79,7 @@ export function AddMemberPromoGroupForm<T extends FieldValues>({
                   </SelectTrigger>
                   <SelectContent>
                     {companyOptions.map((opt) => (
-                      <SelectItem key={opt.label} value={opt.label}>
+                      <SelectItem key={opt.label} value={opt.value}>
                         {opt.label}
                       </SelectItem>
                     ))}
@@ -79,23 +96,47 @@ export function AddMemberPromoGroupForm<T extends FieldValues>({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Member Name</FormLabel>
-              <FormControl>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+              <Select
+                onValueChange={field.onChange}
+                value={field.value}
+                disabled={isLoadingAgents || !selectedCompany}
+              >
+                <FormControl>
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select member name" />
+                    {isLoadingAgents && selectedCompany ? (
+                      <div className="flex items-center">
+                        <LoadingSpinner className="mr-2 h-4 w-4" />
+                        Loading member Names...
+                      </div>
+                    ) : (
+                      <SelectValue placeholder="Select member Name" />
+                    )}
                   </SelectTrigger>
-                  <SelectContent>
-                    {memberOptions.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
+                </FormControl>
+                <SelectContent>
+                  {isLoadingAgents && selectedCompany ? (
+                    <SelectItem value="loading" disabled>
+                      Loading member Names...
+                    </SelectItem>
+                  ) : isErrorAgents ? (
+                    <SelectItem value="error" disabled>
+                      Failed to load member Names
+                    </SelectItem>
+                  ) : agentOptions && agentOptions.length > 0 ? (
+                    agentOptions.map((agent) => (
+                      <SelectItem key={agent.value} value={agent.value}>
+                        {agent.label}
                       </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
+                    ))
+                  ) : (
+                    <SelectItem value="no-bed-types" disabled>
+                      {selectedCompany
+                        ? "No member names available"
+                        : "Select a room type first"}
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
