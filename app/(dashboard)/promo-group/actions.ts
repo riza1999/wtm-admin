@@ -1,6 +1,7 @@
 "use server";
 
-import { Promo } from "../promo/types";
+import { apiCall } from "@/lib/api";
+import { revalidatePath } from "next/cache";
 import {
   CreatePromoGroupSchema,
   EditPromoGroupSchema,
@@ -28,14 +29,46 @@ export async function deletePromoGroup(
 export async function createPromoGroup(
   input: CreatePromoGroupSchema
 ): Promise<ActionResponse> {
-  console.log("Create Promo:");
-  console.log({ input });
+  try {
+    const body = {
+      ...input,
+    };
 
-  // Simulate API call delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+    const response = await apiCall("promo-groups", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
 
-  // Simulate success response
-  return { success: true, message: `Promo created` };
+    if (response.status !== 200) {
+      return {
+        success: false,
+        message: response.message || "Failed to create promo group",
+      };
+    }
+
+    revalidatePath("/promo-group", "layout");
+
+    return {
+      success: true,
+      message: response.message || "Promo group created",
+    };
+  } catch (error) {
+    console.error("Error creating promo group:", error);
+
+    // Handle API error responses with specific messages
+    if (error && typeof error === "object" && "message" in error) {
+      return {
+        success: false,
+        message: error.message as string,
+      };
+    }
+
+    return {
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Failed to create promo group",
+    };
+  }
 }
 
 export async function editPromoGroup(
