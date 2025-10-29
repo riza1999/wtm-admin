@@ -7,6 +7,8 @@ import { Option } from "@/types/data-table";
 import { X } from "lucide-react";
 import AddAgentCompanyDialog from "./dialog/add-agent-company-dialog";
 import AddMemberPromoGroupDialog from "./dialog/add-member-promo-group-dialog";
+import DeletePromoGroupMemberDialog from "./dialog/delete-promo-group-member-dialog ";
+import { useState } from "react";
 
 interface MembersCardProps {
   members: PromoGroupMembers[];
@@ -19,10 +21,12 @@ export function MembersCard({
   companyOptions,
   promoGroupId,
 }: MembersCardProps) {
-  const onRemoveMember = (id: number) => {
-    // setLocalMembers((prevMembers) =>
-    //   prevMembers.filter((member) => member.id !== id)
-    // );
+  const [openDialog, setOpenDialog] = useState(false);
+  const [member, setMember] = useState<PromoGroupMembers | null>(null);
+
+  const onRemoveMember = (member: PromoGroupMembers) => {
+    setMember(member);
+    setOpenDialog(true);
   };
 
   return (
@@ -61,13 +65,20 @@ export function MembersCard({
                 variant="ghost"
                 size="sm"
                 className="h-6 w-6 p-0 text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-                onClick={() => onRemoveMember?.(member.id)}
+                onClick={() => onRemoveMember(member)}
               >
                 <X className="w-4 h-4" />
               </Button>
             </div>
           ))}
         </div>
+
+        <DeletePromoGroupMemberDialog
+          open={openDialog}
+          onOpenChange={setOpenDialog}
+          member={member}
+          promoGroupId={promoGroupId}
+        />
       </CardContent>
     </Card>
   );

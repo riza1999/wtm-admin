@@ -42,6 +42,13 @@ export const getCompanyOptions = async () => {
 };
 
 export const getAgentByCompanyId = async (id: string) => {
+  return [
+    {
+      label: "test dummy",
+      value: "1",
+    },
+  ];
+
   const url = `/users/by-agent-company/${id}`;
   const apiResponse = await apiCall<{ id: number; name: string }[]>(url);
 

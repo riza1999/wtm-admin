@@ -135,18 +135,52 @@ export async function addPromoGroupMembers(
   }
 }
 
-export async function removePromoGroupMembers(
-  id: string,
-  members: PromoGroupMembers[]
-): Promise<ActionResponse> {
-  console.log("Remove Promo Members:");
-  console.log({ id, members });
+export async function removePromoGroupMembers(input: {
+  member_id: number;
+  promo_group_id: number;
+}): Promise<ActionResponse> {
+  try {
+    const body = {
+      ...input,
+    };
 
-  // Simulate API call delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+    const response = await apiCall("promo-groups/members", {
+      method: "DELETE",
+      body: JSON.stringify(body),
+    });
 
-  // Simulate success response
-  return { success: true, message: `Members has been removed` };
+    if (response.status !== 200) {
+      return {
+        success: false,
+        message: response.message || "Failed to remove promo group member",
+      };
+    }
+
+    revalidatePath("/promo-group", "layout");
+
+    return {
+      success: true,
+      message: response.message || "Members has been removed",
+    };
+  } catch (error) {
+    console.error("Error removing promo group member:", error);
+
+    // Handle API error responses with specific messages
+    if (error && typeof error === "object" && "message" in error) {
+      return {
+        success: false,
+        message: error.message as string,
+      };
+    }
+
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Failed to add members to promo group",
+    };
+  }
 }
 
 export async function editPromoGroupMembers(
