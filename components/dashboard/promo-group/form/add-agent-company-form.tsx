@@ -41,7 +41,7 @@ export function AddAgentCompanyForm<T extends FieldValues>({
       >
         <FormField
           control={form.control}
-          name={"company" as FieldPath<T>}
+          name={"agent_company_id" as FieldPath<T>}
           render={({ field }) => {
             return (
               <FormItem>

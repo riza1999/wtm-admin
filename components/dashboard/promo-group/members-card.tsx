@@ -41,7 +41,10 @@ export function MembersCard({
             companyOptions={companyOptions}
             promoGroupId={promoGroupId}
           />
-          <AddAgentCompanyDialog companyOptions={companyOptions} />
+          <AddAgentCompanyDialog
+            companyOptions={companyOptions}
+            promoGroupId={promoGroupId}
+          />
         </div>
 
         {/* Members List */}

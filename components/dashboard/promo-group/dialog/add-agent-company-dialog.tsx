@@ -19,19 +19,22 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
 import { AddAgentCompanyForm } from "../form/add-agent-company-form";
+import { addPromoGroupMembersByAgentCompany } from "@/app/(dashboard)/promo-group/actions";
 
 const addAgentCompanySchema = z.object({
-  company: z.string().min(1, "Agent company is required"),
+  agent_company_id: z.string().min(1, "Agent company is required"),
 });
 
-type AddAgentCompanySchema = z.infer<typeof addAgentCompanySchema>;
+export type AddAgentCompanySchema = z.infer<typeof addAgentCompanySchema>;
 
 interface AddAgentCompanyDialogProps {
   companyOptions: Option[];
+  promoGroupId: string;
 }
 
 const AddAgentCompanyDialog = ({
   companyOptions,
+  promoGroupId,
 }: AddAgentCompanyDialogProps) => {
   const [open, setOpen] = React.useState(false);
   const [isPending, startTransition] = React.useTransition();
@@ -39,23 +42,25 @@ const AddAgentCompanyDialog = ({
   const form = useForm<AddAgentCompanySchema>({
     resolver: zodResolver(addAgentCompanySchema),
     defaultValues: {
-      company: "",
+      agent_company_id: "",
     },
   });
 
   function onSubmit(input: AddAgentCompanySchema) {
     startTransition(async () => {
-      // const selectedMembers = members.filter(
-      //   (m) => m.agent_company === input.company
-      // );
-      // if (selectedMembers.length === 0) {
-      //   toast.error("No members found for the selected company");
-      //   return;
-      // }
-      // onAddMany(selectedMembers);
+      const { success } = await addPromoGroupMembersByAgentCompany({
+        ...input,
+        promo_group_id: promoGroupId,
+      });
+
+      if (!success) {
+        toast.error("Failed to add member");
+        return;
+      }
+
       form.reset();
       setOpen(false);
-      toast.success("All members from the company have been added");
+      toast.success("Member added");
     });
   }
 

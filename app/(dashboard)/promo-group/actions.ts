@@ -9,6 +9,7 @@ import {
   PromoGroupPromos,
 } from "./types";
 import { AddMemberPromoGroupSchemaType } from "@/components/dashboard/promo-group/dialog/add-member-promo-group-dialog";
+import { AddAgentCompanySchema } from "@/components/dashboard/promo-group/dialog/add-agent-company-dialog";
 
 // Define a standard response type
 interface ActionResponse {
@@ -94,6 +95,54 @@ export async function addPromoGroupMembers(
       promo_group_id: Number(input.promo_group_id),
       agent_company_id: Number(input.agent_company_id),
       member_id: Number(input.member_id),
+    };
+
+    const response = await apiCall("promo-groups/members", {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+
+    if (response.status !== 200) {
+      return {
+        success: false,
+        message: response.message || "Failed to create promo group",
+      };
+    }
+
+    revalidatePath("/promo-group", "layout");
+
+    return {
+      success: true,
+      message: response.message || "Members has been added",
+    };
+  } catch (error) {
+    console.error("Error adding members to promo group:", error);
+
+    // Handle API error responses with specific messages
+    if (error && typeof error === "object" && "message" in error) {
+      return {
+        success: false,
+        message: error.message as string,
+      };
+    }
+
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Failed to add members to promo group",
+    };
+  }
+}
+
+export async function addPromoGroupMembersByAgentCompany(
+  input: AddAgentCompanySchema & { promo_group_id: string }
+): Promise<ActionResponse> {
+  try {
+    const body = {
+      promo_group_id: Number(input.promo_group_id),
+      agent_company_id: Number(input.agent_company_id),
     };
 
     const response = await apiCall("promo-groups/members", {
