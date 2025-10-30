@@ -6,21 +6,83 @@ import { apiCall } from "@/lib/api";
 import { revalidatePath } from "next/cache";
 
 export async function updatePromoStatus(promoId: string, status: boolean) {
-  console.log("Update Promo Status");
-  // Simulate API call delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  try {
+    const body = {
+      is_active: status,
+    };
 
-  // Simulate success response
-  return { success: true, message: `Promo status updated to ${status}` };
+    const response = await apiCall(`promos/${promoId}`, {
+      method: "PUT",
+      body: JSON.stringify(body),
+    });
+
+    if (response.status !== 200) {
+      return {
+        success: false,
+        message: response.message || "Failed to update promo status",
+      };
+    }
+
+    revalidatePath("/promo", "layout");
+
+    return {
+      success: true,
+      message: response.message || "Promo status updated successfully",
+    };
+  } catch (error) {
+    console.error("Error editing promo:", error);
+
+    // Handle API error responses with specific messages
+    if (error && typeof error === "object" && "message" in error) {
+      return {
+        success: false,
+        message: error.message as string,
+      };
+    }
+
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Failed to edit promo",
+    };
+  }
 }
 
 export async function deletePromo(promoId: string) {
-  console.log("Delete Promo");
-  // Simulate API call delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  try {
+    const response = await apiCall(`promos/${promoId}`, {
+      method: "DELETE",
+    });
 
-  // Simulate success response
-  return { success: true, message: `Promo deleted` };
+    if (response.status !== 200) {
+      return {
+        success: false,
+        message: response.message || "Failed to remove promo",
+      };
+    }
+
+    revalidatePath("/promo", "layout");
+
+    return {
+      success: true,
+      message: response.message || "Promo has been successfully removed",
+    };
+  } catch (error) {
+    console.error("Error removing promo :", error);
+
+    // Handle API error responses with specific messages
+    if (error && typeof error === "object" && "message" in error) {
+      return {
+        success: false,
+        message: error.message as string,
+      };
+    }
+
+    return {
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Failed to remove promo",
+    };
+  }
 }
 
 export async function createPromo(input: CreatePromoSchema) {
