@@ -2,12 +2,7 @@
 
 import { apiCall } from "@/lib/api";
 import { revalidatePath } from "next/cache";
-import {
-  CreatePromoGroupSchema,
-  EditPromoGroupSchema,
-  PromoGroupMembers,
-  PromoGroupPromos,
-} from "./types";
+import { CreatePromoGroupSchema, EditPromoGroupSchema } from "./types";
 import { AddMemberPromoGroupSchemaType } from "@/components/dashboard/promo-group/dialog/add-member-promo-group-dialog";
 import { AddAgentCompanySchema } from "@/components/dashboard/promo-group/dialog/add-agent-company-dialog";
 import { AddPromoSchemaType } from "@/components/dashboard/promo-group/dialog/add-promo-dialog";

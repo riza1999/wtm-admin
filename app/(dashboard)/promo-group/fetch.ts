@@ -5,30 +5,6 @@ import { buildQueryParams } from "@/lib/utils";
 import { ApiResponse, SearchParams } from "@/types";
 import { PromoGroup, PromoGroupMembers, PromoGroupPromos } from "./types";
 
-export const getPromoGroups = async ({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}): Promise<ApiResponse<PromoGroup[]>> => {
-  const queryString = buildQueryParams(searchParams);
-  const url = `/promo-groups${queryString ? `?${queryString}` : ""}`;
-  const apiResponse = await apiCall<PromoGroup[]>(url);
-
-  return apiResponse;
-};
-
-// Retrieve a paginated list of promos that belong to a specific promo group using query parameters.
-export const getPromoGroupPromosById = async (
-  id: string,
-  searchParams: SearchParams
-): Promise<ApiResponse<PromoGroupPromos[]>> => {
-  const queryString = buildQueryParams(searchParams);
-  const url = `/promo-groups/${id}${queryString ? `?${queryString}` : ""}`;
-  const apiResponse = await apiCall<PromoGroupPromos[]>(url);
-
-  return apiResponse;
-};
-
 export const getCompanyOptions = async () => {
   const url = `/users/agent-companies?limit=0`;
   const apiResponse = await apiCall<{ id: number; name: string }[]>(url);
@@ -43,14 +19,42 @@ export const getCompanyOptions = async () => {
   return [];
 };
 
-export const getAgentByCompanyId = async (id: string) => {
-  return [
-    {
-      label: "test dummy",
-      value: "1",
-    },
-  ];
+export const getPromoGroups = async ({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}): Promise<ApiResponse<PromoGroup[]>> => {
+  const queryString = buildQueryParams(searchParams);
+  const url = `/promo-groups${queryString ? `?${queryString}` : ""}`;
+  const apiResponse = await apiCall<PromoGroup[]>(url);
 
+  return apiResponse;
+};
+
+export const getPromoGroupsById = async (
+  id: string
+): Promise<ApiResponse<{ id: number; name: string }>> => {
+  const url = `/promo-groups/${id}`;
+  const apiResponse = await apiCall<{ id: number; name: string }>(url);
+
+  return apiResponse;
+};
+
+// Retrieve a paginated list of promos that belong to a specific promo group using query parameters.
+export const getPromoGroupPromosById = async (
+  id: string,
+  searchParams: SearchParams
+): Promise<ApiResponse<PromoGroupPromos[]>> => {
+  const queryString = buildQueryParams(searchParams);
+  const url = `/promo-groups/promos?id=${id}${
+    queryString ? `&${queryString}` : ""
+  }`;
+  const apiResponse = await apiCall<PromoGroupPromos[]>(url);
+
+  return apiResponse;
+};
+
+export const getAgentByCompanyId = async (id: string) => {
   const url = `/users/by-agent-company/${id}`;
   const apiResponse = await apiCall<{ id: number; name: string }[]>(url);
 
