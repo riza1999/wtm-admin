@@ -38,7 +38,7 @@ const DeletePromoGroupDialog = ({
 
     startTransition(async () => {
       const deletePromises = promoGroups.map((promoGroup) =>
-        deletePromoGroup(promoGroup.id)
+        deletePromoGroup({ id: Number(promoGroup.id) })
       );
       const results = await Promise.all(deletePromises);
 

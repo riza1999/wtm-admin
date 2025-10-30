@@ -13,15 +13,46 @@ interface ActionResponse {
   message: string;
 }
 // Promo Group
-export async function deletePromoGroup(
-  promoId: string
-): Promise<ActionResponse> {
-  console.log("Delete Promo");
-  // Simulate API call delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+export async function deletePromoGroup(input: {
+  id: number;
+}): Promise<ActionResponse> {
+  try {
+    const response = await apiCall(`promo-groups/${input.id}`, {
+      method: "DELETE",
+    });
 
-  // Simulate success response
-  return { success: true, message: `Promo deleted` };
+    if (response.status !== 200) {
+      return {
+        success: false,
+        message: response.message || "Failed to remove promo group promo",
+      };
+    }
+
+    revalidatePath("/promo-group", "layout");
+
+    return {
+      success: true,
+      message: response.message || "Promo group has been successfully removed",
+    };
+  } catch (error) {
+    console.error("Error removing promo group promo:", error);
+
+    // Handle API error responses with specific messages
+    if (error && typeof error === "object" && "message" in error) {
+      return {
+        success: false,
+        message: error.message as string,
+      };
+    }
+
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Failed to remove promo group promo",
+    };
+  }
 }
 
 export async function createPromoGroup(
