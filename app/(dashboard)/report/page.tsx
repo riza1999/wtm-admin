@@ -3,9 +3,9 @@ import { SectionCards } from "@/components/dashboard/report/section-cards";
 import ReportTable from "@/components/dashboard/report/table/report-table";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { Separator } from "@/components/ui/separator";
-import { getCompanyOptions } from "@/server/general";
+import { getCompanyOptions, getHotelOptions } from "@/server/general";
 import React from "react";
-import { getHotelOptions, getReportAgent, getReportSummary } from "./fetch";
+import { getReportAgent, getReportSummary } from "./fetch";
 import { ReportPageProps } from "./types";
 
 const ReportPage = async (props: ReportPageProps) => {

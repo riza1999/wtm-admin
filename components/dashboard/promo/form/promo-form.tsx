@@ -2,7 +2,6 @@
 
 import {
   getBedTypeOptionsByRoomTypeId,
-  getHotelOptions,
   getRoomTypeOptionsByHotelId,
 } from "@/app/(dashboard)/promo/fetch";
 import { Button } from "@/components/ui/button";
@@ -31,6 +30,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
+import { getHotelOptions } from "@/server/general";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";

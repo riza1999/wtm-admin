@@ -83,14 +83,3 @@ export const getReportAgentDetail = async (): Promise<
 
   return apiResponse;
 };
-
-export async function getHotelOptions() {
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  return [
-    { label: "Grand Hotel Jakarta", value: "Grand Hotel Jakarta" },
-    { label: "Hotel Indonesia", value: "hotel Indonesia" },
-    { label: "Other Hotel", value: "other hotel" },
-  ];
-}

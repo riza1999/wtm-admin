@@ -1,22 +1,19 @@
 "use client";
 
 import {
-  getCompanyOptions,
   getReportAgent,
-  getHotelOptions,
   getReportAgentDetail,
 } from "@/app/(dashboard)/report/fetch";
 import { ReportAgent } from "@/app/(dashboard)/report/types";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { useDataTable } from "@/hooks/use-data-table";
+import { getCompanyOptions, getHotelOptions } from "@/server/general";
 import type { DataTableRowAction } from "@/types/data-table";
-import React, { useTransition } from "react";
-import { DeleteReportDialog } from "../dialog/delete-report-dialog";
-import { DetailReportDialog } from "../dialog/detail-report-dialog";
-import EditReportDialog from "../dialog/edit-report-dialog";
-import { getReportTableColumns } from "./report-columns";
 import { useQuery } from "@tanstack/react-query";
+import React, { useTransition } from "react";
+import { DetailReportDialog } from "../dialog/detail-report-dialog";
+import { getReportTableColumns } from "./report-columns";
 
 interface ReportTableProps {
   promises: Promise<
