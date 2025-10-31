@@ -84,17 +84,6 @@ export const getReportAgentDetail = async (): Promise<
   return apiResponse;
 };
 
-export async function getCompanyOptions() {
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  return [
-    { label: "Esensi Digital", value: "esensi digital" },
-    { label: "WTM Digital", value: "wtm digital" },
-    { label: "Other Company", value: "other company" },
-  ];
-}
-
 export async function getHotelOptions() {
   // Simulate API call
   await new Promise((resolve) => setTimeout(resolve, 500));

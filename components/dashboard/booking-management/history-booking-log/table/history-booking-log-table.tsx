@@ -1,16 +1,14 @@
 "use client";
 
 import { exportHistoryBookingLog } from "@/app/(dashboard)/booking-management/history-booking-log/actions";
-import {
-  getCompanyOptions,
-  getData,
-} from "@/app/(dashboard)/booking-management/history-booking-log/fetch";
+import { getData } from "@/app/(dashboard)/booking-management/history-booking-log/fetch";
 import { HistoryBookingLog } from "@/app/(dashboard)/booking-management/history-booking-log/types";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { ExportButton } from "@/components/ui/export-button";
 import { useDataTable } from "@/hooks/use-data-table";
 import { useExport } from "@/lib/export-client";
+import { getCompanyOptions } from "@/server/general";
 import type { DataTableRowAction } from "@/types/data-table";
 import React, { useTransition } from "react";
 import { getHistoryBookingLogTableColumns } from "./history-booking-log-columns";

@@ -1,13 +1,11 @@
 "use client";
 
-import {
-  getCompanyOptions,
-  getData,
-} from "@/app/(dashboard)/account/agent-overview/agent-control/fetch";
+import { getData } from "@/app/(dashboard)/account/agent-overview/agent-control/fetch";
 import { AgentControl } from "@/app/(dashboard)/account/agent-overview/agent-control/types";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { useDataTable } from "@/hooks/use-data-table";
+import { getCompanyOptions } from "@/server/general";
 import type { DataTableRowAction } from "@/types/data-table";
 import React, { useTransition } from "react";
 import { DeleteAgentControlDialog } from "../dialog/delete-agent-control-dialog";

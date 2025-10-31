@@ -1,11 +1,11 @@
 import { MembersCard } from "@/components/dashboard/promo-group/members-card";
 import PromoDetailsCard from "@/components/dashboard/promo-group/promo-details-card";
 import { Button } from "@/components/ui/button";
+import { getCompanyOptions } from "@/server/general";
 import { IconChevronLeft } from "@tabler/icons-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  getCompanyOptions,
   getPromoGroupMembersById,
   getPromoGroupPromosById,
   getPromoGroupsById,

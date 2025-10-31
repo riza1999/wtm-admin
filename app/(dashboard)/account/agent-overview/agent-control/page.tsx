@@ -1,7 +1,8 @@
 import AgentControlTable from "@/components/dashboard/account/agent-control/table/agent-control-table";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
+import { getCompanyOptions } from "@/server/general";
 import React from "react";
-import { getCompanyOptions, getData } from "./fetch";
+import { getData } from "./fetch";
 import { AgentControlPageProps } from "./types";
 
 const AgentControlPage = async (props: AgentControlPageProps) => {

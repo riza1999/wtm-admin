@@ -2,13 +2,11 @@
 
 import { EmailLog } from "@/app/(dashboard)/settings/email-log/types";
 
-import {
-  getCompanyOptions,
-  getData,
-} from "@/app/(dashboard)/settings/email-log/fetch";
+import { getData } from "@/app/(dashboard)/settings/email-log/fetch";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { useDataTable } from "@/hooks/use-data-table";
+import { getCompanyOptions } from "@/server/general";
 import type { DataTableRowAction } from "@/types/data-table";
 import React, { useTransition } from "react";
 import { getEmailLogTableColumns } from "./email-log-columns";

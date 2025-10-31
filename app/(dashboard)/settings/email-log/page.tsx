@@ -1,7 +1,8 @@
 import EmailLogTable from "@/components/dashboard/settings/email-log/table/email-log-table";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
+import { getCompanyOptions } from "@/server/general";
 import React from "react";
-import { getCompanyOptions, getData } from "./fetch";
+import { getData } from "./fetch";
 import { EmailLogPageProps } from "./types";
 
 const EmailLogPage = async (props: EmailLogPageProps) => {

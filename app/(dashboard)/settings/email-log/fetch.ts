@@ -1,5 +1,4 @@
 import { SearchParams } from "@/types";
-import { Option } from "@/types/data-table";
 import { EmailLog, EmailLogTableResponse } from "./types";
 
 export const getData = async ({
@@ -35,25 +34,4 @@ export const getData = async ({
     data,
     page_count: 3,
   };
-};
-
-export const getCompanyOptions = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-
-  const data = [
-    {
-      label: "Esensi Digital",
-      value: "1",
-    },
-    {
-      label: "Vevo",
-      value: "2",
-    },
-    {
-      label: "88 Rising",
-      value: "3",
-    },
-  ] as Option[];
-
-  return data;
 };
