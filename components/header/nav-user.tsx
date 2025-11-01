@@ -1,8 +1,9 @@
 "use client";
 
+import { AccountProfile } from "@/app/(dashboard)/settings/account-setting/types";
 import { ChevronsUpDown, Loader2, LogOut, Settings } from "lucide-react";
-import Link from "next/link";
 import { signOut } from "next-auth/react";
+import Link from "next/link";
 import React from "react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -17,12 +18,7 @@ import {
 } from "../ui/dropdown-menu";
 
 type NavUserProps = {
-  user?: {
-    name?: string | null;
-    email?: string | null;
-    username?: string | null;
-    avatar?: string | null;
-  } | null;
+  user?: AccountProfile;
 };
 
 export const NavUser = ({ user }: NavUserProps) => {
@@ -36,11 +32,11 @@ export const NavUser = ({ user }: NavUserProps) => {
   }, []);
 
   const displayName =
-    user?.name || user?.username || user?.email || "Authenticated User";
+    user?.full_name || user?.username || user?.email || "Authenticated User";
   const displayEmail = user?.email || user?.username || "";
   const displayAvatar =
-    user?.avatar && user.avatar.trim().length > 0
-      ? user.avatar
+    user?.photo_profile && user.photo_profile.trim().length > 0
+      ? `http://${user.photo_profile}`
       : "/avatars/shadcn.jpg";
 
   const initials = React.useMemo(() => {

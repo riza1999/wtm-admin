@@ -6,8 +6,6 @@ import { fetchAccountProfile } from "./fetch";
 const AccountSettingPage = async () => {
   const { data: accountProfile } = await fetchAccountProfile();
 
-  console.log({ accountProfile });
-
   return (
     <div className="flex gap-12">
       {/* Left: Form */}

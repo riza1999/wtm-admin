@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -40,6 +41,7 @@ interface EditProfileFormProps {
 
 const EditProfileForm = ({ defaultValues }: EditProfileFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
 
   const form = useForm<ProfileSchema>({
     resolver: zodResolver(profileSchema),
@@ -57,6 +59,9 @@ const EditProfileForm = ({ defaultValues }: EditProfileFormProps) => {
       loading: "Saving profile changes...",
       success: (data) => {
         setIsLoading(false);
+        queryClient.invalidateQueries({
+          queryKey: ["profile"],
+        });
         return data.message || "Profile updated successfully";
       },
       error: (error) => {

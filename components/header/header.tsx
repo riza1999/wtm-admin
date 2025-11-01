@@ -1,5 +1,7 @@
 "use client";
 
+import { fetchAccountProfile } from "@/app/(dashboard)/settings/account-setting/fetch";
+import { useQuery } from "@tanstack/react-query";
 import { Menu, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -49,6 +51,20 @@ export const HeroHeader = () => {
       avatar: session.user.photo_url ?? null,
     };
   }, [session?.user]);
+
+  const {
+    data: profileData,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["profile"],
+    queryFn: fetchAccountProfile,
+    staleTime: 1000 * 60 * 60 * 24, // 24 hours - only refetch once per day
+    retry: 1, // Reduce retries since this isn't critical data
+    refetchOnWindowFocus: false, // Don't refetch when window regains focus
+    refetchOnReconnect: false, // Don't refetch on network reconnect
+    refetchIntervalInBackground: false, // Don't refetch when tab is in background
+  });
 
   return (
     <header>
@@ -136,9 +152,13 @@ export const HeroHeader = () => {
                   })}
                 </ul>
               </div>
-              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                {status === "loading" ? null : <NavUser user={navUser} />}
-              </div>
+              {!isLoading && !isError && (
+                <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                  {status === "loading" ? null : (
+                    <NavUser user={profileData?.data} />
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
