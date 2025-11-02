@@ -124,3 +124,39 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer base {
+  .email-body p,
+  .email-body div,
+  .email-body span,
+  .email-signature p,
+  .email-signature div,
+  .email-signature span {
+    @apply mb-2 last:mb-0;
+  }
+  
+  .email-body ul,
+  .email-body ol {
+    @apply pl-5 my-2;
+  }
+  
+  .email-body li,
+  .email-signature li {
+    @apply mb-1;
+  }
+  
+  .email-body strong,
+  .email-signature strong {
+    @apply font-semibold;
+  }
+  
+  .email-body em,
+  .email-signature em {
+    @apply italic;
+  }
+  
+  .email-body br,
+  .email-signature br {
+    @apply my-1;
+  }
+}
