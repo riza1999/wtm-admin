@@ -22,7 +22,7 @@ interface EmailLogTableProps {
 
 const EmailLogTable = ({ promises }: EmailLogTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [{ data, page_count }, companyOptions] = React.use(promises);
+  const [{ data, pagination }, companyOptions] = React.use(promises);
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<EmailLog> | null>(null);
 
@@ -38,8 +38,9 @@ const EmailLogTable = ({ promises }: EmailLogTableProps) => {
   const { table } = useDataTable({
     data: data || [],
     columns,
-    pageCount: page_count,
-    getRowId: (originalRow) => `${originalRow.date}_${originalRow.hotel_name}`,
+    pageCount: pagination?.total_pages || 1,
+    getRowId: (originalRow) =>
+      `${originalRow.date_time}_${originalRow.hotel_name}`,
     shallow: false,
     clearOnDefault: true,
     startTransition,

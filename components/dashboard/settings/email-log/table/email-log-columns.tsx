@@ -25,7 +25,7 @@ export function getEmailLogTableColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Date" />
       ),
-      cell: ({ row }) => formatDateTimeWIB(row.original.date),
+      cell: ({ row }) => formatDateTimeWIB(row.original.date_time),
       meta: {
         label: "Date",
         placeholder: "Filter by date...",
