@@ -15,7 +15,7 @@ export interface BookingSummary {
   payment_status: PaymentStatus;
 }
 
-interface BookingSummaryDetail {
+export interface BookingSummaryDetail {
   additional: string[];
   booking_status: BookingStatus;
   cancelled_date: string;
