@@ -3,6 +3,7 @@
 import { saveEmailSetting } from "@/app/(dashboard)/settings/email-setting/actions";
 import { EmailTemplate } from "@/app/(dashboard)/settings/email-setting/types";
 import { Button } from "@/components/ui/button";
+import Editor from "@/components/ui/editor";
 import {
   Form,
   FormControl,
@@ -76,7 +77,12 @@ const EmailSettingForm = ({ defaultValues }: EmailSettingFormProps) => {
                       E-mail Body Template
                     </FormLabel>
                     <FormControl>
-                      <Textarea className="h-40 bg-white" {...field} />
+                      <Editor
+                        content={field.value}
+                        onChange={field.onChange}
+                        placeholder="Enter your email body template here..."
+                        className="bg-white"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -93,7 +99,7 @@ const EmailSettingForm = ({ defaultValues }: EmailSettingFormProps) => {
                     <FormControl>
                       <Textarea
                         className="h-24 bg-white"
-                        placeholder="Enter your email subject here"
+                        placeholder="Enter your email signature here"
                         {...field}
                       />
                     </FormControl>
