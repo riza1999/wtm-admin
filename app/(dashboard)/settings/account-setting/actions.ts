@@ -6,7 +6,6 @@ import { apiCall } from "@/lib/api";
 import { revalidatePath } from "next/cache";
 import { AccountSettingResponse } from "./types";
 
-// Simulate updating account profile
 export async function updateAccountProfile(
   input: ProfileSchema
 ): Promise<AccountSettingResponse> {
@@ -52,7 +51,6 @@ export async function updateAccountProfile(
   }
 }
 
-// Simulate changing password
 export async function changePassword(
   input: PasswordChangeSchema,
   username: string
