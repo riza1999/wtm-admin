@@ -29,7 +29,7 @@ interface AgentTableProps {
 
 const AgentTable = ({ promises }: AgentTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [{ data, pagination }, { data: promoGroupSelect }] =
+  const [{ data, pagination, status }, { data: promoGroupSelect }] =
     React.use(promises);
 
   const [rowAction, setRowAction] =
