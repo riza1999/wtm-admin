@@ -62,7 +62,7 @@ const AgentTable = ({ promises }: AgentTableProps) => {
               isExporting={isExporting}
               onDownload={handleDownload}
             />
-            <CreateAgentDialog />
+            <CreateAgentDialog promoGroupSelect={promoGroupSelect} />
           </DataTableToolbar>
         </DataTable>
       </div>

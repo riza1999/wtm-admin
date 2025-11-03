@@ -14,15 +14,14 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectItemLink,
   SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
 import { DataTableRowAction } from "@/types/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { Ellipsis, Text } from "lucide-react";
-import Link from "next/link";
 import React from "react";
 import { toast } from "sonner";
 
@@ -140,7 +139,7 @@ export function getAgentTableColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Kakao Talk ID" />
       ),
-      cell: ({ row }) => row.original.kakao_id,
+      cell: ({ row }) => row.original.kakao_talk_id,
     },
     {
       id: "phone",
@@ -209,21 +208,3 @@ export function getAgentTableColumns({
     },
   ];
 }
-
-const SelectItemLink = ({
-  href,
-  children,
-  className,
-}: React.ComponentProps<typeof Link>) => {
-  return (
-    <Link
-      href={href}
-      className={cn(
-        "hover:bg-accent hover:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
-        className
-      )}
-    >
-      {children}
-    </Link>
-  );
-};

@@ -1,6 +1,5 @@
 "use server";
 
-import { CreateAgentSchema } from "@/components/dashboard/account/agent-overview/agent-management/dialog/create-agent-dialog";
 import { EditAgentSchema } from "@/components/dashboard/account/agent-overview/agent-management/dialog/edit-agent-dialog";
 import { apiCall } from "@/lib/api";
 import { ExportConfigs } from "@/lib/export-client";
@@ -29,24 +28,16 @@ export async function deleteAgent(agentId: string) {
   return { success: true, message: `Agent deleted` };
 }
 
-export async function createAgent(input: CreateAgentSchema) {
+export async function createAgent(formData: FormData) {
   try {
-    const body = {
-      ...input,
-      role: "agent",
-      promo_group_id: Number(input.promo_group_id),
-    };
-
-    console.log({ body });
-
-    return {
-      success: false,
-      message: "Failed to create agent",
-    };
+    // return {
+    //   success: false,
+    //   message: "Failed to create agent",
+    // };
 
     const response = await apiCall("users", {
       method: "POST",
-      body: JSON.stringify(body),
+      body: formData,
     });
 
     console.log({ response, message: response.message });
@@ -167,7 +158,7 @@ const exportColumns: ExportColumn<Agent>[] = [
   {
     key: "kakao_id",
     header: "Kakao ID",
-    accessor: (item) => item.kakao_id,
+    accessor: (item) => item.kakao_talk_id,
     width: 15,
   },
   {

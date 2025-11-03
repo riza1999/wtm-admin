@@ -1,6 +1,7 @@
 import type * as React from "react";
 import type { FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
 
+import { PromoGroup } from "@/app/(dashboard)/promo-group/types";
 import {
   Form,
   FormControl,
@@ -14,6 +15,8 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectItemLink,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -24,12 +27,14 @@ interface AgentFormProps<T extends FieldValues>
   children: React.ReactNode;
   form: UseFormReturn<T>;
   onSubmit: (data: T) => void;
+  promoGroupSelect: PromoGroup[];
 }
 
 export function AgentForm<T extends FieldValues>({
   form,
   onSubmit,
   children,
+  promoGroupSelect,
 }: AgentFormProps<T>) {
   return (
     <Form {...form}>
@@ -75,10 +80,19 @@ export function AgentForm<T extends FieldValues>({
                     <SelectValue placeholder="Select promo group" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
-                  <SelectItem value="1">Promo Group A</SelectItem>
-                  <SelectItem value="2">Promo Group B</SelectItem>
-                  <SelectItem value="3">Promo Group C</SelectItem>
+                <SelectContent align="end">
+                  {promoGroupSelect.map((promoGroup) => (
+                    <SelectItem
+                      key={promoGroup.id}
+                      value={String(promoGroup.id)}
+                    >
+                      {promoGroup.name}
+                    </SelectItem>
+                  ))}
+                  <SelectSeparator />
+                  <SelectItemLink href={"/promo-group"}>
+                    Create New Group
+                  </SelectItemLink>
                 </SelectContent>
               </Select>
               <FormMessage />

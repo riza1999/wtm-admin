@@ -19,7 +19,7 @@ export const getAgentData = async ({
 export const getPromoGroupSelect = async (): Promise<
   ApiResponse<PromoGroup[]>
 > => {
-  const url = `/promo-groups?limit=9999`;
+  const url = `/promo-groups?limit=0`;
   const apiResponse = await apiCall<PromoGroup[]>(url);
 
   return apiResponse;

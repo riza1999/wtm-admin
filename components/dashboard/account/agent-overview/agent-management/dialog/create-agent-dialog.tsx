@@ -1,6 +1,7 @@
 "use client";
 
 import { createAgent } from "@/app/(dashboard)/account/agent-overview/agent-management/actions";
+import { PromoGroup } from "@/app/(dashboard)/promo-group/types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -36,7 +37,11 @@ export const createAgentSchema = z.object({
 
 export type CreateAgentSchema = z.infer<typeof createAgentSchema>;
 
-const CreateAgentDialog = () => {
+const CreateAgentDialog = ({
+  promoGroupSelect,
+}: {
+  promoGroupSelect: PromoGroup[];
+}) => {
   const [open, setOpen] = React.useState(false);
   const [isPending, startTransition] = React.useTransition();
 
@@ -45,10 +50,10 @@ const CreateAgentDialog = () => {
     defaultValues: {
       full_name: "",
       agent_company: "",
-      promo_group_id: "0",
+      promo_group_id: "",
       email: "",
       phone: "",
-      is_active: true,
+      is_active: true, //
       kakao_talk_id: "",
       photo_selfie: undefined,
       photo_id_card: undefined,
@@ -59,18 +64,32 @@ const CreateAgentDialog = () => {
 
   function onSubmit(input: CreateAgentSchema) {
     // Check if required file fields are present
-    // if (
-    //   !input.photo_selfie ||
-    //   !input.photo_id_card ||
-    //   !input.certificate ||
-    //   !input.name_card
-    // ) {
-    //   toast.error("Please upload all required documents");
-    //   return;
-    // }
+    if (
+      !input.photo_selfie ||
+      !input.photo_id_card ||
+      !input.certificate ||
+      !input.name_card
+    ) {
+      toast.error("Please upload all required documents");
+      return;
+    }
+
+    const fd = new FormData();
+    fd.append("full_name", input.full_name);
+    fd.append("agent_company", input.agent_company);
+    fd.append("promo_group_id", input.promo_group_id);
+    fd.append("email", input.email);
+    fd.append("phone", input.phone);
+    // fd.append("is_active", input.is_active)
+    fd.append("kakao_talk_id", input.kakao_talk_id);
+    fd.append("photo_selfie", input.photo_selfie);
+    fd.append("photo_id_card", input.photo_id_card);
+    fd.append("certificate", input.certificate);
+    fd.append("name_card", input.name_card);
+    fd.append("role", "agent");
 
     startTransition(async () => {
-      const { success, message } = await createAgent(input);
+      const { success, message } = await createAgent(fd);
       if (!success) {
         toast.error(message ?? "Failed to create agent");
         return;
@@ -96,7 +115,11 @@ const CreateAgentDialog = () => {
             Fill in the details below to create a new agent
           </DialogDescription>
         </DialogHeader>
-        <AgentForm form={form} onSubmit={onSubmit}>
+        <AgentForm
+          form={form}
+          onSubmit={onSubmit}
+          promoGroupSelect={promoGroupSelect}
+        >
           <DialogFooter className="gap-2 pt-2 sm:space-x-0">
             <DialogClose asChild>
               <Button type="button" variant="outline">
