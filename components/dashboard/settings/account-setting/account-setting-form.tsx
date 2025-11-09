@@ -22,6 +22,7 @@ import z from "zod";
 
 const passwordChangeSchema = z
   .object({
+    username: z.string().min(1, "Username is required"),
     old_password: z.string().min(1, "Current password is required"),
     new_password: z.string().min(8, "Password must be at least 8 characters"),
     confirm_password: z.string().min(1, "Please confirm your password"),
@@ -46,6 +47,7 @@ const AccountSettingForm = ({ defaultValues }: AccountSettingFormProps) => {
   const form = useForm<PasswordChangeSchema>({
     resolver: zodResolver(passwordChangeSchema),
     defaultValues: {
+      username: defaultValues.username,
       old_password: "",
       new_password: "",
       confirm_password: "",
@@ -61,7 +63,7 @@ const AccountSettingForm = ({ defaultValues }: AccountSettingFormProps) => {
       return;
     }
 
-    toast.promise(changePassword(values, user.username), {
+    toast.promise(changePassword(values), {
       loading: "Changing password...",
       success: (data) => {
         setIsLoading(false);
@@ -83,6 +85,25 @@ const AccountSettingForm = ({ defaultValues }: AccountSettingFormProps) => {
           <div className="flex-1">
             <div className="space-y-4">
               <div className="grid grid-cols-1 gap-4">
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium">
+                        Username
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter your username"
+                          className="bg-gray-200"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="old_password"

@@ -52,8 +52,7 @@ export async function updateAccountProfile(
 }
 
 export async function changePassword(
-  input: PasswordChangeSchema,
-  username: string
+  input: PasswordChangeSchema
 ): Promise<AccountSettingResponse> {
   try {
     const body = {
