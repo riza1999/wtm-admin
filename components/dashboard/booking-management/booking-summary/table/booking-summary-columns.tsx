@@ -53,7 +53,7 @@ export function getBookingSummaryTableColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Guest Name" />
       ),
-      cell: ({ row }) => row.original.guest_name,
+      cell: ({ row }) => row.original.guest_name?.join(", "),
       meta: {
         label: "Guest Name",
         placeholder: "Search guest name...",

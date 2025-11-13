@@ -66,7 +66,7 @@ const HotelTable = ({ promises }: HotelTableProps) => {
               <TableCell />
               <TableCell className="px-5">
                 <div className="space-y-2">
-                  {hotel.rooms.map((room) => (
+                  {hotel.rooms?.map((room) => (
                     <React.Fragment key={room.name}>
                       {room.price && (
                         <div className="mt-1">
