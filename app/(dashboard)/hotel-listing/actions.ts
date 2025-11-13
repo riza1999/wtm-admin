@@ -1,8 +1,8 @@
 "use server";
 
 import { apiCall } from "@/lib/api";
-import { Hotel, Room } from "./types";
 import { revalidatePath } from "next/cache";
+import { Hotel, Room } from "./types";
 
 export async function deleteHotel(hotelId: string) {
   console.log("Delete Hotel");
@@ -59,12 +59,12 @@ export async function createHotel(formData: FormData) {
 }
 
 export async function createHotelNew(formData: FormData) {
-  console.log({ formData });
+  // console.log({ formData });
 
-  return {
-    success: true,
-    message: "Hotel created",
-  };
+  // return {
+  //   success: true,
+  //   message: "Hotel created",
+  // };
   try {
     const response = await apiCall("hotels", {
       method: "POST",

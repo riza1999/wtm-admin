@@ -19,7 +19,7 @@ import {
   IconWorld,
 } from "@tabler/icons-react";
 import { Loader, MapPin, PlusCircle, Trash2 } from "lucide-react";
-import { useCallback, useState, useTransition } from "react";
+import { useCallback, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -62,7 +62,6 @@ export type CreateHotelFormValues = z.infer<typeof createHotelFormSchema>;
 
 const NewHotelForm = () => {
   const [isPending, startTransition] = useTransition();
-  const [hotelFacilities, setHotelFacilities] = useState<string[]>([]);
 
   const form = useForm<CreateHotelFormValues>({
     resolver: zodResolver(createHotelFormSchema),
@@ -129,21 +128,29 @@ const NewHotelForm = () => {
     ]);
   }, [form]);
 
-  const handleFacilityUpdate = useCallback((index: number, value: string) => {
-    setHotelFacilities((prev) => {
-      const next = [...prev];
-      next[index] = value;
-      return next;
-    });
-  }, []);
+  const handleFacilityUpdate = useCallback(
+    (index: number, value: string) => {
+      const currentFacilities = form.getValues("facilities") || [];
+      const updatedFacilities = [...currentFacilities];
+      updatedFacilities[index] = value;
+      form.setValue("facilities", updatedFacilities);
+    },
+    [form]
+  );
 
-  const handleFacilityRemove = useCallback((index: number) => {
-    setHotelFacilities((prev) => prev.filter((_, i) => i !== index));
-  }, []);
+  const handleFacilityRemove = useCallback(
+    (index: number) => {
+      const currentFacilities = form.getValues("facilities") || [];
+      const updatedFacilities = currentFacilities.filter((_, i) => i !== index);
+      form.setValue("facilities", updatedFacilities);
+    },
+    [form]
+  );
 
   const handleFacilityAdd = useCallback(() => {
-    setHotelFacilities((prev) => [...prev, ""]);
-  }, []);
+    const currentFacilities = form.getValues("facilities") || [];
+    form.setValue("facilities", [...currentFacilities, ""]);
+  }, [form]);
 
   // Handle form submission
   const onSubmit = useCallback(
@@ -169,7 +176,7 @@ const NewHotelForm = () => {
         toast.promise(createHotelNew(formData), {
           loading: "Creating hotel...",
           success: ({ message }) => {
-            // form.reset();
+            form.reset();
             return message || `Hotel created successfully!`;
           },
           error: "An unexpected error occurred. Please try again.",
@@ -512,10 +519,10 @@ const NewHotelForm = () => {
             <div className="flex flex-col gap-3">
               <h2 className="text-lg font-bold">Main Facilities</h2>
               <div className="space-y-3">
-                {hotelFacilities.map((facility, index) => (
+                {form.watch("facilities")?.map((facility, index) => (
                   <FacilityItem
                     key={index}
-                    facility={facility}
+                    facility={facility || ""}
                     index={index}
                     onUpdate={handleFacilityUpdate}
                     onRemove={handleFacilityRemove}
