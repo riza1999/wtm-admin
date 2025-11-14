@@ -5,12 +5,41 @@ import { revalidatePath } from "next/cache";
 import { Hotel, Room } from "./types";
 
 export async function deleteHotel(hotelId: string) {
-  console.log("Delete Hotel");
-  // Simulate API call delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  try {
+    const response = await apiCall(`hotels/${hotelId}`, {
+      method: "DELETE",
+    });
 
-  // Simulate success response
-  return { success: true, message: `Hotel deleted` };
+    if (response.status !== 200) {
+      return {
+        success: false,
+        message: response.message || "Failed to remove hotel",
+      };
+    }
+
+    revalidatePath("/hotel-listing/[id]/edit", "layout");
+
+    return {
+      success: true,
+      message: response.message || "Hotel has been successfully removed",
+    };
+  } catch (error) {
+    console.error("Error removing hotel:", error);
+
+    // Handle API error responses with specific messages
+    if (error && typeof error === "object" && "message" in error) {
+      return {
+        success: false,
+        message: error.message as string,
+      };
+    }
+
+    return {
+      success: false,
+      message:
+        error instanceof Error ? error.message : "Failed to remove hotel",
+    };
+  }
 }
 
 export async function createHotelNew(formData: FormData) {
@@ -91,6 +120,52 @@ export async function updateHotel(hotelId: string, formData: FormData) {
   }
 }
 
+export async function updateHotelStatus(hotelId: string, status: boolean) {
+  try {
+    const body = {
+      hotel_id: Number(hotelId),
+      status,
+    };
+
+    const response = await apiCall(`hotels/${hotelId}`, {
+      method: "PUT",
+      body: JSON.stringify(body),
+    });
+
+    if (response.status !== 200) {
+      return {
+        success: false,
+        message: response.message || "Failed to update hotel status",
+      };
+    }
+
+    revalidatePath("/hotel-listing", "layout");
+
+    return {
+      success: true,
+      message: response.message || "Hotel status updated",
+    };
+  } catch (error) {
+    console.error("Error updating hotel status:", error);
+
+    // Handle API error responses with specific messages
+    if (error && typeof error === "object" && "message" in error) {
+      return {
+        success: false,
+        message: error.message as string,
+      };
+    }
+
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Failed to update hotel status",
+    };
+  }
+}
+
 export async function createHotelRoomType(formData: FormData) {
   console.log({ formData });
 
@@ -132,6 +207,90 @@ export async function createHotelRoomType(formData: FormData) {
         error instanceof Error
           ? error.message
           : "Failed to create hotel room type",
+    };
+  }
+}
+
+export async function updateHotelRoomType(formData: FormData) {
+  try {
+    const response = await apiCall("hotels/room-types", {
+      method: "PUT",
+      body: formData,
+    });
+
+    console.log({ response });
+
+    if (response.status !== 200) {
+      return {
+        success: false,
+        message: response.message || "Failed to update hotel room type",
+      };
+    }
+
+    revalidatePath("/hotel-listing/[id]/edit", "layout");
+
+    return {
+      success: true,
+      message: response.message || "Hotel room type updated",
+    };
+  } catch (error) {
+    console.error("Error updating hotel room type:", error);
+
+    // Handle API error responses with specific messages
+    if (error && typeof error === "object" && "message" in error) {
+      return {
+        success: false,
+        message: error.message as string,
+      };
+    }
+
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Failed to update hotel room type",
+    };
+  }
+}
+
+export async function removeHotelRoomType(roomId: string) {
+  try {
+    const response = await apiCall(`hotels/room-type/${roomId}`, {
+      method: "DELETE",
+    });
+
+    if (response.status !== 200) {
+      return {
+        success: false,
+        message: response.message || "Failed to remove hotel room type",
+      };
+    }
+
+    revalidatePath("/hotel-listing/[id]/edit", "layout");
+
+    return {
+      success: true,
+      message:
+        response.message || "Hotel room type has been successfully removed",
+    };
+  } catch (error) {
+    console.error("Error removing hotel room type:", error);
+
+    // Handle API error responses with specific messages
+    if (error && typeof error === "object" && "message" in error) {
+      return {
+        success: false,
+        message: error.message as string,
+      };
+    }
+
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Failed to remove hotel room type",
     };
   }
 }
