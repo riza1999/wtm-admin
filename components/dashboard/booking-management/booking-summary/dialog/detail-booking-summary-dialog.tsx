@@ -44,7 +44,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { DataTableRowAction } from "@/types/data-table";
+import { DataTableRowAction, Option } from "@/types/data-table";
 import {
   IconApi,
   IconApiOff,
@@ -60,12 +60,14 @@ interface GetDetailBookingTableColumnsProps {
   setRowAction: React.Dispatch<
     React.SetStateAction<DataTableRowAction<BookingSummaryDetail> | null>
   >;
+  bookingStatusOptions: Option[];
 }
 
 interface DetailBookingSummaryDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
   bookingSummary: BookingSummary | null;
   onSuccess?: () => void;
+  bookingStatusOptions: Option[];
 }
 
 // Notes Dialog Component
@@ -102,6 +104,7 @@ function NotesDialog({
 
 const getDetailBookingColumns = ({
   setRowAction,
+  bookingStatusOptions,
 }: GetDetailBookingTableColumnsProps): ColumnDef<BookingSummaryDetail>[] => [
   {
     id: "no",
@@ -151,7 +154,7 @@ const getDetailBookingColumns = ({
     cell: ({ row }) => {
       const [isUpdatePending, startUpdateTransition] = React.useTransition();
       const [selectValue, setSelectValue] = React.useState<BookingStatus>(
-        row.original.booking_status
+        row.original.booking_status.toLowerCase() as BookingStatus
       );
       const [dialogOpen, setDialogOpen] = React.useState(false);
       const [pendingValue, setPendingValue] = React.useState<string | null>(
@@ -164,9 +167,15 @@ const getDetailBookingColumns = ({
         startUpdateTransition(() => {
           (async () => {
             try {
+              const status_id = bookingStatusOptions.find(
+                (option) => option.label.toLowerCase() === pendingValue
+              )?.value;
+
+              console.log({ sub_booking_id: row.original.sub_booking_id });
+
               const result = await updateBookingStatus({
                 booking_detail_id: String(row.original.sub_booking_id),
-                status_id: pendingValue,
+                status_id: status_id || "",
                 reason: reason.trim(),
               });
               if (result?.success) {
@@ -197,7 +206,7 @@ const getDetailBookingColumns = ({
       };
 
       const getStatusColor = (value: string) => {
-        if (value === "confirmed") return "text-green-600 bg-green-100";
+        if (value === "approved") return "text-green-600 bg-green-100";
         if (value === "rejected") return "text-red-600 bg-red-100";
         if (value === "in review") return "text-yellow-600 bg-yellow-100";
         return "";
@@ -228,7 +237,7 @@ const getDetailBookingColumns = ({
               <SelectValue placeholder="Change status" />
             </SelectTrigger>
             <SelectContent align="end">
-              <SelectItem value="confirmed">Confirmed</SelectItem>
+              <SelectItem value="approved">Approved</SelectItem>
               <SelectItem value="rejected">Rejected</SelectItem>
               <SelectItem value="in review">In Review</SelectItem>
             </SelectContent>
@@ -295,7 +304,7 @@ const getDetailBookingColumns = ({
     cell: ({ row }) => {
       const [isUpdatePending, startUpdateTransition] = React.useTransition();
       const [selectValue, setSelectValue] = React.useState<PaymentStatus>(
-        row.original.payment_status
+        row.original.payment_status.toLowerCase() as PaymentStatus
       );
       const [dialogOpen, setDialogOpen] = React.useState(false);
       const [pendingValue, setPendingValue] = React.useState<string | null>(
@@ -493,6 +502,7 @@ const getDetailBookingColumns = ({
 export function DetailBookingSummaryDialog({
   bookingSummary,
   onSuccess,
+  bookingStatusOptions,
   ...props
 }: DetailBookingSummaryDialogProps) {
   const [rowAction, setRowAction] =
@@ -511,6 +521,7 @@ export function DetailBookingSummaryDialog({
     () =>
       getDetailBookingColumns({
         setRowAction,
+        bookingStatusOptions,
       }),
     []
   );

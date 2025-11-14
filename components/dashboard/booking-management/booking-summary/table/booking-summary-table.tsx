@@ -69,6 +69,7 @@ const BookingSummaryTable = ({ promises }: BookingSummaryTableProps) => {
         onOpenChange={() => setRowAction(null)}
         bookingSummary={rowAction?.row.original ?? null}
         onSuccess={() => rowAction?.row.toggleSelected(false)}
+        bookingStatusOptions={bookingStatusOptions}
       />
       {rowAction?.variant === "update" && (
         <EditBookingSummaryDialog
