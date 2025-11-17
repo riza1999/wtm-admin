@@ -22,10 +22,10 @@ import z from "zod";
 import { AgentForm } from "../form/agent-form";
 
 export const createAgentSchema = z.object({
-  full_name: z.string(),
-  agent_company: z.string(),
-  promo_group_id: z.string(),
-  email: z.string().email(),
+  full_name: z.string().min(1, "Full name is required"),
+  agent_company: z.string().min(1, "Agent company is required"),
+  promo_group_id: z.string().min(1, "Promo group is required"),
+  email: z.string().email("Invalid email format").min(1, "Email is required"),
   phone: z
     .string()
     .min(8, "Phone number must be at least 8 characters")
@@ -34,11 +34,11 @@ export const createAgentSchema = z.object({
       "Phone number must start with a country code (e.g., +62) followed by digits only"
     ),
   is_active: z.boolean(),
-  kakao_talk_id: z.string().min(1).max(25),
-  photo_selfie: z.instanceof(File).optional(),
-  photo_id_card: z.instanceof(File).optional(),
+  kakao_talk_id: z.string().min(1, "KakaoTalk ID is required").max(25),
+  photo_selfie: z.instanceof(File),
+  photo_id_card: z.instanceof(File),
   certificate: z.instanceof(File).optional(),
-  name_card: z.instanceof(File).optional(),
+  name_card: z.instanceof(File),
 });
 
 export type CreateAgentSchema = z.infer<typeof createAgentSchema>;
@@ -69,17 +69,6 @@ const CreateAgentDialog = ({
   });
 
   function onSubmit(input: CreateAgentSchema) {
-    // Check if required file fields are present
-    if (
-      !input.photo_selfie ||
-      !input.photo_id_card ||
-      !input.certificate ||
-      !input.name_card
-    ) {
-      toast.error("Please upload all required documents");
-      return;
-    }
-
     const fd = new FormData();
     fd.append("full_name", input.full_name);
     fd.append("agent_company", input.agent_company);
@@ -90,7 +79,7 @@ const CreateAgentDialog = ({
     fd.append("kakao_talk_id", input.kakao_talk_id);
     fd.append("photo_selfie", input.photo_selfie);
     fd.append("photo_id_card", input.photo_id_card);
-    fd.append("certificate", input.certificate);
+    if (input.certificate) fd.append("certificate", input.certificate);
     fd.append("name_card", input.name_card);
     fd.append("role", "agent");
 

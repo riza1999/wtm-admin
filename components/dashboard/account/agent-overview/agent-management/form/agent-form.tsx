@@ -153,7 +153,7 @@ export function AgentForm<T extends FieldValues>({
                   onBlur={onBlur}
                   onChange={(e) => {
                     const file = e.target.files?.[0];
-                    onChange(file);
+                    onChange(file || undefined);
                   }}
                 />
               </FormControl>
@@ -176,7 +176,7 @@ export function AgentForm<T extends FieldValues>({
                   onBlur={onBlur}
                   onChange={(e) => {
                     const file = e.target.files?.[0];
-                    onChange(file);
+                    onChange(file || undefined);
                   }}
                 />
               </FormControl>
@@ -199,7 +199,7 @@ export function AgentForm<T extends FieldValues>({
                   onBlur={onBlur}
                   onChange={(e) => {
                     const file = e.target.files?.[0];
-                    onChange(file);
+                    onChange(file || undefined);
                   }}
                 />
               </FormControl>
@@ -222,7 +222,7 @@ export function AgentForm<T extends FieldValues>({
                   onBlur={onBlur}
                   onChange={(e) => {
                     const file = e.target.files?.[0];
-                    onChange(file);
+                    onChange(file || undefined);
                   }}
                 />
               </FormControl>
@@ -230,7 +230,7 @@ export function AgentForm<T extends FieldValues>({
             </FormItem>
           )}
         />
-        <FormField
+        {/* <FormField
           control={form.control}
           name={"is_active" as FieldPath<T>}
           render={({ field }) => (
@@ -249,7 +249,7 @@ export function AgentForm<T extends FieldValues>({
               </FormControl>
             </FormItem>
           )}
-        />
+        /> */}
         {children}
       </form>
     </Form>
