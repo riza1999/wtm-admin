@@ -19,6 +19,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
 import { AgentForm } from "../form/agent-form";
+import { PromoGroup } from "@/app/(dashboard)/promo-group/types";
 
 export const editAgentSchema = z.object({
   full_name: z.string().optional(),
@@ -41,9 +42,16 @@ export type EditAgentSchema = z.infer<typeof editAgentSchema>;
 interface EditAgentDialogProps
   extends React.ComponentPropsWithRef<typeof Dialog> {
   agent: Agent | null;
+  promoGroupSelect: PromoGroup[];
 }
 
-const EditAgentDialog = ({ agent, ...props }: EditAgentDialogProps) => {
+const EditAgentDialog = ({
+  agent,
+  promoGroupSelect,
+  ...props
+}: EditAgentDialogProps) => {
+  console.log({ agent });
+
   const [isPending, startTransition] = React.useTransition();
 
   const form = useForm<EditAgentSchema>({
@@ -87,8 +95,7 @@ const EditAgentDialog = ({ agent, ...props }: EditAgentDialogProps) => {
         <AgentForm<EditAgentSchema>
           form={form}
           onSubmit={onSubmit}
-          // TODO: fetch promoGroupSelect here, for now just pass an empty array
-          promoGroupSelect={[]}
+          promoGroupSelect={promoGroupSelect}
         >
           <DialogFooter className="gap-2 pt-2 sm:space-x-0">
             <DialogClose asChild>

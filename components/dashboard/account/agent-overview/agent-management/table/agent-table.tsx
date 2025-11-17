@@ -68,6 +68,7 @@ const AgentTable = ({ promises }: AgentTableProps) => {
       </div>
       {rowAction?.variant === "update" && (
         <EditAgentDialog
+          promoGroupSelect={promoGroupSelect}
           open={rowAction?.variant === "update"}
           onOpenChange={() => setRowAction(null)}
           agent={rowAction?.row.original ?? null}
