@@ -186,7 +186,8 @@ export function RoomCardInput({
         initialAdditions.map((addition) => addition.id) || [],
       description: defaultValues?.description || "",
     });
-  }, [defaultValues, initialPhotos, initialAdditions, form]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultValues, initialPhotos, initialAdditions]);
 
   const {
     fields: additionalFields,

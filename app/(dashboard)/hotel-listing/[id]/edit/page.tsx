@@ -19,7 +19,7 @@ const EditHotelPage = async ({
   const hotelKey = hotel
     ? `${hotel.id}-${JSON.stringify(hotel.photos)}-${JSON.stringify(
         hotel.nearby_place
-      )}`
+      )}-${JSON.stringify(hotel.room_type)}`
     : id;
 
   return (

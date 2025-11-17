@@ -108,11 +108,12 @@ const EditHotelForm = ({ hotel, hotelId }: EditHotelFormProps) => {
 
   // Reset form when hotel data changes (after successful update)
   useEffect(() => {
-    const nearbyPlaces = hotel.nearby_place?.map((place) => ({
-      id: place.id,
-      name: place.name,
-      distance: place.radius,
-    })) || [];
+    const nearbyPlaces =
+      hotel.nearby_place?.map((place) => ({
+        id: place.id,
+        name: place.name,
+        distance: place.radius,
+      })) || [];
 
     setOriginalNearbyPlaces(nearbyPlaces);
 
@@ -132,7 +133,8 @@ const EditHotelForm = ({ hotel, hotelId }: EditHotelFormProps) => {
       facilities: hotel.facilities || [],
       social_medias: hotel.social_media || [],
     });
-  }, [hotel, form]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hotel]);
 
   // Handle image uploads from ImageUpload component
   const handleImageChange = useCallback(
@@ -327,11 +329,13 @@ const EditHotelForm = ({ hotel, hotelId }: EditHotelFormProps) => {
         formData.append("social_medias", JSON.stringify(data.social_medias));
 
         const result = await updateHotel(hotelId, formData);
-        
+
         if (result.success) {
           toast.success(result.message || "Hotel updated successfully!");
         } else {
-          toast.error(result.message || "An unexpected error occurred. Please try again.");
+          toast.error(
+            result.message || "An unexpected error occurred. Please try again."
+          );
         }
       });
     },
