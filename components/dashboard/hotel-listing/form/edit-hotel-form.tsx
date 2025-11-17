@@ -20,7 +20,7 @@ import {
   IconWorld,
 } from "@tabler/icons-react";
 import { Loader, MapPin, PlusCircle, Trash2 } from "lucide-react";
-import { useCallback, useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -73,7 +73,7 @@ const EditHotelForm = ({ hotel, hotelId }: EditHotelFormProps) => {
   const [isPending, startTransition] = useTransition();
 
   // Track original nearby places with their IDs for comparison
-  const [originalNearbyPlaces] = useState(
+  const [originalNearbyPlaces, setOriginalNearbyPlaces] = useState(
     hotel.nearby_place?.map((place) => ({
       id: place.id,
       name: place.name,
@@ -105,6 +105,34 @@ const EditHotelForm = ({ hotel, hotelId }: EditHotelFormProps) => {
       social_medias: hotel.social_media || [],
     },
   });
+
+  // Reset form when hotel data changes (after successful update)
+  useEffect(() => {
+    const nearbyPlaces = hotel.nearby_place?.map((place) => ({
+      id: place.id,
+      name: place.name,
+      distance: place.radius,
+    })) || [];
+
+    setOriginalNearbyPlaces(nearbyPlaces);
+
+    form.reset({
+      name: hotel.name || "",
+      photos: [],
+      unchanged_hotel_photos: hotel.photos || [],
+      sub_district: hotel.sub_district || "",
+      district: hotel.city || "",
+      province: hotel.province || "",
+      email: hotel.email || "",
+      description: hotel.description || "",
+      rating: hotel.rating || 0,
+      nearby_places: nearbyPlaces,
+      unchanged_nearby_place_ids:
+        hotel.nearby_place?.map((place) => place.id) || [],
+      facilities: hotel.facilities || [],
+      social_medias: hotel.social_media || [],
+    });
+  }, [hotel, form]);
 
   // Handle image uploads from ImageUpload component
   const handleImageChange = useCallback(
@@ -298,13 +326,13 @@ const EditHotelForm = ({ hotel, hotelId }: EditHotelFormProps) => {
         });
         formData.append("social_medias", JSON.stringify(data.social_medias));
 
-        toast.promise(updateHotel(hotelId, formData), {
-          loading: "Updating hotel...",
-          success: ({ message }) => {
-            return message || `Hotel updated successfully!`;
-          },
-          error: "An unexpected error occurred. Please try again.",
-        });
+        const result = await updateHotel(hotelId, formData);
+        
+        if (result.success) {
+          toast.success(result.message || "Hotel updated successfully!");
+        } else {
+          toast.error(result.message || "An unexpected error occurred. Please try again.");
+        }
       });
     },
     [hotelId]

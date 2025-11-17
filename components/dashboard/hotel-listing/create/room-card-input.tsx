@@ -25,7 +25,7 @@ import {
   IconFriends,
 } from "@tabler/icons-react";
 import { Cigarette, Eye, EyeOff, PlusCircle, Trash2 } from "lucide-react";
-import { useCallback, useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -114,7 +114,7 @@ export function RoomCardInput({
   const [isPending, startTransition] = useTransition();
 
   // Track original additions with their IDs for comparison
-  const [originalAdditions] = useState(
+  const [originalAdditions, setOriginalAdditions] = useState(
     initialAdditions.map((addition) => ({
       id: addition.id,
       name: addition.name,
@@ -153,6 +153,40 @@ export function RoomCardInput({
       description: defaultValues?.description || "",
     },
   });
+
+  // Reset form when props change (after successful update)
+  useEffect(() => {
+    const additions = initialAdditions.map((addition) => ({
+      id: addition.id,
+      name: addition.name,
+      price: addition.price,
+    }));
+
+    setOriginalAdditions(additions);
+
+    form.reset({
+      name: defaultValues?.name || "",
+      photos: [],
+      unchanged_room_photos: initialPhotos,
+      without_breakfast: defaultValues?.without_breakfast || {
+        is_show: true,
+        price: 0,
+      },
+      with_breakfast: defaultValues?.with_breakfast || {
+        is_show: true,
+        pax: 2,
+        price: 0,
+      },
+      room_size: defaultValues?.room_size || 0,
+      max_occupancy: defaultValues?.max_occupancy || 1,
+      bed_types: defaultValues?.bed_types || [""],
+      is_smoking_room: defaultValues?.is_smoking_room || false,
+      additional: additions,
+      unchanged_additions_ids:
+        initialAdditions.map((addition) => addition.id) || [],
+      description: defaultValues?.description || "",
+    });
+  }, [defaultValues, initialPhotos, initialAdditions, form]);
 
   const {
     fields: additionalFields,

@@ -99,7 +99,8 @@ export async function updateHotel(hotelId: string, formData: FormData) {
       };
     }
 
-    revalidatePath(`/hotel-listing/[id]/edit`, "layout");
+    revalidatePath(`/hotel-listing/${hotelId}/edit`, "page");
+    revalidatePath(`/hotel-listing`, "page");
 
     return {
       success: true,
@@ -186,7 +187,10 @@ export async function createHotelRoomType(formData: FormData) {
       };
     }
 
-    revalidatePath("/hotel-listing/[slug]/edit", "layout");
+    const hotelId = formData.get("hotel_id") as string;
+    if (hotelId) {
+      revalidatePath(`/hotel-listing/${hotelId}/edit`, "page");
+    }
 
     return {
       success: true,
@@ -213,7 +217,11 @@ export async function createHotelRoomType(formData: FormData) {
   }
 }
 
-export async function updateHotelRoomType(roomId: string, formData: FormData) {
+export async function updateHotelRoomType(
+  roomId: string,
+  formData: FormData,
+  hotelId?: string
+) {
   console.log({ formData });
 
   try {
@@ -231,7 +239,9 @@ export async function updateHotelRoomType(roomId: string, formData: FormData) {
       };
     }
 
-    revalidatePath("/hotel-listing/[id]/edit", "layout");
+    if (hotelId) {
+      revalidatePath(`/hotel-listing/${hotelId}/edit`, "page");
+    }
 
     return {
       success: true,

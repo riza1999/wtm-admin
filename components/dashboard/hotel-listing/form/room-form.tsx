@@ -96,7 +96,7 @@ const RoomForm = ({
   };
 
   // Create a wrapper function that includes roomId for the update operation
-  const createUpdateHandler = (roomId: string) => (data: RoomFormValues) => {
+  const createUpdateHandler = (roomId: string) => async (data: RoomFormValues) => {
     const formData = new FormData();
     // formData.append("hotel_id", hotelId);
     formData.append("name", data.name);
@@ -149,11 +149,13 @@ const RoomForm = ({
 
     formData.append("description", data.description || "");
 
-    toast.promise(updateHotelRoomType(roomId, formData), {
-      loading: "Updating room type...",
-      success: ({ message }) => message,
-      error: ({ message }) => message,
-    });
+    const result = await updateHotelRoomType(roomId, formData, hotelId);
+    
+    if (result.success) {
+      toast.success(result.message);
+    } else {
+      toast.error(result.message);
+    }
   };
 
   useEffect(() => {

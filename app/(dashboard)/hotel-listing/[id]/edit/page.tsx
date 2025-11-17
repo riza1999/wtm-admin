@@ -15,6 +15,13 @@ const EditHotelPage = async ({
   const response = await getHotelDetails(id);
   const { data: hotel, status } = response;
 
+  // Create a unique key based on hotel data to force re-render on update
+  const hotelKey = hotel
+    ? `${hotel.id}-${JSON.stringify(hotel.photos)}-${JSON.stringify(
+        hotel.nearby_place
+      )}`
+    : id;
+
   return (
     <div className="space-y-8">
       <Button variant={"ghost"} asChild>
@@ -26,7 +33,7 @@ const EditHotelPage = async ({
 
       {status !== 200 && <p>Error fetching hotel data</p>}
       {status === 200 && (
-        <Suspense fallback={<p>Loading...</p>} key={hotel.id}>
+        <Suspense fallback={<p>Loading...</p>} key={hotelKey}>
           <EditHotelForm hotel={hotel} hotelId={id} />
           <RoomForm hotelId={id} rooms={hotel.room_type} />
         </Suspense>
