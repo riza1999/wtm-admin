@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -43,6 +44,7 @@ export const ProfilePhotoUploader: React.FC<ProfilePhotoUploaderProps> = ({
   >(photoUrl);
   const [isPending, startTransition] = React.useTransition();
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+  const queryClient = useQueryClient();
 
   React.useEffect(() => {
     setDisplayPhotoUrl(photoUrl);
@@ -134,6 +136,7 @@ export const ProfilePhotoUploader: React.FC<ProfilePhotoUploaderProps> = ({
       }
 
       toast.success(message ?? "Profile photo updated successfully.");
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
       if (previewDataUrl) {
         setDisplayPhotoUrl(previewDataUrl);
       }
