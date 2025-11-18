@@ -49,8 +49,8 @@ const PromoDetailsCard = ({
         enableHiding: false,
       },
       {
-        id: "name",
-        accessorKey: "name",
+        id: "search",
+        accessorKey: "search",
         header: "Promo Name",
         cell: ({ row }) => row.original.promo_name,
         meta: {

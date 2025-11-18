@@ -10,16 +10,21 @@ import {
   getPromoGroupPromosById,
   getPromoGroupsById,
 } from "../../fetch";
+import { SearchParams } from "@/types";
 
 const PromoGroupEditPage = async ({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<SearchParams>;
 }) => {
   const { id } = await params;
+  const { search } = await searchParams;
+
   const [promoGroupPromo, companyOptions, allMembers, promoGroup] =
     await Promise.all([
-      getPromoGroupPromosById(id, { limit: "10" }),
+      getPromoGroupPromosById(id, { limit: "10", search }),
       getCompanyOptions(),
       getPromoGroupMembersById({ promo_group_id: id, limit: "10" }),
       getPromoGroupsById(id),

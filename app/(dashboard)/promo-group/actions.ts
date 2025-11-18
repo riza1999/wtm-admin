@@ -120,7 +120,7 @@ export async function addPromoGroupMembers(
   try {
     const body = {
       promo_group_id: Number(input.promo_group_id),
-      agent_company_id: Number(input.agent_company_id),
+      // agent_company_id: Number(input.agent_company_id),
       member_id: Number(input.member_id),
     };
 
