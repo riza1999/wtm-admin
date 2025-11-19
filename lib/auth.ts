@@ -1,4 +1,5 @@
 import { ApiResponse } from "@/types";
+import type { Permission } from "@/types/permissions";
 import type { NextAuthOptions } from "next-auth";
 import type { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -15,10 +16,12 @@ type RemoteUser = {
   ID: number;
   username: string;
   role: string;
-  permissions: unknown;
+  role_id: number;
+  permissions: string[];
   photo_url: string | null;
   first_name: string | null;
   last_name: string | null;
+  full_name?: string | null;
   // TODO: Check this type error for now we include id, accessToken, refreshToken, accessTokenExpires
   id: string;
   name?: string | null;
@@ -27,7 +30,16 @@ type RemoteUser = {
   accessTokenExpires: number | null;
 };
 
-type AuthUser = RemoteUser & {
+type AuthUser = {
+  ID: number;
+  username: string;
+  role: string;
+  role_id: number;
+  permissions: Permission[];
+  photo_url: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  full_name?: string | null;
   id: string;
   name?: string | null;
   accessToken: string;
@@ -101,11 +113,24 @@ export async function refreshAccessToken(
       response.headers.get("set-cookie")
     );
 
+    // Normalize permissions if user data is returned
+    const updatedUser = data.data.user
+      ? {
+          ...data.data.user,
+          permissions: Array.isArray(data.data.user.permissions)
+            ? data.data.user.permissions.filter(
+                (p: string): p is Permission =>
+                  typeof p === "string" && p.includes(":")
+              )
+            : [],
+        }
+      : token.user;
+
     return {
       ...token,
       accessToken: newAccessToken,
       accessTokenExpires: decodeJwtExpiration(newAccessToken),
-      user: data.data.user ?? token.user,
+      user: updatedUser,
       refreshToken: maybeNewRefreshToken ?? token.refreshToken,
       error: undefined,
     };
@@ -156,6 +181,8 @@ export const authOptions: NextAuthOptions = {
 
         const isAgent = data.data.user.role.toLowerCase() === "agent";
 
+        console.log({ user: data.data.user });
+
         if (isAgent) {
           throw new Error("Invalid credentials");
         }
@@ -170,14 +197,31 @@ export const authOptions: NextAuthOptions = {
 
         const { token, user } = data.data;
 
+        // Normalize permissions to ensure they're always an array of strings
+        const normalizedPermissions = Array.isArray(user.permissions)
+          ? user.permissions.filter(
+              (p): p is Permission => typeof p === "string" && p.includes(":")
+            )
+          : [];
+
         const authUser: AuthUser = {
-          ...user,
+          ID: user.ID,
+          username: user.username,
+          role: user.role,
+          role_id: user.role_id,
+          permissions: normalizedPermissions,
+          photo_url: user.photo_url,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          full_name: user.full_name,
           id: String(user.ID),
           name:
+            user.full_name ||
             [user.first_name, user.last_name]
               .filter(Boolean)
               .join(" ")
-              .trim() || user.username,
+              .trim() ||
+            user.username,
           accessToken: token,
           refreshToken,
           accessTokenExpires: decodeJwtExpiration(token),

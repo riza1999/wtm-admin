@@ -2,6 +2,7 @@
 import { updatePromoStatus } from "@/app/(dashboard)/promo/actions";
 import { Promo } from "@/app/(dashboard)/promo/types";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { Can } from "@/components/permissions/can";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -176,18 +177,22 @@ export function getPromoTableColumns({
               >
                 Details
               </DropdownMenuItem> */}
-              <DropdownMenuItem
-                onSelect={() => setRowAction({ row, variant: "update" })}
-              >
-                Edit
-              </DropdownMenuItem>
+              <Can permission="promo:update">
+                <DropdownMenuItem
+                  onSelect={() => setRowAction({ row, variant: "update" })}
+                >
+                  Edit
+                </DropdownMenuItem>
+              </Can>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                variant="destructive"
-                onSelect={() => setRowAction({ row, variant: "delete" })}
-              >
-                Delete
-              </DropdownMenuItem>
+              <Can permission="promo:delete">
+                <DropdownMenuItem
+                  variant="destructive"
+                  onSelect={() => setRowAction({ row, variant: "delete" })}
+                >
+                  Delete
+                </DropdownMenuItem>
+              </Can>
             </DropdownMenuContent>
           </DropdownMenu>
         );

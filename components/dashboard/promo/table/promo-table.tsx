@@ -12,6 +12,7 @@ import DeletePromoDialog from "../dialog/delete-promo-dialog";
 import EditPromoDialog from "../dialog/edit-promo-dialog";
 import { getPromoTableColumns } from "./promo-columns";
 import { useQuery } from "@tanstack/react-query";
+import { Can } from "@/components/permissions/can";
 
 interface PromoTableProps {
   promises: Promise<[Awaited<ReturnType<typeof getData>>]>;
@@ -58,7 +59,9 @@ const PromoTable = ({ promises }: PromoTableProps) => {
       <div className="relative">
         <DataTable table={table} isPending={isPending}>
           <DataTableToolbar table={table} isPending={isPending}>
-            <CreatePromoDialog />
+            <Can permission="promo:create">
+              <CreatePromoDialog />
+            </Can>
           </DataTableToolbar>
         </DataTable>
       </div>

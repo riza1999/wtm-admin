@@ -3,6 +3,7 @@ import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import React from "react";
 import { getData } from "./fetch";
 import { PromoPageProps } from "./types";
+import { Can } from "@/components/permissions/can";
 
 const PromoPage = async (props: PromoPageProps) => {
   const searchParams = await props.searchParams;
@@ -37,7 +38,9 @@ const PromoPage = async (props: PromoPageProps) => {
             />
           }
         >
-          <PromoTable promises={promises} />
+          <Can permission="promo:read">
+            <PromoTable promises={promises} />
+          </Can>
         </React.Suspense>
       </div>
     </div>

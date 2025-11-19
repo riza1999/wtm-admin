@@ -1,4 +1,5 @@
 import type { DefaultSession } from "next-auth";
+import type { Permission } from "./permissions";
 
 declare module "next-auth" {
   interface User extends DefaultSession["user"] {
@@ -6,10 +7,12 @@ declare module "next-auth" {
     ID: number;
     username: string;
     role: string;
-    permissions: unknown;
+    role_id: number;
+    permissions: Permission[];
     photo_url: string | null;
     first_name: string | null;
     last_name: string | null;
+    full_name?: string | null;
     accessToken: string;
     refreshToken: string;
     accessTokenExpires: number | null;
