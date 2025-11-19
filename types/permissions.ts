@@ -98,9 +98,12 @@ export const PERMISSION_GROUPS = {
  */
 export const ROUTE_PERMISSIONS: Record<string, Permission[]> = {
   // Account routes
-  "/account/user-management": ["account:read"],
+  "/account/user-management/super-admin": ["account:read"],
+  "/account/user-management/admin": ["account:read"],
+  "/account/user-management/support": ["account:read"],
   "/account/role-based-access": ["account:read"],
-  "/account/agent-overview": ["account:read"],
+  "/account/agent-overview/agent-management": ["account:read"],
+  "/account/agent-overview/agent-control": ["account:read"],
 
   // Hotel routes
   "/hotel-listing": ["hotel:read"],
