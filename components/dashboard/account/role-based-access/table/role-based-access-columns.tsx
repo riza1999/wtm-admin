@@ -51,15 +51,15 @@ export function getRoleBasedAccessTableColumns(): ColumnDef<RoleBasedAccessPageD
       cell: ({ row }) => <></>,
       enableSorting: false,
     },
-    {
-      id: "agent",
-      accessorKey: "agent",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Agent" />
-      ),
-      cell: ({ row }) => <></>,
-      enableSorting: false,
-    },
+    // {
+    //   id: "agent",
+    //   accessorKey: "agent",
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title="Agent" />
+    //   ),
+    //   cell: ({ row }) => <></>,
+    //   enableSorting: false,
+    // },
     {
       id: "support",
       accessorKey: "support",

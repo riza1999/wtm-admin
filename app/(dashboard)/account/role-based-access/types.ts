@@ -1,4 +1,4 @@
-export type Role = "Admin" | "Agent" | "Support";
+export type Role = "Admin" | "Support";
 
 export type Action = "View" | "Create" | "Edit" | "Delete" | "Confirmation";
 

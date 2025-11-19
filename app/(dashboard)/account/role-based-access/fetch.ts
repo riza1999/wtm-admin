@@ -32,11 +32,9 @@ function transformRoleAccessData(
       actions: actions.map((action) => {
         // Get permissions for each role
         const adminRole = data.find((item) => item.role === "Admin");
-        const agentRole = data.find((item) => item.role === "Agent");
         const supportRole = data.find((item) => item.role === "Support");
 
         let adminPermission = false;
-        let agentPermission = false;
         let supportPermission = false;
 
         if (
@@ -60,31 +58,6 @@ function transformRoleAccessData(
               break;
             case "Confirmation":
               adminPermission = accessControl.update;
-              break;
-          }
-        }
-
-        if (
-          agentRole &&
-          agentRole.access[page.id as keyof typeof agentRole.access]
-        ) {
-          const accessControl =
-            agentRole.access[page.id as keyof typeof agentRole.access];
-          switch (action) {
-            case "View":
-              agentPermission = accessControl.read;
-              break;
-            case "Create":
-              agentPermission = accessControl.create;
-              break;
-            case "Edit":
-              agentPermission = accessControl.update;
-              break;
-            case "Delete":
-              agentPermission = accessControl.delete;
-              break;
-            case "Confirmation":
-              agentPermission = accessControl.update;
               break;
           }
         }
@@ -114,9 +87,8 @@ function transformRoleAccessData(
           }
         }
 
-        const permissions: Record<"Admin" | "Agent" | "Support", boolean> = {
+        const permissions: Record<"Admin" | "Support", boolean> = {
           Admin: adminPermission,
-          Agent: agentPermission,
           Support: supportPermission,
         };
 
