@@ -129,7 +129,7 @@ export const ROUTE_PERMISSIONS: Record<string, Permission[]> = {
   "/booking-management/history-booking-log": ["booking:read"],
 
   // Settings routes
-  "/settings/account-setting": ["settings:read"],
-  "/settings/email-log": ["settings:read"],
-  "/settings/email-setting": ["settings:update"],
+  // "/settings/account-setting": ["settings:read"],
+  // "/settings/email-log": ["settings:read"],
+  // "/settings/email-setting": ["settings:update"],
 };
