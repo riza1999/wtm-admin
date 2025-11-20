@@ -284,9 +284,31 @@ export function getBookingSummaryTableColumns({
         <DataTableColumnHeader column={column} title="Payment Status" />
       ),
       cell: ({ row }) => {
+        const transformIntoValue = (text: string) => {
+          switch (text.toLowerCase()) {
+            case "paid":
+              return "2";
+            case "unpaid":
+              return "1";
+            default:
+              return "";
+          }
+        };
+
+        const transformIntoText = (text: string) => {
+          switch (text) {
+            case "2":
+              return "Paid";
+            case "1":
+              return "Unpaid";
+            default:
+              return "";
+          }
+        };
+
         const [isUpdatePending, startUpdateTransition] = React.useTransition();
-        const [selectValue, setSelectValue] = React.useState<PaymentStatus>(
-          row.original.payment_status.toLowerCase() as PaymentStatus
+        const [selectValue, setSelectValue] = React.useState<string>(
+          transformIntoValue(row.original.payment_status.toLowerCase())
         );
         const [dialogOpen, setDialogOpen] = React.useState(false);
         const [pendingValue, setPendingValue] = React.useState<string | null>(
@@ -298,12 +320,12 @@ export function getBookingSummaryTableColumns({
           startUpdateTransition(() => {
             (async () => {
               try {
-                const result = await updatePaymentStatus(
-                  String(row.original.booking_id),
-                  pendingValue
-                );
+                const result = await updatePaymentStatus({
+                  booking_id: String(row.original.booking_id),
+                  payment_status_id: pendingValue,
+                });
                 if (result?.success) {
-                  setSelectValue(pendingValue as PaymentStatus);
+                  setSelectValue(pendingValue);
                   setPendingValue(null);
                   setDialogOpen(false);
                   toast.success(
@@ -326,8 +348,8 @@ export function getBookingSummaryTableColumns({
           setPendingValue(null);
         };
         const getStatusColor = (value: string) => {
-          if (value === "paid") return "text-green-600 bg-green-100";
-          if (value === "unpaid") return "text-red-600 bg-red-100";
+          if (value === "2") return "text-green-600 bg-green-100";
+          if (value === "1") return "text-red-600 bg-red-100";
           return "";
         };
         return (
@@ -341,7 +363,7 @@ export function getBookingSummaryTableColumns({
             <Select
               disabled={isUpdatePending}
               value={selectValue}
-              onValueChange={(value: PaymentStatus) => {
+              onValueChange={(value: string) => {
                 setPendingValue(value);
                 setDialogOpen(true);
               }}
@@ -355,8 +377,11 @@ export function getBookingSummaryTableColumns({
                 <SelectValue placeholder="Change payment status" />
               </SelectTrigger>
               <SelectContent align="end">
-                <SelectItem value="paid">Paid</SelectItem>
-                <SelectItem value="unpaid">Unpaid</SelectItem>
+                {paymentStatusOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <ConfirmationDialog
@@ -375,12 +400,9 @@ export function getBookingSummaryTableColumns({
         label: "Payment Status",
         placeholder: "Filter by payment status...",
         variant: "select",
-        options: [
-          { label: "Paid", value: "paid" },
-          { label: "Unpaid", value: "unpaid" },
-        ],
+        options: paymentStatusOptions,
       },
-      enableColumnFilter: false,
+      enableColumnFilter: true,
     },
     {
       id: "promo_id",

@@ -11,7 +11,10 @@ import {
 import * as React from "react";
 import { toast } from "sonner";
 
-import { updateBookingStatus } from "@/app/(dashboard)/booking-management/booking-summary/actions";
+import {
+  updateBookingStatus,
+  updatePaymentStatus,
+} from "@/app/(dashboard)/booking-management/booking-summary/actions";
 import {
   BookingStatus,
   BookingSummary,
@@ -320,9 +323,31 @@ const getDetailBookingColumns = ({
       <DataTableColumnHeader column={column} title="Payment Status" />
     ),
     cell: ({ row }) => {
+      const transformIntoValue = (text: string) => {
+        switch (text.toLowerCase()) {
+          case "paid":
+            return "2";
+          case "unpaid":
+            return "1";
+          default:
+            return "";
+        }
+      };
+
+      const transformIntoText = (text: string) => {
+        switch (text) {
+          case "2":
+            return "Paid";
+          case "1":
+            return "Unpaid";
+          default:
+            return "";
+        }
+      };
+
       const [isUpdatePending, startUpdateTransition] = React.useTransition();
-      const [selectValue, setSelectValue] = React.useState<PaymentStatus>(
-        row.original.payment_status.toLowerCase() as PaymentStatus
+      const [selectValue, setSelectValue] = React.useState<string>(
+        transformIntoValue(row.original.payment_status.toLowerCase())
       );
       const [dialogOpen, setDialogOpen] = React.useState(false);
       const [pendingValue, setPendingValue] = React.useState<string | null>(
@@ -331,14 +356,30 @@ const getDetailBookingColumns = ({
 
       const handleConfirm = async () => {
         if (!pendingValue) return;
-        // Implementation would call updatePaymentStatus API
         startUpdateTransition(() => {
-          setTimeout(() => {
-            setSelectValue(pendingValue as PaymentStatus);
-            setPendingValue(null);
-            setDialogOpen(false);
-            toast.success("Payment status updated successfully");
-          }, 1000);
+          (async () => {
+            try {
+              const result = await updatePaymentStatus({
+                sub_booking_id: String(row.original.sub_booking_id),
+                payment_status_id: pendingValue,
+              });
+              if (result?.success) {
+                setSelectValue(pendingValue);
+                setPendingValue(null);
+                setDialogOpen(false);
+                toast.success(
+                  result.message || "Payment status updated successfully"
+                );
+              } else {
+                toast.error(
+                  result?.message || "Failed to update payment status"
+                );
+              }
+            } catch (error) {
+              void error;
+              toast.error("An error occurred. Please try again.");
+            }
+          })();
         });
       };
 
@@ -348,8 +389,8 @@ const getDetailBookingColumns = ({
       };
 
       const getStatusColor = (value: string) => {
-        if (value === "paid") return "text-green-600 bg-green-100";
-        if (value === "unpaid") return "text-red-600 bg-red-100";
+        if (value === "2") return "text-green-600 bg-green-100";
+        if (value === "1") return "text-red-600 bg-red-100";
         return "";
       };
 
@@ -364,7 +405,7 @@ const getDetailBookingColumns = ({
           <Select
             disabled={isUpdatePending}
             value={selectValue}
-            onValueChange={(value: PaymentStatus) => {
+            onValueChange={(value: string) => {
               setPendingValue(value);
               setDialogOpen(true);
             }}
@@ -378,8 +419,8 @@ const getDetailBookingColumns = ({
               <SelectValue placeholder="Change status" />
             </SelectTrigger>
             <SelectContent align="end">
-              <SelectItem value="paid">Paid</SelectItem>
-              <SelectItem value="unpaid">Unpaid</SelectItem>
+              <SelectItem value="1">Unpaid</SelectItem>
+              <SelectItem value="2">Paid</SelectItem>
             </SelectContent>
           </Select>
           <ConfirmationDialog
@@ -465,8 +506,7 @@ const getDetailBookingColumns = ({
       };
 
       const handleViewReceipt = () => {
-        toast.info("Opening receipt viewer...");
-        // Implementation would open receipt viewer
+        setRowAction({ row, variant: "receipt" });
       };
 
       const handleViewInvoice = () => {

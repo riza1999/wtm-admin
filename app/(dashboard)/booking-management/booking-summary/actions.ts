@@ -63,19 +63,59 @@ export async function updateBookingStatus(input: {
   }
 }
 
-export async function updatePaymentStatus(
-  bookingId: string,
-  paymentStatus: string
-) {
-  console.log("Update Payment Status");
-  // Simulate API call delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+export async function updatePaymentStatus(input: {
+  booking_id?: string;
+  sub_booking_id?: string;
+  payment_status_id: string;
+}) {
+  try {
+    const body = {
+      booking_id: input.booking_id ? input.booking_id : undefined,
+      sub_booking_id: input.sub_booking_id ? input.sub_booking_id : undefined,
+      status_id: Number(input.payment_status_id),
+    };
 
-  // Simulate success response
-  return {
-    success: true,
-    message: `Payment status updated to ${paymentStatus}`,
-  };
+    console.log({ body });
+
+    const response = await apiCall(`bookings/status`, {
+      method: "POST",
+      body: JSON.stringify(cleanBody(body)),
+    });
+
+    console.log({ response });
+
+    if (response.status !== 200) {
+      return {
+        success: false,
+        message: response.message || "Failed to update payment status",
+      };
+    }
+
+    revalidatePath("/booking-management/booking-summary", "layout");
+
+    return {
+      success: true,
+      message: response.message || "Payment status updated successfully",
+    };
+  } catch (error) {
+    console.error("Error updating payment status:", error);
+
+    // Handle API error responses with specific messages
+    if (error && typeof error === "object" && "message" in error) {
+      return {
+        success: false,
+        message: error.message as string,
+      };
+    }
+
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Failed to update payment status",
+    };
+  }
 }
 
 export async function deleteBooking(bookingId: string) {
