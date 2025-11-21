@@ -8,7 +8,12 @@ export const getSupportData = async ({
 }: {
   searchParams: SearchParams;
 }): Promise<ApiResponse<Support[]>> => {
-  const queryString = buildQueryParams(searchParams);
+  const params = {
+    ...searchParams,
+    limit: searchParams.limit ?? "10",
+  };
+
+  const queryString = buildQueryParams(params);
   const url = `/users?role=support${queryString ? `&${queryString}` : ""}`;
   const apiResponse = await apiCall<Support[]>(url);
 

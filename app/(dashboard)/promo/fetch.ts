@@ -13,7 +13,12 @@ export const getData = async ({
 }: {
   searchParams: SearchParams;
 }): Promise<ApiResponse<Promo[]>> => {
-  const queryString = buildQueryParams(searchParams);
+  const params = {
+    ...searchParams,
+    limit: searchParams.limit ?? "10",
+  };
+
+  const queryString = buildQueryParams(params);
   const url = `/promos${queryString ? `?${queryString}` : ""}`;
   const apiResponse = await apiCall<Promo[]>(url);
 

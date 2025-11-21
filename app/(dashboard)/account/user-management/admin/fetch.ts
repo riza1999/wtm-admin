@@ -8,7 +8,12 @@ export const getAdminData = async ({
 }: {
   searchParams: SearchParams;
 }): Promise<ApiResponse<Admin[]>> => {
-  const queryString = buildQueryParams(searchParams);
+  const params = {
+    ...searchParams,
+    limit: searchParams.limit ?? "10",
+  };
+
+  const queryString = buildQueryParams(params);
   const url = `/users?role=admin${queryString ? `&${queryString}` : ""}`;
   const apiResponse = await apiCall<Admin[]>(url);
 

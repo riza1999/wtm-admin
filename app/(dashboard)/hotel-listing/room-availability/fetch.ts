@@ -1,9 +1,9 @@
 "use server";
 
+import { apiCall } from "@/lib/api";
+import { buildQueryParams } from "@/lib/utils";
 import { ApiResponse, SearchParams } from "@/types";
 import { Hotel } from "../types";
-import { buildQueryParams } from "@/lib/utils";
-import { apiCall } from "@/lib/api";
 import { RoomAvailabilityHotel } from "./types";
 
 export const getData = async ({
@@ -11,7 +11,12 @@ export const getData = async ({
 }: {
   searchParams: SearchParams;
 }): Promise<ApiResponse<Hotel[]>> => {
-  const queryString = buildQueryParams(searchParams);
+  const params = {
+    ...searchParams,
+    limit: searchParams.limit ?? "10",
+  };
+
+  const queryString = buildQueryParams(params);
   const url = `/hotels?status_id=2${queryString ? `&${queryString}` : ""}`;
   const apiResponse = await apiCall<Hotel[]>(url);
 

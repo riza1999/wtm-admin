@@ -10,7 +10,12 @@ export const getReportSummary = async ({
 }: {
   searchParams: SearchParams;
 }): Promise<ApiResponse<ReportSummary>> => {
-  const queryString = buildQueryParams(searchParams);
+  const params = {
+    ...searchParams,
+    limit: searchParams.limit ?? "10",
+  };
+
+  const queryString = buildQueryParams(params);
   const url = `/reports/summary${queryString ? `?${queryString}` : ""}`;
   const apiResponse = await apiCall<ReportSummary>(url);
 

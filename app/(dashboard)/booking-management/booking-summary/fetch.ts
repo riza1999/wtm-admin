@@ -8,7 +8,12 @@ export const getData = async ({
 }: {
   searchParams: SearchParams;
 }): Promise<ApiResponse<BookingSummary[]>> => {
-  const queryString = buildQueryParams(searchParams);
+  const params = {
+    ...searchParams,
+    limit: searchParams.limit ?? "10",
+  };
+
+  const queryString = buildQueryParams(params);
   const url = `/bookings${queryString ? `?${queryString}` : ""}`;
   const apiResponse = await apiCall<BookingSummary[]>(url);
 

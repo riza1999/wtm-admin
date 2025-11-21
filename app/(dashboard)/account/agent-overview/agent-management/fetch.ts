@@ -9,7 +9,12 @@ export const getAgentData = async ({
 }: {
   searchParams: SearchParams;
 }): Promise<ApiResponse<Agent[]>> => {
-  const queryString = buildQueryParams(searchParams);
+  const params = {
+    ...searchParams,
+    limit: searchParams.limit ?? "10",
+  };
+
+  const queryString = buildQueryParams(params);
   const url = `/users?role=agent${queryString ? `&${queryString}` : ""}`;
   const apiResponse = await apiCall<Agent[]>(url);
 

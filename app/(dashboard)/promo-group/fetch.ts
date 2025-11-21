@@ -10,7 +10,12 @@ export const getPromoGroups = async ({
 }: {
   searchParams: SearchParams;
 }): Promise<ApiResponse<PromoGroup[]>> => {
-  const queryString = buildQueryParams(searchParams);
+  const params = {
+    ...searchParams,
+    limit: searchParams.limit ?? "10",
+  };
+
+  const queryString = buildQueryParams(params);
   const url = `/promo-groups${queryString ? `?${queryString}` : ""}`;
   const apiResponse = await apiCall<PromoGroup[]>(url);
 
