@@ -1,6 +1,9 @@
 import HistoryBookingLogTable from "@/components/dashboard/booking-management/history-booking-log/table/history-booking-log-table";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
-import { getCompanyOptions } from "@/server/general";
+import {
+  getBookingStatusOptions,
+  getPaymentStatusOptions,
+} from "@/server/general";
 import React from "react";
 import { getData } from "./fetch";
 import { HistoryBookingLogPageProps } from "./types";
@@ -12,7 +15,8 @@ const HistoryBookingLogPage = async (props: HistoryBookingLogPageProps) => {
     getData({
       searchParams,
     }),
-    getCompanyOptions(),
+    getBookingStatusOptions(),
+    getPaymentStatusOptions(),
   ]);
 
   return (

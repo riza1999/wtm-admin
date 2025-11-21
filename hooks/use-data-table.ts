@@ -207,11 +207,30 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     return Object.entries(filterValues).reduce<ColumnFiltersState>(
       (filters, [key, value]) => {
         if (value !== null) {
-          const processedValue = Array.isArray(value)
-            ? value
-            : typeof value === "string" && /[^a-zA-Z0-9]/.test(value)
-            ? value.split(/[^a-zA-Z0-9]+/).filter(Boolean)
-            : [value];
+          // Find the column to check its variant
+          const column = filterableColumns.find((col) => col.id === key);
+          const variant = column?.meta?.variant;
+
+          let processedValue: string | string[];
+
+          // Handle date and dateRange variants specially - preserve date strings
+          if (variant === "date" || variant === "dateRange") {
+            if (Array.isArray(value)) {
+              processedValue = value;
+            } else if (typeof value === "string") {
+              // For date ranges, split by comma only (not by all non-alphanumeric)
+              processedValue = value.includes(",") ? value.split(",") : value;
+            } else {
+              processedValue = [value];
+            }
+          } else {
+            // Original logic for non-date filters
+            processedValue = Array.isArray(value)
+              ? value
+              : typeof value === "string" && /[^a-zA-Z0-9]/.test(value)
+              ? value.split(/[^a-zA-Z0-9]+/).filter(Boolean)
+              : [value];
+          }
 
           filters.push({
             id: key,
@@ -222,7 +241,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
       },
       []
     );
-  }, [filterValues, enableAdvancedFilter]);
+  }, [filterValues, enableAdvancedFilter, filterableColumns]);
 
   const [columnFilters, setColumnFilters] =
     React.useState<ColumnFiltersState>(initialColumnFilters);

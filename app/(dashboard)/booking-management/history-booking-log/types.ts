@@ -5,7 +5,8 @@ export type PaymentStatus = "paid" | "unpaid";
 
 export interface HistoryBookingLog {
   agent_name: string;
-  booking_code: string;
+  sub_booking_id: string;
+  booking_id: string;
   booking_status: BookingStatus;
   capacity: string;
   check_in_date: string;

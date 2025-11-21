@@ -8,7 +8,10 @@ import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { ExportButton } from "@/components/ui/export-button";
 import { useDataTable } from "@/hooks/use-data-table";
 import { useExport } from "@/lib/export-client";
-import { getCompanyOptions } from "@/server/general";
+import {
+  getBookingStatusOptions,
+  getPaymentStatusOptions,
+} from "@/server/general";
 import type { DataTableRowAction } from "@/types/data-table";
 import React, { useTransition } from "react";
 import { getHistoryBookingLogTableColumns } from "./history-booking-log-columns";
@@ -17,14 +20,16 @@ interface HistoryBookingLogTableProps {
   promises: Promise<
     [
       Awaited<ReturnType<typeof getData>>,
-      Awaited<ReturnType<typeof getCompanyOptions>>
+      Awaited<ReturnType<typeof getBookingStatusOptions>>,
+      Awaited<ReturnType<typeof getPaymentStatusOptions>>
     ]
   >;
 }
 
 const HistoryBookingLogTable = ({ promises }: HistoryBookingLogTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [{ data, pagination }, companyOptions] = React.use(promises);
+  const [{ data, pagination }, bookingStatusOptions, paymentStatusOptions] =
+    React.use(promises);
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<HistoryBookingLog> | null>(null);
 
@@ -35,7 +40,8 @@ const HistoryBookingLogTable = ({ promises }: HistoryBookingLogTableProps) => {
     () =>
       getHistoryBookingLogTableColumns({
         setRowAction,
-        companyOptions,
+        bookingStatusOptions,
+        paymentStatusOptions,
       }),
     []
   );
@@ -44,7 +50,7 @@ const HistoryBookingLogTable = ({ promises }: HistoryBookingLogTableProps) => {
     data: data || [],
     columns,
     pageCount: pagination?.total_pages || 1,
-    getRowId: (originalRow, index) => `${index}-${originalRow.booking_code}`,
+    getRowId: (originalRow, index) => `${index}-${originalRow.sub_booking_id}`,
     shallow: false,
     clearOnDefault: true,
     startTransition,

@@ -21,12 +21,17 @@ function getIsDateRange(value: DateSelection): value is DateRange {
   return value && typeof value === "object" && !Array.isArray(value);
 }
 
-function parseAsDate(timestamp: number | string | undefined): Date | undefined {
-  if (!timestamp) return undefined;
-  const numericTimestamp =
-    typeof timestamp === "string" ? Number(timestamp) : timestamp;
-  const date = new Date(numericTimestamp);
+function parseAsDate(dateString: string | undefined): Date | undefined {
+  if (!dateString) return undefined;
+  const date = new Date(dateString);
   return !Number.isNaN(date.getTime()) ? date : undefined;
+}
+
+function formatToDateString(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function parseColumnFilterValue(value: unknown) {
@@ -36,14 +41,14 @@ function parseColumnFilterValue(value: unknown) {
 
   if (Array.isArray(value)) {
     return value.map((item) => {
-      if (typeof item === "number" || typeof item === "string") {
+      if (typeof item === "string") {
         return item;
       }
       return undefined;
     });
   }
 
-  if (typeof value === "string" || typeof value === "number") {
+  if (typeof value === "string") {
     return [value];
   }
 
@@ -69,15 +74,15 @@ export function DataTableDateFilter<TData>({
     }
 
     if (multiple) {
-      const timestamps = parseColumnFilterValue(columnFilterValue);
+      const dateStrings = parseColumnFilterValue(columnFilterValue);
       return {
-        from: parseAsDate(timestamps[0]),
-        to: parseAsDate(timestamps[1]),
+        from: parseAsDate(dateStrings[0]),
+        to: parseAsDate(dateStrings[1]),
       };
     }
 
-    const timestamps = parseColumnFilterValue(columnFilterValue);
-    const date = parseAsDate(timestamps[0]);
+    const dateStrings = parseColumnFilterValue(columnFilterValue);
+    const date = parseAsDate(dateStrings[0]);
     return date ? [date] : [];
   }, [columnFilterValue, multiple]);
 
@@ -89,11 +94,11 @@ export function DataTableDateFilter<TData>({
       }
 
       if (multiple && !("getTime" in date)) {
-        const from = date.from?.getTime();
-        const to = date.to?.getTime();
+        const from = date.from ? formatToDateString(date.from) : undefined;
+        const to = date.to ? formatToDateString(date.to) : undefined;
         column.setFilterValue(from || to ? [from, to] : undefined);
       } else if (!multiple && "getTime" in date) {
-        column.setFilterValue(date.getTime());
+        column.setFilterValue(formatToDateString(date));
       }
     },
     [column, multiple]

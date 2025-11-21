@@ -11,12 +11,14 @@ interface GetHistoryBookingLogTableColumnsProps {
   setRowAction: React.Dispatch<
     React.SetStateAction<DataTableRowAction<HistoryBookingLog> | null>
   >;
-  companyOptions: Option[];
+  bookingStatusOptions: Option[];
+  paymentStatusOptions: Option[];
 }
 
 export function getHistoryBookingLogTableColumns({
   setRowAction,
-  companyOptions,
+  bookingStatusOptions,
+  paymentStatusOptions,
 }: GetHistoryBookingLogTableColumnsProps): ColumnDef<HistoryBookingLog>[] {
   return [
     {
@@ -33,7 +35,7 @@ export function getHistoryBookingLogTableColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Booking ID" />
       ),
-      cell: ({ row }) => row.original.booking_code,
+      cell: ({ row }) => row.original.booking_id,
       meta: {
         label: "Booking ID",
         placeholder: "Search anyhting...",
@@ -75,8 +77,8 @@ export function getHistoryBookingLogTableColumns({
       enableColumnFilter: false,
     },
     {
-      id: "booking_status",
-      accessorKey: "booking_status",
+      id: "booking_status_id",
+      accessorKey: "booking_status_id",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Booking Status" />
       ),
@@ -96,11 +98,7 @@ export function getHistoryBookingLogTableColumns({
         label: "Booking Status",
         placeholder: "Filter by status...",
         variant: "select",
-        options: [
-          { label: "Confirmed", value: "confirmed" },
-          { label: "Rejected", value: "rejected" },
-          { label: "In Review", value: "in review" },
-        ],
+        options: bookingStatusOptions,
       },
       enableColumnFilter: true,
     },
@@ -125,16 +123,13 @@ export function getHistoryBookingLogTableColumns({
         label: "Payment Status",
         placeholder: "Filter by payment status...",
         variant: "select",
-        options: [
-          { label: "Paid", value: "paid" },
-          { label: "Unpaid", value: "unpaid" },
-        ],
+        options: paymentStatusOptions,
       },
       enableColumnFilter: true,
     },
     {
-      id: "date_in",
-      accessorKey: "date_in",
+      id: "check_in_date",
+      accessorKey: "check_in_date",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Check-in Date" />
       ),
@@ -149,8 +144,8 @@ export function getHistoryBookingLogTableColumns({
       enableColumnFilter: true,
     },
     {
-      id: "date_out",
-      accessorKey: "date_out",
+      id: "check_out_date",
+      accessorKey: "check_out_date",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Check-out Date" />
       ),
@@ -160,9 +155,9 @@ export function getHistoryBookingLogTableColumns({
       meta: {
         label: "Check-out Date",
         placeholder: "Filter by check-out date...",
-        variant: "dateRange",
+        variant: "date",
       },
-      enableColumnFilter: true,
+      enableColumnFilter: false,
     },
     {
       id: "hotel_name",
