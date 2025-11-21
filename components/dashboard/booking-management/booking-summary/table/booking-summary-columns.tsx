@@ -6,7 +6,6 @@ import {
 import {
   BookingStatus,
   BookingSummary,
-  PaymentStatus,
 } from "@/app/(dashboard)/booking-management/booking-summary/types";
 import { ConfirmationDialog } from "@/components/confirmation-dialog";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
@@ -157,7 +156,7 @@ export function getBookingSummaryTableColumns({
                 const status_id = pendingValue;
 
                 const result = await updateBookingStatus({
-                  booking_id: String(row.original.booking_code),
+                  booking_id: String(row.original.booking_id),
                   status_id: status_id || "",
                   reason: reason.trim(),
                 });

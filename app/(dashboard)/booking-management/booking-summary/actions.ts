@@ -14,20 +14,16 @@ export async function updateBookingStatus(input: {
 }) {
   try {
     const body = {
-      ...input,
-      booking_id: input.booking_id ? input.booking_id : undefined,
-      sub_booking_id: input.sub_booking_id ? input.sub_booking_id : undefined,
+      ...(input.booking_id && { booking_id: input.booking_id }),
+      ...(input.sub_booking_id && { sub_booking_id: input.sub_booking_id }),
       status_id: Number(input.status_id),
+      ...(input.reason && { reason: input.reason }),
     };
 
-    console.log({ body });
-
-    const response = await apiCall(`bookings/status`, {
+    const response = await apiCall(`bookings/booking-status`, {
       method: "POST",
       body: JSON.stringify(cleanBody(body)),
     });
-
-    console.log({ response });
 
     if (response.status !== 200) {
       return {
@@ -70,14 +66,12 @@ export async function updatePaymentStatus(input: {
 }) {
   try {
     const body = {
-      booking_id: input.booking_id ? input.booking_id : undefined,
-      sub_booking_id: input.sub_booking_id ? input.sub_booking_id : undefined,
+      ...(input.booking_id && { booking_id: input.booking_id }),
+      ...(input.sub_booking_id && { sub_booking_id: input.sub_booking_id }),
       status_id: Number(input.payment_status_id),
     };
 
-    console.log({ body });
-
-    const response = await apiCall(`bookings/status`, {
+    const response = await apiCall(`bookings/payment-status`, {
       method: "POST",
       body: JSON.stringify(cleanBody(body)),
     });
