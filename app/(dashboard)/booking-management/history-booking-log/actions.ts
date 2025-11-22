@@ -13,7 +13,7 @@ const exportColumns: ExportColumn<HistoryBookingLog>[] = [
   {
     key: "booking_id",
     header: "Booking ID",
-    accessor: (item) => item.booking_code,
+    accessor: (item) => item.booking_id,
     width: 12,
   },
   {
