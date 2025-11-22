@@ -45,19 +45,19 @@ function transformRoleAccessData(
             adminRole.access[page.id as keyof typeof adminRole.access];
           switch (action) {
             case "View":
-              adminPermission = accessControl.read;
+              adminPermission = accessControl.view;
               break;
             case "Create":
               adminPermission = accessControl.create;
               break;
             case "Edit":
-              adminPermission = accessControl.update;
+              adminPermission = accessControl.edit;
               break;
             case "Delete":
               adminPermission = accessControl.delete;
               break;
             case "Confirmation":
-              adminPermission = accessControl.update;
+              adminPermission = accessControl.edit;
               break;
           }
         }
@@ -70,19 +70,19 @@ function transformRoleAccessData(
             supportRole.access[page.id as keyof typeof supportRole.access];
           switch (action) {
             case "View":
-              supportPermission = accessControl.read;
+              supportPermission = accessControl.view;
               break;
             case "Create":
               supportPermission = accessControl.create;
               break;
             case "Edit":
-              supportPermission = accessControl.update;
+              supportPermission = accessControl.edit;
               break;
             case "Delete":
               supportPermission = accessControl.delete;
               break;
             case "Confirmation":
-              supportPermission = accessControl.update;
+              supportPermission = accessControl.edit;
               break;
           }
         }
@@ -123,6 +123,8 @@ export const getRoleBasedAccessData = async ({
       pageCount: 1,
     };
   }
+
+  console.log({ data: apiResponse.data });
 
   return transformRoleAccessData(apiResponse.data);
 };

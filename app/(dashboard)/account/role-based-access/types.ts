@@ -22,8 +22,8 @@ export interface RoleBasedAccessTableResponse {
 export interface AccessControl {
   create: boolean;
   delete: boolean;
-  read: boolean;
-  update: boolean;
+  view: boolean;
+  edit: boolean;
 }
 
 export interface RoleAccess {
