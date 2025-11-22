@@ -10,8 +10,8 @@ export interface Agent {
   kakao_talk_id: string;
   phone_number: string;
   status: string;
-  photo_selfie?: string; // url link photo agent selfie
-  photo_id_card?: string; // url link photo agent id card
+  photo?: string; // url link photo agent selfie
+  id_card?: string; // url link photo agent id card
   certificate?: string; // url link photo agent certificate
   name_card?: string; // url link photo agent name card
 }

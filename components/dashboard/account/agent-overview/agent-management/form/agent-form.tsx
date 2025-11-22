@@ -30,10 +30,10 @@ interface AgentFormProps<T extends FieldValues>
   onSubmit: (data: T) => void;
   promoGroupSelect: PromoGroup[];
   existingImages?: {
-    photo_selfie?: string;
-    photo_id_card?: string;
-    certificate?: string;
-    name_card?: string;
+    photo_selfie?: string | null;
+    photo_id_card?: string | null;
+    certificate?: string | null;
+    name_card?: string | null;
   };
   isEditMode?: boolean;
 }

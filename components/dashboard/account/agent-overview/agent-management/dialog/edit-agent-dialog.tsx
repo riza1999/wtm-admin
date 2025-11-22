@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import z from "zod";
 import { AgentForm } from "../form/agent-form";
 import { PromoGroup } from "@/app/(dashboard)/promo-group/types";
+import { formatUrl } from "@/lib/format";
 
 export const editAgentSchema = z.object({
   full_name: z.string(),
@@ -127,10 +128,10 @@ const EditAgentDialog = ({
           onSubmit={onSubmit}
           promoGroupSelect={promoGroupSelect}
           existingImages={{
-            photo_selfie: agent?.photo_selfie,
-            photo_id_card: agent?.photo_id_card,
-            certificate: agent?.certificate,
-            name_card: agent?.name_card,
+            photo_selfie: formatUrl(agent?.photo),
+            photo_id_card: formatUrl(agent?.id_card),
+            certificate: formatUrl(agent?.certificate),
+            name_card: formatUrl(agent?.name_card),
           }}
         >
           <DialogFooter className="gap-2 pt-2 sm:space-x-0">

@@ -13,7 +13,7 @@ interface FileInputPreviewProps {
   ref: React.Ref<HTMLInputElement>;
   name: string;
   placeholder?: string;
-  initialPreview?: string; // URL of existing image
+  initialPreview?: string | null; // URL of existing image
 }
 
 export const FileInputPreview = React.forwardRef<
