@@ -70,7 +70,7 @@ const ViewReceiptDialog: React.FC<ViewReceiptDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] min-w-4xl overflow-y-auto bg-white px-8">
+      <DialogContent className="max-h-[90vh] min-w-4xl bg-white px-8">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -112,7 +112,7 @@ const ViewReceiptDialog: React.FC<ViewReceiptDialogProps> = ({
           {hasReceipts ? (
             <div className="space-y-4">
               {/* Receipt Image Container */}
-              <div className="relative overflow-x-auto rounded-lg border bg-gray-50 p-4">
+              <div className="relative max-h-[70vh] overflow-x-auto overflow-y-auto rounded-lg border bg-gray-50 p-4">
                 <Image
                   src={formatUrl(currentReceipt) || ""}
                   alt={`Receipt ${currentReceiptIndex + 1}`}
