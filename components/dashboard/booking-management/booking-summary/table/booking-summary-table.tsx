@@ -41,8 +41,6 @@ const BookingSummaryTable = ({ promises }: BookingSummaryTableProps) => {
   const [selectedBookingForViewReceipt, setSelectedBookingForViewReceipt] =
     React.useState<BookingSummary | null>(null);
 
-  console.log({ data });
-
   const columns = React.useMemo(
     () =>
       getBookingSummaryTableColumns({
