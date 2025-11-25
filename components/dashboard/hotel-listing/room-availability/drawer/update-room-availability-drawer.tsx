@@ -238,7 +238,7 @@ export const UpdateRoomAvailabilityDrawer = ({
       props.onOpenChange?.(false);
       onSuccess?.();
       queryClient.invalidateQueries({
-        queryKey: ["room-availability", format(date, "yyyy-MM")],
+        queryKey: ["room-availability", format(date, "yyyy-MM"), dataHotel?.id],
         exact: true,
       });
     });

@@ -4,6 +4,8 @@ import {
   getData,
   getRoomAvaliableByHotelId,
 } from "@/app/(dashboard)/hotel-listing/room-availability/fetch";
+import { RoomAvailabilityHotel } from "@/app/(dashboard)/hotel-listing/room-availability/types";
+import { Hotel } from "@/app/(dashboard)/hotel-listing/types";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { Button } from "@/components/ui/button";
@@ -15,17 +17,15 @@ import {
 } from "@/components/ui/popover";
 import { useDataTable } from "@/hooks/use-data-table";
 import { cn } from "@/lib/utils";
+import { getRegionOptions } from "@/server/general";
 import type { DataTableRowAction } from "@/types/data-table";
+import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns/format";
 import { CalendarIcon, ChevronsUpDown } from "lucide-react";
 import { createParser, useQueryState } from "nuqs";
 import React, { useTransition } from "react";
 import { UpdateRoomAvailabilityDrawer } from "../drawer/update-room-availability-drawer";
 import { getRoomAvailabilityTableColumns } from "./room-availability-columns";
-import { Hotel } from "@/app/(dashboard)/hotel-listing/types";
-import { useQuery } from "@tanstack/react-query";
-import { RoomAvailabilityHotel } from "@/app/(dashboard)/hotel-listing/room-availability/types";
-import { getRegionOptions } from "@/server/general";
 
 interface RoomAvailabilityTableProps {
   promises: Promise<
@@ -62,10 +62,14 @@ const RoomAvailabilityTable = ({ promises }: RoomAvailabilityTableProps) => {
   );
 
   const query = useQuery({
-    queryKey: ["room-availability", format(date, "yyyy-MM")],
+    queryKey: [
+      "room-availability",
+      format(date, "yyyy-MM"),
+      rowAction?.row.original.id,
+    ],
     queryFn: async () => {
       const data = await getRoomAvaliableByHotelId({
-        hotel_id: "1",
+        hotel_id: rowAction?.row.original.id || "",
         period: format(date, "yyyy-MM"),
       });
       return data;
