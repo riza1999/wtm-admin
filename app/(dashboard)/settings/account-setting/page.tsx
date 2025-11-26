@@ -2,6 +2,7 @@ import AccountSettingForm from "@/components/dashboard/settings/account-setting/
 import EditProfileForm from "@/components/dashboard/settings/account-setting/edit-profile-form";
 import { ProfilePhotoUploader } from "@/components/dashboard/settings/account-setting/profile-photo-uploader";
 import { fetchAccountProfile } from "./fetch";
+import { formatUrl } from "@/lib/format";
 
 const AccountSettingPage = async () => {
   const { data: accountProfile } = await fetchAccountProfile();
@@ -20,7 +21,7 @@ const AccountSettingPage = async () => {
       <div className="flex flex-col">
         <div className="mb-2 font-medium">Profile photo</div>
         <ProfilePhotoUploader
-          photoUrl={`http://${accountProfile.photo_profile}`}
+          photoUrl={formatUrl(accountProfile.photo_profile)}
           fullName={accountProfile.full_name}
         />
       </div>

@@ -17,6 +17,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { formatUrl } from "@/lib/format";
 
 interface DetailAgentControlDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
@@ -39,23 +40,6 @@ function isValidAbsoluteUrl(url: string): boolean {
   }
 }
 
-// Helper function to transform URLs starting with "54.255.206.242"
-function transformImageUrl(url: string | undefined): string | undefined {
-  if (!url) return undefined;
-
-  // If URL already has a protocol, return as is
-  if (isValidAbsoluteUrl(url)) {
-    return url;
-  }
-
-  // If URL starts with "54.255.206.242", prepend "http://"
-  if (url.startsWith("54.255.206.242")) {
-    return `http://${url}`;
-  }
-
-  return url;
-}
-
 export function DetailAgentControlDialog({
   agentControl,
   onSuccess,
@@ -71,22 +55,22 @@ export function DetailAgentControlDialog({
     ? [
         {
           title: "Agent Selfie Photo",
-          src: transformImageUrl(agentControl.photo),
+          src: formatUrl(agentControl.photo) || "",
           alt: "Agent Selfie Photo",
         },
         {
           title: "Identity Card",
-          src: transformImageUrl(agentControl.id_card),
+          src: formatUrl(agentControl.id_card) || "",
           alt: "Identity Card",
         },
         {
           title: "Certificate",
-          src: transformImageUrl(agentControl.certificate),
+          src: formatUrl(agentControl.certificate) || "",
           alt: "Certificate",
         },
         {
           title: "Name Card",
-          src: transformImageUrl(agentControl.name_card),
+          src: formatUrl(agentControl.name_card) || "",
           alt: "Name Card",
         },
       ]

@@ -20,6 +20,9 @@ const nextConfig: NextConfig = {
       {
         hostname: "minio",
       },
+      {
+        hostname: "dev.api.thehotelbox.com",
+      },
     ],
   },
 };

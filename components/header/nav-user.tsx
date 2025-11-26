@@ -16,6 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { formatUrl } from "@/lib/format";
 
 type NavUserProps = {
   user?: AccountProfile;
@@ -37,7 +38,7 @@ export const NavUser = ({ user, compact = false }: NavUserProps) => {
   const displayEmail = user?.email || user?.username || "";
   const displayAvatar =
     user?.photo_profile && user.photo_profile.trim().length > 0
-      ? `http://${user.photo_profile}`
+      ? formatUrl(user.photo_profile)
       : "/avatars/shadcn.jpg";
 
   const initials = React.useMemo(() => {
