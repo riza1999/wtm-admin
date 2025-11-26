@@ -103,8 +103,8 @@ export function getHistoryBookingLogTableColumns({
       enableColumnFilter: true,
     },
     {
-      id: "payment_status",
-      accessorKey: "payment_status",
+      id: "payment_status_id",
+      accessorKey: "payment_status_id",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Payment Status" />
       ),
