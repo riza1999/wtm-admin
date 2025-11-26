@@ -1,23 +1,40 @@
 "use client";
 
 import { fetchAccountProfile } from "@/app/(dashboard)/settings/account-setting/fetch";
+import type { UserRole } from "@/lib/authorization";
 import { useQuery } from "@tanstack/react-query";
 import { Menu, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
+import { AuthorizationGuard } from "../authorization-guard";
 import { Logo } from "../logo";
 import { NavDropdown } from "./nav-dropdown";
 import { NavUser } from "./nav-user";
 
-const menuItems = [
+type MenuItem = {
+  name: string;
+  href: string;
+  requiredRole?: UserRole;
+  childs?: {
+    name: string;
+    href: string;
+    requiredRole?: UserRole;
+  }[];
+};
+
+const menuItems: MenuItem[] = [
   {
     name: "Account",
     href: "#link",
     childs: [
       { name: "User Management", href: "/account/user-management/super-admin" },
       { name: "Agent Overview", href: "/account/agent-overview/agent-control" },
-      { name: "Role Based Access", href: "/account/role-based-access" },
+      {
+        name: "Role Based Access",
+        href: "/account/role-based-access",
+        requiredRole: "Super Admin" as const, // Restrict to super admin only
+      },
     ],
   },
   {
@@ -109,6 +126,25 @@ export const HeroHeader = () => {
                       );
                     }
 
+                    // Handle menu items with role restrictions
+                    if (item.requiredRole) {
+                      return (
+                        <AuthorizationGuard
+                          key={index}
+                          requiredRole={item.requiredRole as UserRole}
+                        >
+                          <li>
+                            <Link
+                              href={item.href}
+                              className="text-white block duration-150"
+                            >
+                              <span>{item.name}</span>
+                            </Link>
+                          </li>
+                        </AuthorizationGuard>
+                      );
+                    }
+
                     return (
                       <li key={index}>
                         <Link
@@ -134,6 +170,25 @@ export const HeroHeader = () => {
                         <li key={index}>
                           <NavDropdown menu={item} />
                         </li>
+                      );
+                    }
+
+                    // Handle menu items with role restrictions
+                    if (item.requiredRole) {
+                      return (
+                        <AuthorizationGuard
+                          key={index}
+                          requiredRole={item.requiredRole as UserRole}
+                        >
+                          <li>
+                            <Link
+                              href={item.href}
+                              className="text-muted-foreground hover:text-accent-foreground block duration-150"
+                            >
+                              <span>{item.name}</span>
+                            </Link>
+                          </li>
+                        </AuthorizationGuard>
                       );
                     }
 

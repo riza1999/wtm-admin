@@ -1,8 +1,8 @@
 import RoleBasedAccessTable from "@/components/dashboard/account/role-based-access/table/role-based-access-table";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
+import { SearchParams } from "@/types";
 import React from "react";
 import { getRoleBasedAccessData } from "./fetch";
-import { SearchParams } from "@/types";
 
 const RoleBasedAccessPage = async (props: {
   searchParams: Promise<SearchParams>;
