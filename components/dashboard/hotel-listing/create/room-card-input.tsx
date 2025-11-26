@@ -498,40 +498,50 @@ export function RoomCardInput({
                       <div>
                         <h4 className="font-medium">Without Breakfast</h4>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <div className="relative">
-                          <FormField
-                            control={form.control}
-                            name="without_breakfast.price"
-                            render={({ field }) => {
-                              const { displayValue, handleChange, handleBlur } =
-                                useFormattedCurrencyInput(
-                                  field.value,
-                                  field.onChange,
-                                  "id-ID"
-                                );
+                      <div>
+                        <div className="flex items-center gap-4">
+                          <div className="relative">
+                            <FormField
+                              control={form.control}
+                              name="without_breakfast.price"
+                              render={({ field }) => {
+                                const { displayValue, handleChange, handleBlur } =
+                                  useFormattedCurrencyInput(
+                                    field.value,
+                                    field.onChange,
+                                    "id-ID"
+                                  );
 
-                              return (
-                                <FormItem>
-                                  <FormControl>
-                                    <Input
-                                      type="text"
-                                      className="bg-gray-200 pl-10"
-                                      placeholder="0"
-                                      value={displayValue}
-                                      onChange={handleChange}
-                                      onBlur={handleBlur}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              );
-                            }}
-                          />
-                          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold">
-                            Rp
-                          </span>
+                                return (
+                                  <FormItem>
+                                    <FormControl>
+                                      <Input
+                                        type="text"
+                                        className="bg-gray-200 pl-10"
+                                        placeholder="0"
+                                        value={displayValue}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                      />
+                                    </FormControl>
+                                  </FormItem>
+                                );
+                              }}
+                            />
+                            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold">
+                              Rp
+                            </span>
+                          </div>
                         </div>
+                        <FormField
+                          control={form.control}
+                          name="without_breakfast.price"
+                          render={() => (
+                            <FormItem>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
                     </div>
                     <div className="flex gap-2">
@@ -564,61 +574,81 @@ export function RoomCardInput({
                       <div>
                         <h4 className="font-medium">With Breakfast</h4>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <div className="relative">
-                          <FormField
-                            control={form.control}
-                            name={`with_breakfast.price`}
-                            render={({ field }) => {
-                              const { displayValue, handleChange, handleBlur } =
-                                useFormattedCurrencyInput(
-                                  field.value,
-                                  field.onChange,
-                                  "id-ID"
-                                );
+                      <div>
+                        <div className="flex items-center gap-4">
+                          <div className="relative">
+                            <FormField
+                              control={form.control}
+                              name={`with_breakfast.price`}
+                              render={({ field }) => {
+                                const { displayValue, handleChange, handleBlur } =
+                                  useFormattedCurrencyInput(
+                                    field.value,
+                                    field.onChange,
+                                    "id-ID"
+                                  );
 
-                              return (
+                                return (
+                                  <FormItem>
+                                    <FormControl>
+                                      <Input
+                                        type="text"
+                                        className="bg-gray-200 pl-10"
+                                        placeholder="0"
+                                        value={displayValue}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                      />
+                                    </FormControl>
+                                  </FormItem>
+                                );
+                              }}
+                            />
+                            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold">
+                              Rp
+                            </span>
+                          </div>
+                          <div>
+                            <FormField
+                              control={form.control}
+                              name={`with_breakfast.pax`}
+                              render={({ field }) => (
                                 <FormItem>
                                   <FormControl>
                                     <Input
-                                      type="text"
-                                      className="bg-gray-200 pl-10"
-                                      placeholder="0"
-                                      value={displayValue}
-                                      onChange={handleChange}
-                                      onBlur={handleBlur}
+                                      type="number"
+                                      className="bg-gray-200 w-20"
+                                      placeholder="Pax"
+                                      {...field}
+                                      value={field.value || ""}
+                                      onChange={(e) =>
+                                        field.onChange(
+                                          e.target.value
+                                            ? Number(e.target.value)
+                                            : 1
+                                        )
+                                      }
                                     />
                                   </FormControl>
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name={`with_breakfast.pax`}
+                              render={() => (
+                                <FormItem>
                                   <FormMessage />
                                 </FormItem>
-                              );
-                            }}
-                          />
-                          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold">
-                            Rp
-                          </span>
+                              )}
+                            />
+                          </div>
                         </div>
                         <FormField
                           control={form.control}
-                          name={`with_breakfast.pax`}
-                          render={({ field }) => (
+                          name={`with_breakfast.price`}
+                          render={() => (
                             <FormItem>
-                              <FormControl>
-                                <Input
-                                  type="number"
-                                  className="bg-gray-200 w-20"
-                                  placeholder="Pax"
-                                  {...field}
-                                  value={field.value || ""}
-                                  onChange={(e) =>
-                                    field.onChange(
-                                      e.target.value
-                                        ? Number(e.target.value)
-                                        : 1
-                                    )
-                                  }
-                                />
-                              </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
