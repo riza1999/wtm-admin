@@ -35,13 +35,29 @@ import { ImageUpload } from "./image-upload";
 // Define the Zod schema for room data validation
 const withoutBreakfastSchema = z.object({
   is_show: z.boolean(),
-  price: z.number().min(0, "Price must be a positive number"),
+  price: z
+    .number({
+      required_error: "Price is required",
+      invalid_type_error: "Price must be a valid number",
+    })
+    .nonnegative("Price cannot be negative"),
 });
 
 const withBreakfastSchema = z.object({
   is_show: z.boolean(),
-  pax: z.number().int().min(1, "Pax must be at least 1"),
-  price: z.number().min(0, "Price must be a positive number"),
+  pax: z
+    .number({
+      required_error: "Pax is required",
+      invalid_type_error: "Pax must be a valid number",
+    })
+    .int("Pax must be a whole number")
+    .positive("Pax must be at least 1"),
+  price: z
+    .number({
+      required_error: "Price is required",
+      invalid_type_error: "Price must be a valid number",
+    })
+    .nonnegative("Price cannot be negative"),
 });
 
 const additionalSchema = z.object({
@@ -96,6 +112,42 @@ export const roomFormSchema = z
     {
       message: "At least one photo is required",
       path: ["photos"], // Show error on photos field
+    }
+  )
+  .refine(
+    (data) => {
+      // At least one breakfast option must be enabled (is_show: true)
+      return data.without_breakfast.is_show || data.with_breakfast.is_show;
+    },
+    {
+      message: "At least one breakfast option must be enabled",
+      path: ["without_breakfast"], // Show error on without_breakfast field
+    }
+  )
+  .refine(
+    (data) => {
+      // If without_breakfast is enabled, price must be greater than 0
+      if (data.without_breakfast.is_show && data.without_breakfast.price <= 0) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: "Price must be greater than 0 when option is enabled",
+      path: ["without_breakfast.price"],
+    }
+  )
+  .refine(
+    (data) => {
+      // If with_breakfast is enabled, price must be greater than 0
+      if (data.with_breakfast.is_show && data.with_breakfast.price <= 0) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: "Price must be greater than 0 when option is enabled",
+      path: ["with_breakfast.price"],
     }
   );
 
@@ -589,6 +641,17 @@ export function RoomCardInput({
                     </div>
                   </div>
                 </div>
+
+                {/* Breakfast Options Validation Error */}
+                <FormField
+                  control={form.control}
+                  name="without_breakfast"
+                  render={() => (
+                    <FormItem>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
 
               {/* Additional Services */}
