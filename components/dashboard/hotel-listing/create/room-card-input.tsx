@@ -65,15 +65,26 @@ export const roomFormSchema = z
     without_breakfast: withoutBreakfastSchema,
     with_breakfast: withBreakfastSchema,
     room_size: z
-      .number()
-      .min(0, "Room size must be a positive number")
-      .optional(),
-    max_occupancy: z.number().int().min(1, "Max occupancy must be at least 1"),
-    bed_types: z.array(z.string()).min(1, "At least one bed type is required"),
+      .number({
+        invalid_type_error: "Required",
+      })
+      .positive("Required"),
+    max_occupancy: z
+      .number({
+        invalid_type_error: "Max occupancy must be a number",
+      })
+      .int("Max occupancy must be a whole number")
+      .positive("Max occupancy must be at least 1"),
+    bed_types: z
+      .array(z.string().min(1, "Bed type cannot be empty"))
+      .min(1, "Required")
+      .refine((bedTypes) => bedTypes.every((type) => type.trim().length > 0), {
+        message: "Required",
+      }),
     is_smoking_room: z.boolean(),
     additional: z.array(additionalSchema).optional(),
     unchanged_additions_ids: z.array(z.number().int()).optional(),
-    description: z.string().optional(),
+    description: z.string().min(1, "Description is required"),
   })
   .refine(
     (data) => {
@@ -669,69 +680,93 @@ export function RoomCardInput({
               <div className="mt-auto pt-10 lg:pt-4">
                 <div className="mb-4 flex flex-wrap gap-4 md:gap-6">
                   {/* Room Size */}
-                  <div className="flex items-center gap-2">
-                    <IconArrowAutofitWidth className="h-5 w-5" />
-                    <div className="relative">
-                      <FormField
-                        control={form.control}
-                        name="room_size"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                placeholder="0"
-                                className="bg-gray-200 w-24 pr-11"
-                                {...field}
-                                value={field.value || ""}
-                                onChange={(e) =>
-                                  field.onChange(
-                                    e.target.value ? Number(e.target.value) : 0
-                                  )
-                                }
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold">
-                        sqm
-                      </span>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <IconArrowAutofitWidth className="h-5 w-5" />
+                      <div className="relative">
+                        <FormField
+                          control={form.control}
+                          name="room_size"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  placeholder="0"
+                                  className="bg-gray-200 w-24 pr-11"
+                                  {...field}
+                                  value={field.value || ""}
+                                  onChange={(e) =>
+                                    field.onChange(
+                                      e.target.value
+                                        ? Number(e.target.value)
+                                        : 0
+                                    )
+                                  }
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold">
+                          sqm
+                        </span>
+                      </div>
                     </div>
+                    <FormField
+                      control={form.control}
+                      name="room_size"
+                      render={() => (
+                        <FormItem>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
 
                   {/* Max Occupancy */}
-                  <div className="flex items-center gap-2">
-                    <IconFriends className="h-5 w-5" />
-                    <div className="relative">
-                      <FormField
-                        control={form.control}
-                        name="max_occupancy"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                placeholder="0"
-                                className="bg-gray-200 w-28"
-                                {...field}
-                                value={field.value || ""}
-                                onChange={(e) =>
-                                  field.onChange(
-                                    e.target.value ? Number(e.target.value) : 1
-                                  )
-                                }
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold">
-                        Guest(s)
-                      </span>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <IconFriends className="h-5 w-5" />
+                      <div className="relative">
+                        <FormField
+                          control={form.control}
+                          name="max_occupancy"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  placeholder="0"
+                                  className="bg-gray-200 w-28"
+                                  {...field}
+                                  value={field.value || ""}
+                                  onChange={(e) =>
+                                    field.onChange(
+                                      e.target.value
+                                        ? Number(e.target.value)
+                                        : 1
+                                    )
+                                  }
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold">
+                          Guest(s)
+                        </span>
+                      </div>
                     </div>
+                    <FormField
+                      control={form.control}
+                      name="max_occupancy"
+                      render={() => (
+                        <FormItem>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
 
                   {/* Smoking Policy */}
@@ -774,37 +809,44 @@ export function RoomCardInput({
                   {/* Bed Types */}
                   <div className="flex items-center gap-2">
                     <IconBed className="h-5 w-5" />
-                    <div className="space-y-2">
-                      {bedTypes.map((bedType, index) => (
-                        <div key={index} className="flex items-center gap-2">
-                          <Input
-                            placeholder="Bed type"
-                            className="bg-gray-200 w-26"
-                            value={bedType}
-                            onChange={(e) =>
-                              updateBedType(index, e.target.value)
-                            }
-                          />
-                          {bedTypes.length > 1 && (
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="icon"
-                              onClick={() => removeBedType(index)}
-                            >
-                              <Trash2 className="size-4" />
-                            </Button>
-                          )}
-                        </div>
-                      ))}
-                      {/* <Button
-                        type="button"
-                        className="inline-flex items-center gap-2"
-                        onClick={addBedType}
-                      >
-                        <PlusCircle className="size-4" /> Add Bed Type
-                      </Button> */}
-                    </div>
+                    <FormField
+                      control={form.control}
+                      name="bed_types"
+                      render={() => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="space-y-2">
+                              {bedTypes.map((bedType, index) => (
+                                <div
+                                  key={index}
+                                  className="flex items-center gap-2"
+                                >
+                                  <Input
+                                    placeholder="Bed type"
+                                    className="bg-gray-200 w-26"
+                                    value={bedType}
+                                    onChange={(e) =>
+                                      updateBedType(index, e.target.value)
+                                    }
+                                  />
+                                  {bedTypes.length > 1 && (
+                                    <Button
+                                      type="button"
+                                      variant="destructive"
+                                      size="icon"
+                                      onClick={() => removeBedType(index)}
+                                    >
+                                      <Trash2 className="size-4" />
+                                    </Button>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </FormControl>
+                          <FormMessage className="whitespace-pre-line" />
+                        </FormItem>
+                      )}
+                    />
                   </div>
                 </div>
               </div>

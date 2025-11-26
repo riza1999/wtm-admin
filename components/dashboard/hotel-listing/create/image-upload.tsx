@@ -383,8 +383,6 @@ export function ImageUpload({
           {/* Instructions */}
           <div className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-md">
             <p>• The first image will be set as the main image by default</p>
-            <p>• Click on any image to set it as the main image</p>
-            <p>• Main image will be displayed prominently in hotel listings</p>
             <p>
               • You can still drag and drop additional images onto the grid
               above
