@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { useFormattedCurrencyInput } from "@/lib/currency";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   IconArrowAutofitWidth,
@@ -439,27 +440,30 @@ export function RoomCardInput({
                           <FormField
                             control={form.control}
                             name="without_breakfast.price"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormControl>
-                                  <Input
-                                    type="number"
-                                    className="bg-gray-200 pl-10"
-                                    placeholder="Rp"
-                                    {...field}
-                                    value={field.value || ""}
-                                    onChange={(e) =>
-                                      field.onChange(
-                                        e.target.value
-                                          ? Number(e.target.value)
-                                          : 0
-                                      )
-                                    }
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            render={({ field }) => {
+                              const { displayValue, handleChange, handleBlur } =
+                                useFormattedCurrencyInput(
+                                  field.value,
+                                  field.onChange,
+                                  "id-ID"
+                                );
+
+                              return (
+                                <FormItem>
+                                  <FormControl>
+                                    <Input
+                                      type="text"
+                                      className="bg-gray-200 pl-10"
+                                      placeholder="0"
+                                      value={displayValue}
+                                      onChange={handleChange}
+                                      onBlur={handleBlur}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              );
+                            }}
                           />
                           <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold">
                             Rp
@@ -502,27 +506,30 @@ export function RoomCardInput({
                           <FormField
                             control={form.control}
                             name={`with_breakfast.price`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormControl>
-                                  <Input
-                                    type="number"
-                                    className="bg-gray-200 pl-10"
-                                    placeholder="Rp"
-                                    {...field}
-                                    value={field.value || ""}
-                                    onChange={(e) =>
-                                      field.onChange(
-                                        e.target.value
-                                          ? Number(e.target.value)
-                                          : 0
-                                      )
-                                    }
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
+                            render={({ field }) => {
+                              const { displayValue, handleChange, handleBlur } =
+                                useFormattedCurrencyInput(
+                                  field.value,
+                                  field.onChange,
+                                  "id-ID"
+                                );
+
+                              return (
+                                <FormItem>
+                                  <FormControl>
+                                    <Input
+                                      type="text"
+                                      className="bg-gray-200 pl-10"
+                                      placeholder="0"
+                                      value={displayValue}
+                                      onChange={handleChange}
+                                      onBlur={handleBlur}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              );
+                            }}
                           />
                           <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold">
                             Rp
@@ -606,31 +613,33 @@ export function RoomCardInput({
                       <FormField
                         control={form.control}
                         name={`additional.${index}.price`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                className="bg-gray-200 pl-8"
-                                placeholder="Price"
-                                {...field}
-                                value={field.value || ""}
-                                onChange={(e) => {
-                                  const numValue = e.target.value
-                                    ? Number(e.target.value)
-                                    : 0;
-                                  field.onChange(numValue);
-                                  handleAdditionChange(
-                                    index,
-                                    "price",
-                                    numValue
-                                  );
-                                }}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                        render={({ field }) => {
+                          const { displayValue, handleChange, handleBlur } =
+                            useFormattedCurrencyInput(
+                              field.value,
+                              (numValue) => {
+                                field.onChange(numValue);
+                                handleAdditionChange(index, "price", numValue);
+                              },
+                              "id-ID"
+                            );
+
+                          return (
+                            <FormItem>
+                              <FormControl>
+                                <Input
+                                  type="text"
+                                  className="bg-gray-200 pl-8"
+                                  placeholder="0"
+                                  value={displayValue}
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          );
+                        }}
                       />
                       <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold">
                         Rp
