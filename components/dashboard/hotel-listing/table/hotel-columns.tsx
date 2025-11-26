@@ -90,7 +90,7 @@ export function getHotelTableColumns({
       meta: {
         label: "Region",
         placeholder: "Search region...",
-        variant: "select",
+        variant: "multiSelect",
         options: regionOptions,
       },
       enableColumnFilter: true,

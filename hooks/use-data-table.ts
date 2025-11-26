@@ -22,8 +22,8 @@ import {
 import {
   type Parser,
   type UseQueryStateOptions,
-  parseAsArrayOf,
   parseAsInteger,
+  parseAsNativeArrayOf,
   parseAsString,
   useQueryState,
   useQueryStates,
@@ -180,10 +180,12 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
       Record<string, Parser<string> | Parser<string[]>>
     >((acc, column) => {
       if (column.meta?.options) {
-        acc[column.id ?? ""] = parseAsArrayOf(
-          parseAsString,
-          ARRAY_SEPARATOR
-        ).withOptions(queryStateOptions);
+        // acc[column.id ?? ""] = parseAsArrayOf(
+        //   parseAsString,
+        //   ARRAY_SEPARATOR
+        // ).withOptions(queryStateOptions);
+        acc[column.id ?? ""] =
+          parseAsNativeArrayOf(parseAsString).withOptions(queryStateOptions);
       } else {
         acc[column.id ?? ""] = parseAsString.withOptions(queryStateOptions);
       }
