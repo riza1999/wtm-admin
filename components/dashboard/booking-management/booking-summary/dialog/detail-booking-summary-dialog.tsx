@@ -19,7 +19,6 @@ import {
   BookingStatus,
   BookingSummary,
   BookingSummaryDetail,
-  PaymentStatus,
 } from "@/app/(dashboard)/booking-management/booking-summary/types";
 import { ConfirmationDialog } from "@/components/confirmation-dialog";
 import { DataTable } from "@/components/data-table/data-table";
@@ -51,14 +50,13 @@ import { DataTableRowAction, Option } from "@/types/data-table";
 import {
   IconApi,
   IconApiOff,
-  IconCloudUpload,
   IconFileDownload,
   IconFileText,
   IconNote,
 } from "@tabler/icons-react";
 import { Ban, MoreHorizontal } from "lucide-react";
-import ViewInvoiceDialog from "./view-invoice-dialog";
 import { UploadReceiptDialog } from "./upload-receipt-dialog";
+import ViewInvoiceDialog from "./view-invoice-dialog";
 import ViewReceiptDialog from "./view-receipt-dialog";
 
 interface GetDetailBookingTableColumnsProps {
@@ -638,6 +636,7 @@ export function DetailBookingSummaryDialog({
         onOpenChange={() => setRowAction(null)}
         receipts={bookingSummary?.receipts || null}
         invoiceIndex={rowAction?.row.index}
+        receipt={rowAction?.row.original.invoice.receipt}
       />
       <UploadReceiptDialog
         open={uploadReceiptOpen}

@@ -17,7 +17,6 @@ import {
 } from "@tabler/icons-react";
 import Image from "next/image";
 import React, { useState } from "react";
-import { toast } from "sonner";
 
 interface ViewReceiptDialogProps {
   open: boolean;
@@ -25,6 +24,7 @@ interface ViewReceiptDialogProps {
   receipts?: string[] | null;
   booking?: BookingSummary | null;
   invoiceIndex?: number;
+  receipt?: string;
 }
 
 const ViewReceiptDialog: React.FC<ViewReceiptDialogProps> = ({
@@ -33,6 +33,7 @@ const ViewReceiptDialog: React.FC<ViewReceiptDialogProps> = ({
   receipts: receiptsProp,
   booking,
   invoiceIndex,
+  receipt,
 }) => {
   const [currentReceiptIndex, setCurrentReceiptIndex] = useState(0);
 
@@ -46,9 +47,11 @@ const ViewReceiptDialog: React.FC<ViewReceiptDialogProps> = ({
   // Priority: use receipts prop directly, then booking receipts, then empty array
   const allReceipts = receiptsProp || booking?.receipts || [];
   const receipts =
-    invoiceIndex !== undefined && allReceipts[invoiceIndex]
-      ? [allReceipts[invoiceIndex]]
-      : allReceipts;
+    receipt === undefined
+      ? invoiceIndex !== undefined && allReceipts[invoiceIndex]
+        ? [allReceipts[invoiceIndex]]
+        : allReceipts
+      : [receipt].filter((r) => r !== "");
   const hasReceipts = receipts.length > 0;
   const currentReceipt = receipts[currentReceiptIndex];
   const showNavigation = invoiceIndex === undefined && receipts.length > 1;
@@ -67,7 +70,7 @@ const ViewReceiptDialog: React.FC<ViewReceiptDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] min-w-4xl overflow-y-auto bg-white px-8">
+      <DialogContent className="max-h-[90vh] min-w-4xl bg-white px-8">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -109,7 +112,7 @@ const ViewReceiptDialog: React.FC<ViewReceiptDialogProps> = ({
           {hasReceipts ? (
             <div className="space-y-4">
               {/* Receipt Image Container */}
-              <div className="relative overflow-x-auto rounded-lg border bg-gray-50 p-4">
+              <div className="relative max-h-[70vh] overflow-x-auto overflow-y-auto rounded-lg border bg-gray-50 p-4">
                 <Image
                   src={formatUrl(currentReceipt) || ""}
                   alt={`Receipt ${currentReceiptIndex + 1}`}

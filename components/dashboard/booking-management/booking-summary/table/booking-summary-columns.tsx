@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { DataTableRowAction, Option } from "@/types/data-table";
-import { IconCloudUpload } from "@tabler/icons-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { EyeIcon, FileText, Text } from "lucide-react";
 import React from "react";
@@ -105,7 +104,7 @@ export function getBookingSummaryTableColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Booking ID" />
       ),
-      cell: ({ row }) => row.original.booking_code,
+      cell: ({ row }) => row.original.booking_id,
     },
     {
       id: "booking_status_id",

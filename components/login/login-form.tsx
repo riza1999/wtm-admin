@@ -103,11 +103,11 @@ export function LoginForm({
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="username">Username or Email</Label>
                 <Input
                   id="username"
                   type="text"
-                  placeholder="Enter your username"
+                  placeholder="Enter your username or email"
                   {...form.register("username")}
                   disabled={isPending}
                 />
