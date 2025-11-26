@@ -505,12 +505,15 @@ export function RoomCardInput({
                               control={form.control}
                               name="without_breakfast.price"
                               render={({ field }) => {
-                                const { displayValue, handleChange, handleBlur } =
-                                  useFormattedCurrencyInput(
-                                    field.value,
-                                    field.onChange,
-                                    "id-ID"
-                                  );
+                                const {
+                                  displayValue,
+                                  handleChange,
+                                  handleBlur,
+                                } = useFormattedCurrencyInput(
+                                  field.value,
+                                  field.onChange,
+                                  "id-ID"
+                                );
 
                                 return (
                                   <FormItem>
@@ -581,12 +584,15 @@ export function RoomCardInput({
                               control={form.control}
                               name={`with_breakfast.price`}
                               render={({ field }) => {
-                                const { displayValue, handleChange, handleBlur } =
-                                  useFormattedCurrencyInput(
-                                    field.value,
-                                    field.onChange,
-                                    "id-ID"
-                                  );
+                                const {
+                                  displayValue,
+                                  handleChange,
+                                  handleBlur,
+                                } = useFormattedCurrencyInput(
+                                  field.value,
+                                  field.onChange,
+                                  "id-ID"
+                                );
 
                                 return (
                                   <FormItem>
