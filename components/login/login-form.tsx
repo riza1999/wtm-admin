@@ -77,9 +77,7 @@ export function LoginForm({
 
         if (result?.ok) {
           toast.success("Login successful");
-          router.push(
-            safeCallbackUrl ?? "/account/user-management/super-admin"
-          );
+          router.push(safeCallbackUrl ?? "/");
         } else {
           toast.error("Login failed. Please try again.");
         }
