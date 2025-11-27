@@ -52,7 +52,9 @@ export function getHistoryBookingLogTableColumns({
         <DataTableColumnHeader column={column} title="Confirm Date" />
       ),
       cell: ({ row }) => {
-        return formatDate(row.original.confirm_date || new Date());
+        return row.original.confirm_date === "N/A"
+          ? "N/A"
+          : formatDate(row.original.confirm_date || new Date());
       },
       meta: {
         label: "Confirm Date",
@@ -155,9 +157,9 @@ export function getHistoryBookingLogTableColumns({
       meta: {
         label: "Check-out Date",
         placeholder: "Filter by check-out date...",
-        variant: "date",
+        variant: "dateRange",
       },
-      enableColumnFilter: false,
+      enableColumnFilter: true,
     },
     {
       id: "hotel_name",

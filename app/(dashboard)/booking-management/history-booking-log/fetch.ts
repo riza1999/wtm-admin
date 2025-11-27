@@ -52,6 +52,13 @@ export const getData = async ({
     "check_in_date_to"
   );
 
+  query = processDateRangeParam(
+    query,
+    "check_out_date",
+    "check_out_date_from",
+    "check_out_date_to"
+  );
+
   // Set default limit to 10 if not provided
   if (!query.limit) {
     query = {
