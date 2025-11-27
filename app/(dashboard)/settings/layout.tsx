@@ -1,4 +1,8 @@
+"use client";
+
 import TabsPageChanger from "@/components/tabs-page-changer";
+import { useAuthorization } from "@/hooks/use-authorization";
+import { redirect, usePathname } from "next/navigation";
 import React from "react";
 
 const tabItems = [
@@ -9,6 +13,7 @@ const tabItems = [
   {
     href: "/settings/email-setting",
     label: "E-mail Setting",
+    requiredRole: "Super Admin" as const,
   },
   {
     href: "/settings/email-log",
@@ -21,6 +26,12 @@ const SettingsLayout = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
+  const pathname = usePathname();
+  const { hasRole } = useAuthorization();
+
+  if (pathname === "/settings/email-setting" && !hasRole("Super Admin"))
+    redirect("/unauthorized");
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">

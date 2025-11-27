@@ -3,6 +3,8 @@ import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { Suspense } from "react";
 import { getAdminData } from "./fetch";
 import { AdminPageProps } from "./types";
+import { requireAuthorization } from "@/lib/server-authorization";
+import { redirect } from "next/navigation";
 
 const AdminPage = async (props: AdminPageProps) => {
   const searchParams = await props.searchParams;

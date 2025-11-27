@@ -2,7 +2,24 @@ import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
 const PUBLIC_PATHS = ["/login", "/forgot-password", "/reset-password"];
-const AUTHENTICATED_REDIRECT_PATH = "/account/user-management/super-admin";
+
+/**
+ * Get the redirect path based on user role
+ */
+function getRoleBasedRedirectPath(role: string | undefined): string {
+  if (!role) return "/account/agent-overview/agent-control";
+
+  switch (role) {
+    case "Super Admin":
+      return "/account/user-management/super-admin";
+    case "Admin":
+      return "/account/user-management/support";
+    case "Support":
+      return "/account/agent-overview/agent-control";
+    default:
+      return "/account/agent-overview/agent-control";
+  }
+}
 
 export default withAuth(
   function middleware(req) {
@@ -20,9 +37,9 @@ export default withAuth(
     }
 
     if (isAuthenticated && pathname === "/login") {
-      return NextResponse.redirect(
-        new URL(AUTHENTICATED_REDIRECT_PATH, req.url)
-      );
+      const userRole = token?.user?.role as string | undefined;
+      const redirectPath = getRoleBasedRedirectPath(userRole);
+      return NextResponse.redirect(new URL(redirectPath, req.url));
     }
 
     return NextResponse.next();

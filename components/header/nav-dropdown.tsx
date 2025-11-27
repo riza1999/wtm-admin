@@ -1,5 +1,7 @@
+import type { UserRole } from "@/lib/authorization";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
+import { AuthorizationGuard } from "../authorization-guard";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,9 +16,10 @@ export const NavDropdown = ({
   menu: {
     name: string;
     href: string;
-    childs: {
+    childs?: {
       name: string;
       href: string;
+      requiredRole?: UserRole;
     }[];
   };
 }) => {
@@ -30,11 +33,28 @@ export const NavDropdown = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-(--radix-dropdown-menu-trigger-width) min-w-40 rounded-lg">
         <DropdownMenuGroup>
-          {menu.childs.map((item, index) => (
-            <DropdownMenuItem key={index}>
-              <Link href={item.href}>{item.name}</Link>
-            </DropdownMenuItem>
-          ))}
+          {menu.childs?.map((item, index) => {
+            // If item has role restriction, wrap with AuthorizationGuard
+            if (item.requiredRole) {
+              return (
+                <AuthorizationGuard
+                  key={index}
+                  requiredRole={item.requiredRole}
+                >
+                  <DropdownMenuItem>
+                    <Link href={item.href}>{item.name}</Link>
+                  </DropdownMenuItem>
+                </AuthorizationGuard>
+              );
+            }
+
+            // No role restriction, render normally
+            return (
+              <DropdownMenuItem key={index}>
+                <Link href={item.href}>{item.name}</Link>
+              </DropdownMenuItem>
+            );
+          })}
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

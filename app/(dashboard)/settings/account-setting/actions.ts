@@ -57,7 +57,6 @@ export async function changePassword(
   try {
     const body = {
       ...input,
-      username: "superadmin",
     };
 
     const response = await apiCall(`profile/setting`, {
