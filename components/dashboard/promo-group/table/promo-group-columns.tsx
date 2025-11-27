@@ -47,6 +47,7 @@ export function getPromoGroupTableColumns({
       },
       enableColumnFilter: true,
       size: 2200,
+      enableSorting: false,
     },
     {
       id: "actions",

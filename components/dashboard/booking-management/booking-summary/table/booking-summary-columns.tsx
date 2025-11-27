@@ -66,6 +66,7 @@ export function getBookingSummaryTableColumns({
       },
       enableColumnFilter: true,
       enableHiding: false,
+      enableSorting: false,
     },
     {
       id: "agent_name",
@@ -89,6 +90,7 @@ export function getBookingSummaryTableColumns({
         <DataTableColumnHeader column={column} title="Agent Company" />
       ),
       cell: ({ row }) => row.original.agent_company,
+      enableSorting: false,
     },
     {
       id: "group_promo",
@@ -97,6 +99,7 @@ export function getBookingSummaryTableColumns({
         <DataTableColumnHeader column={column} title="Group Promo" />
       ),
       cell: ({ row }) => row.original.group_promo,
+      enableSorting: false,
     },
     {
       id: "booking_id",
@@ -105,6 +108,7 @@ export function getBookingSummaryTableColumns({
         <DataTableColumnHeader column={column} title="Booking ID" />
       ),
       cell: ({ row }) => row.original.booking_id,
+      enableSorting: false,
     },
     {
       id: "booking_status_id",
@@ -276,6 +280,7 @@ export function getBookingSummaryTableColumns({
         options: bookingStatusOptions,
       },
       enableColumnFilter: true,
+      enableSorting: false,
     },
     {
       id: "payment_status_id",
@@ -403,6 +408,7 @@ export function getBookingSummaryTableColumns({
         options: paymentStatusOptions,
       },
       enableColumnFilter: true,
+      enableSorting: false,
     },
     {
       id: "promo_id",
@@ -411,6 +417,7 @@ export function getBookingSummaryTableColumns({
         <DataTableColumnHeader column={column} title="Promo ID" />
       ),
       cell: ({ row }) => row.original.group_promo,
+      enableSorting: false,
     },
     {
       id: "receipt",

@@ -42,6 +42,7 @@ export function getReportTableColumns({
         options: hotelOptions,
       },
       enableColumnFilter: true,
+      enableSorting: false,
     },
     {
       id: "agent_company_id",
@@ -57,6 +58,7 @@ export function getReportTableColumns({
         options: companyOptions,
       },
       enableColumnFilter: true,
+      enableSorting: false,
     },
     {
       id: "search",
@@ -73,6 +75,7 @@ export function getReportTableColumns({
       },
       enableColumnFilter: true,
       enableHiding: false,
+      enableSorting: false,
     },
 
     // {
@@ -108,6 +111,7 @@ export function getReportTableColumns({
         <div className="text-center">{row.original.confirmed_booking}</div>
       ),
       enableHiding: false,
+      enableSorting: false,
     },
     {
       id: "cancelled_bookings",
@@ -119,6 +123,7 @@ export function getReportTableColumns({
         <div className="text-center">{row.original.cancelled_booking}</div>
       ),
       enableHiding: false,
+      enableSorting: false,
     },
     {
       id: "detail",

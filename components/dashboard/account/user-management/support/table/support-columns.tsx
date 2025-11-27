@@ -45,6 +45,7 @@ export function getSupportTableColumns({
       },
       enableColumnFilter: true,
       enableHiding: false,
+      enableSorting: false,
     },
     {
       id: "email",
@@ -60,6 +61,7 @@ export function getSupportTableColumns({
         icon: Text,
       },
       enableColumnFilter: false,
+      enableSorting: false,
     },
     {
       id: "phone",
@@ -75,6 +77,7 @@ export function getSupportTableColumns({
         icon: Text,
       },
       enableColumnFilter: false,
+      enableSorting: false,
     },
     {
       id: "status",

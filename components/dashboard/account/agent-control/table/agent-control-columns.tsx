@@ -139,6 +139,7 @@ export function getAgentControlTableColumns({
       },
       enableColumnFilter: true,
       enableHiding: false,
+      enableSorting: false,
     },
     {
       id: "agent_company",
@@ -154,6 +155,7 @@ export function getAgentControlTableColumns({
         options: companyOptions,
       },
       enableColumnFilter: false,
+      enableSorting: false,
     },
     {
       id: "Email",
@@ -162,6 +164,7 @@ export function getAgentControlTableColumns({
         <DataTableColumnHeader column={column} title="Email" />
       ),
       cell: ({ row }) => row.original.email,
+      enableSorting: false,
     },
     {
       id: "detail",

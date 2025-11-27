@@ -44,6 +44,7 @@ export function getHistoryBookingLogTableColumns({
       },
       enableColumnFilter: true,
       enableHiding: false,
+      enableSorting: false,
     },
     {
       id: "confirm_date",
@@ -62,6 +63,7 @@ export function getHistoryBookingLogTableColumns({
         variant: "dateRange",
       },
       enableColumnFilter: true,
+      enableSorting: false,
     },
     {
       id: "agent_name",
@@ -77,6 +79,7 @@ export function getHistoryBookingLogTableColumns({
         icon: Text,
       },
       enableColumnFilter: false,
+      enableSorting: false,
     },
     {
       id: "booking_status_id",
@@ -103,6 +106,7 @@ export function getHistoryBookingLogTableColumns({
         options: bookingStatusOptions,
       },
       enableColumnFilter: true,
+      enableSorting: false,
     },
     {
       id: "payment_status_id",
@@ -128,6 +132,7 @@ export function getHistoryBookingLogTableColumns({
         options: paymentStatusOptions,
       },
       enableColumnFilter: true,
+      enableSorting: false,
     },
     {
       id: "check_in_date",
@@ -144,6 +149,7 @@ export function getHistoryBookingLogTableColumns({
         variant: "dateRange",
       },
       enableColumnFilter: true,
+      enableSorting: false,
     },
     {
       id: "check_out_date",
@@ -160,6 +166,7 @@ export function getHistoryBookingLogTableColumns({
         variant: "dateRange",
       },
       enableColumnFilter: true,
+      enableSorting: false,
     },
     {
       id: "hotel_name",
@@ -175,6 +182,7 @@ export function getHistoryBookingLogTableColumns({
         icon: Text,
       },
       enableColumnFilter: false,
+      enableSorting: false,
     },
     {
       id: "room_type",
@@ -190,6 +198,7 @@ export function getHistoryBookingLogTableColumns({
         icon: Text,
       },
       enableColumnFilter: false,
+      enableSorting: false,
     },
     {
       id: "room_night",

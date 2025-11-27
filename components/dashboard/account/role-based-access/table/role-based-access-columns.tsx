@@ -40,6 +40,7 @@ export function getRoleBasedAccessTableColumns(): ColumnDef<RoleBasedAccessPageD
       },
       enableColumnFilter: false,
       enableHiding: false,
+      enableSorting: false,
       size: 400,
     },
     {

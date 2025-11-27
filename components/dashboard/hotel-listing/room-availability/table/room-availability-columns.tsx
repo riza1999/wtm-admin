@@ -57,6 +57,7 @@ export function getRoomAvailabilityTableColumns({
       enableColumnFilter: true,
       enableHiding: false,
       size: 400,
+      enableSorting: false,
     },
     {
       id: "region",
@@ -76,6 +77,7 @@ export function getRoomAvailabilityTableColumns({
       enableColumnFilter: true,
       enableHiding: false,
       size: 1000,
+      enableSorting: false,
     },
     {
       id: "actions",

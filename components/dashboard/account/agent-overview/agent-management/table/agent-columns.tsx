@@ -60,6 +60,7 @@ export function getAgentTableColumns({
       },
       enableColumnFilter: true,
       enableHiding: false,
+      enableSorting: false,
     },
     {
       id: "Agent Company",
@@ -68,10 +69,12 @@ export function getAgentTableColumns({
         <DataTableColumnHeader column={column} title="Agent Company" />
       ),
       cell: ({ row }) => row.original.agent_company_name,
+      enableSorting: false,
     },
     {
       id: "Promo Group",
       accessorKey: "promo_group",
+      enableSorting: false,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Promo Group" />
       ),
@@ -132,6 +135,7 @@ export function getAgentTableColumns({
         <DataTableColumnHeader column={column} title="Email" />
       ),
       cell: ({ row }) => row.original.email,
+      enableSorting: false,
     },
     {
       id: "Kakao Talk ID",
@@ -140,6 +144,7 @@ export function getAgentTableColumns({
         <DataTableColumnHeader column={column} title="Kakao Talk ID" />
       ),
       cell: ({ row }) => row.original.kakao_talk_id,
+      enableSorting: false,
     },
     {
       id: "phone",
@@ -155,6 +160,7 @@ export function getAgentTableColumns({
         icon: Text,
       },
       enableColumnFilter: false,
+      enableSorting: false,
     },
     {
       id: "status",
@@ -172,6 +178,7 @@ export function getAgentTableColumns({
         icon: Text,
       },
       enableColumnFilter: false,
+      enableSorting: false,
     },
     {
       id: "actions",

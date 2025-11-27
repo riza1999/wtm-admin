@@ -61,6 +61,7 @@ export function getPromoTableColumns({
       },
       enableColumnFilter: false,
       enableHiding: false,
+      enableSorting: false,
     },
     {
       id: "search",
@@ -76,6 +77,7 @@ export function getPromoTableColumns({
         icon: Text,
       },
       enableColumnFilter: true,
+      enableSorting: false,
     },
     {
       id: "duration",
@@ -84,6 +86,7 @@ export function getPromoTableColumns({
         <DataTableColumnHeader column={column} title="Duration (Days)" />
       ),
       cell: ({ row }) => `${row.original.duration} Nights`,
+      enableSorting: false,
     },
     {
       id: "start_date",
@@ -95,6 +98,7 @@ export function getPromoTableColumns({
         const date = new Date(row.original.promo_start_date);
         return formatDate(date);
       },
+      enableSorting: false,
     },
     {
       id: "end_date",
@@ -106,6 +110,7 @@ export function getPromoTableColumns({
         const date = new Date(row.original.promo_end_date);
         return formatDate(date);
       },
+      enableSorting: false,
     },
 
     {

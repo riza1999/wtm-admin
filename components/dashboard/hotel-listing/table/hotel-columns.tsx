@@ -78,6 +78,7 @@ export function getHotelTableColumns({
       },
       enableColumnFilter: true,
       enableHiding: false,
+      enableSorting: false,
       size: 400,
     },
     {
@@ -94,6 +95,7 @@ export function getHotelTableColumns({
         options: regionOptions,
       },
       enableColumnFilter: true,
+      enableSorting: false,
     },
     {
       id: "Email",
@@ -102,6 +104,7 @@ export function getHotelTableColumns({
         <DataTableColumnHeader column={column} title="Email" />
       ),
       cell: ({ row }) => row.original.email,
+      enableSorting: false,
     },
     {
       id: "approval_status",
