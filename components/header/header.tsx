@@ -56,18 +56,7 @@ const menuItems: MenuItem[] = [
 
 export const HeroHeader = () => {
   const [menuState, setMenuState] = React.useState(false);
-  const { data: session, status } = useSession();
-
-  const navUser = React.useMemo(() => {
-    if (!session?.user) return null;
-
-    return {
-      name: session.user.name ?? null,
-      email: session.user.username ?? null,
-      username: session.user.username ?? null,
-      avatar: session.user.photo_url ?? null,
-    };
-  }, [session?.user]);
+  const { status } = useSession();
 
   const {
     data: profileData,
