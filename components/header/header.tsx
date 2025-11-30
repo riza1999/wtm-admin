@@ -61,6 +61,7 @@ const menuItems: MenuItem[] = [
   { name: "Report", href: "/report" },
   { name: "Promo", href: "/promo" },
   { name: "Promo Group", href: "/promo-group" },
+  { name: "Banner", href: "/banner" },
 ];
 
 export const HeroHeader = () => {

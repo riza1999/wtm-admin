@@ -1,0 +1,246 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+import {
+  changeBannerOrder,
+  changeBannerStatus,
+} from "@/app/(dashboard)/banner/actions";
+import { Banner } from "@/app/(dashboard)/banner/types";
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { DataTableRowAction } from "@/types/data-table";
+import { ColumnDef } from "@tanstack/react-table";
+import { Ellipsis, Text } from "lucide-react";
+import React from "react";
+import { toast } from "sonner";
+
+interface GetBannerTableColumnsProps {
+  setRowAction: React.Dispatch<
+    React.SetStateAction<DataTableRowAction<Banner> | null>
+  >;
+}
+
+export function getBannerTableColumns({
+  setRowAction,
+}: GetBannerTableColumnsProps): ColumnDef<Banner>[] {
+  return [
+    {
+      id: "no",
+      header: "No",
+      cell: ({ row }) => row.index + 1,
+      enableSorting: false,
+      enableHiding: false,
+      size: 40,
+    },
+    // {
+    //   id: "id",
+    //   accessorKey: "id",
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title="Banner ID" />
+    //   ),
+    //   cell: ({ row }) => row.original.id,
+    //   enableHiding: false,
+    // },
+    // {
+    //   id: "image",
+    //   accessorKey: "image_url",
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title="Image" />
+    //   ),
+    //   cell: ({ row }) => {
+    //     const imageUrl = row.original.image_url;
+
+    //     return (
+    //       <div className="relative h-16 w-28 overflow-hidden rounded-md border">
+    //         {imageUrl ? (
+    //           <Image
+    //             src={imageUrl}
+    //             alt={row.original.title || "Banner image"}
+    //             fill
+    //             className="object-cover"
+    //             sizes="112px"
+    //           />
+    //         ) : (
+    //           <div className="flex h-full w-full items-center justify-center bg-muted">
+    //             <ImageIcon className="h-8 w-8 text-muted-foreground" />
+    //           </div>
+    //         )}
+    //       </div>
+    //     );
+    //   },
+    //   enableSorting: false,
+    //   enableHiding: false,
+    //   size: 120,
+    // },
+    {
+      id: "title",
+      accessorKey: "title",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Title" />
+      ),
+      cell: ({ row }) => (
+        <div className="max-w-[300px] truncate font-medium">
+          {row.original.title}
+        </div>
+      ),
+      meta: {
+        label: "Title",
+        placeholder: "Search title...",
+        variant: "text",
+        icon: Text,
+      },
+      enableColumnFilter: true,
+      enableHiding: false,
+      enableSorting: false,
+    },
+    {
+      id: "description",
+      accessorKey: "description",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Description" />
+      ),
+      cell: ({ row }) => (
+        <div className="max-w-[400px] truncate text-sm text-muted-foreground">
+          {row.original.description || "-"}
+        </div>
+      ),
+      enableSorting: false,
+    },
+    {
+      id: "order",
+      accessorKey: "order",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Order" />
+      ),
+      cell: ({ row }) => {
+        const [isUpdatePending, startUpdateTransition] = React.useTransition();
+        const [orderValue, setOrderValue] = React.useState(row.original.order);
+
+        return (
+          <div className="flex items-center gap-2">
+            <Input
+              type="number"
+              min="1"
+              value={orderValue}
+              onChange={(e) => setOrderValue(Number(e.target.value))}
+              onBlur={() => {
+                if (orderValue !== row.original.order) {
+                  startUpdateTransition(() => {
+                    toast.promise(
+                      changeBannerOrder({
+                        id: String(row.original.id),
+                        order: orderValue,
+                      }),
+                      {
+                        loading: "Updating banner order...",
+                        success: (data) => data.message,
+                        error: "Failed to update banner order",
+                      }
+                    );
+                  });
+                }
+              }}
+              disabled={isUpdatePending}
+              className="w-20"
+            />
+          </div>
+        );
+      },
+      enableSorting: false,
+      size: 100,
+    },
+    {
+      id: "status",
+      accessorKey: "is_active",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Status" />
+      ),
+      cell: ({ row }) => {
+        const [isUpdatePending, startUpdateTransition] = React.useTransition();
+
+        return (
+          <>
+            <Label htmlFor={`${row.original.id}-status`} className="sr-only">
+              Status
+            </Label>
+            <Switch
+              disabled={isUpdatePending}
+              checked={row.original.is_active}
+              onCheckedChange={(checked) => {
+                startUpdateTransition(() => {
+                  toast.promise(
+                    changeBannerStatus({
+                      id: String(row.original.id),
+                      status: checked,
+                    }),
+                    {
+                      loading: "Updating banner status...",
+                      success: (data) => data.message,
+                      error: "Failed to update banner status",
+                    }
+                  );
+                });
+              }}
+              id={`${row.original.id}-status`}
+            />
+          </>
+        );
+      },
+      meta: {
+        label: "Status",
+        placeholder: "Filter by status...",
+        variant: "select",
+        options: [
+          { label: "Active", value: "true" },
+          { label: "Inactive", value: "false" },
+        ],
+      },
+      enableColumnFilter: true,
+      enableHiding: false,
+      enableSorting: false,
+    },
+    {
+      id: "actions",
+      cell: function Cell({ row }) {
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                aria-label="Open menu"
+                variant="ghost"
+                className="flex size-8 p-0 data-[state=open]:bg-muted"
+              >
+                <Ellipsis className="size-4" aria-hidden="true" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40">
+              <DropdownMenuItem
+                onSelect={() => setRowAction({ row, variant: "update" })}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                variant="destructive"
+                onSelect={() => setRowAction({ row, variant: "delete" })}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+      enableHiding: false,
+      enableSorting: false,
+      size: 40,
+    },
+  ];
+}
