@@ -48,7 +48,7 @@ const monthYearParser = createParser({
 
 const RoomAvailabilityTable = ({ promises }: RoomAvailabilityTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [{ data, pagination }, regionOptions] = React.use(promises);
+  const [{ data, pagination, error }, regionOptions] = React.use(promises);
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<Hotel> | null>(null);
 
@@ -97,6 +97,10 @@ const RoomAvailabilityTable = ({ promises }: RoomAvailabilityTableProps) => {
     clearOnDefault: true,
     startTransition,
   });
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="relative">

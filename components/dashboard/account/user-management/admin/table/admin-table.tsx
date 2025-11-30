@@ -18,7 +18,7 @@ interface AdminTableProps {
 const AdminTable = ({ promises }: AdminTableProps) => {
   const [isPending, startTransition] = useTransition();
   const [response] = React.use(promises);
-  const { status, data, pagination } = response;
+  const { status, data, pagination, error } = response;
 
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<Admin> | null>(null);
@@ -37,6 +37,10 @@ const AdminTable = ({ promises }: AdminTableProps) => {
     clearOnDefault: true,
     startTransition,
   });
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   if (status !== 200) {
     return <div>Failed to load data</div>;

@@ -13,7 +13,7 @@ const EditHotelPage = async ({
 }) => {
   const { id } = await params;
   const response = await getHotelDetails(id);
-  const { data: hotel, status } = response;
+  const { data: hotel, status, error } = response;
 
   // Create a unique key based on hotel data to force re-render on update
   const hotelKey = hotel

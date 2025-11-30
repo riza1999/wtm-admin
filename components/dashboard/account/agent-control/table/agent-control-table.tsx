@@ -24,7 +24,8 @@ interface AgentControlTableProps {
 
 const AgentControlTable = ({ promises }: AgentControlTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [{ data, pagination }, companyOptions] = React.use(promises);
+  const [{ data, pagination, status, error }, companyOptions] =
+    React.use(promises);
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<AgentControl> | null>(null);
 
@@ -46,6 +47,14 @@ const AgentControlTable = ({ promises }: AgentControlTableProps) => {
     clearOnDefault: true,
     startTransition,
   });
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  if (status !== 200) {
+    return <div>Failed to load data</div>;
+  }
 
   return (
     <>

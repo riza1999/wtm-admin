@@ -6,6 +6,7 @@ import { DataTable } from "@/components/data-table/data-table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { useAuthorization } from "@/hooks/use-authorization";
 import { useDataTable } from "@/hooks/use-data-table";
 import { formatCurrency } from "@/lib/format";
 import { getRegionOptions } from "@/server/general";
@@ -17,7 +18,6 @@ import { DeleteHotelDialog } from "../dialog/delete-hotel-dialog";
 import EditHotelDialog from "../dialog/edit-hotel-dialog";
 import ImportCsvDialog from "../dialog/import-csv-dialog";
 import { getHotelTableColumns } from "./hotel-columns";
-import { useAuthorization } from "@/hooks/use-authorization";
 
 interface HotelTableProps {
   promises: Promise<
@@ -30,7 +30,8 @@ interface HotelTableProps {
 
 const HotelTable = ({ promises }: HotelTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [{ data, pagination }, regionOptions] = React.use(promises);
+  const [{ data, status, pagination, error }, regionOptions] =
+    React.use(promises);
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<Hotel> | null>(null);
   const { userRole } = useAuthorization();
@@ -59,6 +60,10 @@ const HotelTable = ({ promises }: HotelTableProps) => {
     },
     // getSubRows: (row) => row.rooms,
   });
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <>

@@ -29,7 +29,7 @@ interface AgentTableProps {
 
 const AgentTable = ({ promises }: AgentTableProps) => {
   const [isPending, startTransition] = useTransition();
-  const [{ data, pagination, status }, { data: promoGroupSelect }] =
+  const [{ data, pagination, status, error }, { data: promoGroupSelect }] =
     React.use(promises);
 
   const [rowAction, setRowAction] =
@@ -52,6 +52,14 @@ const AgentTable = ({ promises }: AgentTableProps) => {
     clearOnDefault: true,
     startTransition,
   });
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  if (status !== 200) {
+    return <div>Failed to load data</div>;
+  }
 
   return (
     <>

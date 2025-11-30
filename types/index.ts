@@ -15,6 +15,7 @@ export type ApiResponse<TData> = {
   status: number;
   message: string;
   data: TData;
+  error?: string;
   pagination?: {
     limit: number;
     page: number;

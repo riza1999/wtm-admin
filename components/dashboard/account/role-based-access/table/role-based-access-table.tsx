@@ -32,7 +32,8 @@ const RoleBasedAccessTable = ({ promise }: RoleBasedAccessTableProps) => {
   const [selectValueMap, setSelectValueMap] = React.useState<
     Record<string, string>
   >({});
-  const { data } = React.use(promise);
+  const response = React.use(promise);
+  const { data, success } = response;
   const columns = React.useMemo(() => getRoleBasedAccessTableColumns(), []);
 
   const { table } = useDataTable({
@@ -44,6 +45,10 @@ const RoleBasedAccessTable = ({ promise }: RoleBasedAccessTableProps) => {
     clearOnDefault: true,
     startTransition,
   });
+
+  if (!success) {
+    return <div>Failed to load data</div>;
+  }
 
   const handleChangePermission = ({
     action,

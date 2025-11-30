@@ -124,7 +124,5 @@ export const getRoleBasedAccessData = async ({
     };
   }
 
-  console.log({ data: apiResponse.data });
-
   return transformRoleAccessData(apiResponse.data);
 };
