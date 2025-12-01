@@ -43,8 +43,6 @@ export async function createBanner(formData: FormData) {
 }
 
 export async function updateBanner(id: string, formData: FormData) {
-  console.log({ id, formData });
-
   try {
     const response = await apiCall(`banners/${id}`, {
       method: "PUT",
@@ -128,7 +126,7 @@ export async function changeBannerStatus(body: {
   try {
     const response = await apiCall(`banners/status`, {
       method: "POST",
-      body: JSON.stringify({ body }),
+      body: JSON.stringify(body),
     });
 
     if (response.status !== 200) {

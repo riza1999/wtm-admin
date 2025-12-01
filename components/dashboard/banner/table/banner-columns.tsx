@@ -1,8 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import {
-  changeBannerOrder,
-  changeBannerStatus,
-} from "@/app/(dashboard)/banner/actions";
+import { changeBannerStatus } from "@/app/(dashboard)/banner/actions";
 import { Banner } from "@/app/(dashboard)/banner/types";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { Button } from "@/components/ui/button";
@@ -13,12 +10,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { DataTableRowAction } from "@/types/data-table";
 import { ColumnDef } from "@tanstack/react-table";
-import { Ellipsis, Text } from "lucide-react";
+import { ArrowDown, ArrowUp, Ellipsis, ImageIcon, Text } from "lucide-react";
+import Image from "next/image";
 import React from "react";
 import { toast } from "sonner";
 
@@ -38,7 +35,7 @@ export function getBannerTableColumns({
       cell: ({ row }) => row.index + 1,
       enableSorting: false,
       enableHiding: false,
-      size: 40,
+      size: 10,
     },
     // {
     //   id: "id",
@@ -49,40 +46,41 @@ export function getBannerTableColumns({
     //   cell: ({ row }) => row.original.id,
     //   enableHiding: false,
     // },
-    // {
-    //   id: "image",
-    //   accessorKey: "image_url",
-    //   header: ({ column }) => (
-    //     <DataTableColumnHeader column={column} title="Image" />
-    //   ),
-    //   cell: ({ row }) => {
-    //     const imageUrl = row.original.image_url;
-
-    //     return (
-    //       <div className="relative h-16 w-28 overflow-hidden rounded-md border">
-    //         {imageUrl ? (
-    //           <Image
-    //             src={imageUrl}
-    //             alt={row.original.title || "Banner image"}
-    //             fill
-    //             className="object-cover"
-    //             sizes="112px"
-    //           />
-    //         ) : (
-    //           <div className="flex h-full w-full items-center justify-center bg-muted">
-    //             <ImageIcon className="h-8 w-8 text-muted-foreground" />
-    //           </div>
-    //         )}
-    //       </div>
-    //     );
-    //   },
-    //   enableSorting: false,
-    //   enableHiding: false,
-    //   size: 120,
-    // },
     {
-      id: "title",
-      accessorKey: "title",
+      id: "image",
+      accessorKey: "image_url",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Preview" />
+      ),
+      cell: ({ row }) => {
+        const imageUrl = row.original.image_url;
+
+        return (
+          <div className="relative h-40 w-72 overflow-hidden rounded-md border">
+            {imageUrl ? (
+              <Image
+                priority
+                src={imageUrl}
+                alt={row.original.title || "Banner image"}
+                fill
+                className="object-cover"
+                sizes="288px"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-muted">
+                <ImageIcon className="h-8 w-8 text-muted-foreground" />
+              </div>
+            )}
+          </div>
+        );
+      },
+      enableSorting: false,
+      enableHiding: false,
+      size: 60,
+    },
+    {
+      id: "search",
+      accessorKey: "search",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Title" />
       ),
@@ -100,6 +98,7 @@ export function getBannerTableColumns({
       enableColumnFilter: true,
       enableHiding: false,
       enableSorting: false,
+      size: 60,
     },
     {
       id: "description",
@@ -126,7 +125,7 @@ export function getBannerTableColumns({
 
         return (
           <div className="flex items-center gap-2">
-            <Input
+            {/* <Input
               type="number"
               min="1"
               value={orderValue}
@@ -150,15 +149,21 @@ export function getBannerTableColumns({
               }}
               disabled={isUpdatePending}
               className="w-20"
-            />
+            /> */}
+            <Button>
+              <ArrowUp />
+            </Button>
+            <Button>
+              <ArrowDown />
+            </Button>
           </div>
         );
       },
       enableSorting: false,
-      size: 100,
+      size: 60,
     },
     {
-      id: "status",
+      id: "is_active",
       accessorKey: "is_active",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Status" />
@@ -206,6 +211,7 @@ export function getBannerTableColumns({
       enableColumnFilter: true,
       enableHiding: false,
       enableSorting: false,
+      size: 40,
     },
     {
       id: "actions",
