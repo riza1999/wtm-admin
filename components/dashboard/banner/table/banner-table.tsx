@@ -26,6 +26,7 @@ const BannerTable = ({ promises }: BannerTableProps) => {
     () =>
       getBannerTableColumns({
         setRowAction,
+        total: pagination?.total || 0,
       }),
     []
   );

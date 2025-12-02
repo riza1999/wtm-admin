@@ -1,5 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { changeBannerStatus } from "@/app/(dashboard)/banner/actions";
+import {
+  changeBannerOrder,
+  changeBannerStatus,
+} from "@/app/(dashboard)/banner/actions";
 import { Banner } from "@/app/(dashboard)/banner/types";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { Button } from "@/components/ui/button";
@@ -12,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { cn } from "@/lib/utils";
 import { DataTableRowAction } from "@/types/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowDown, ArrowUp, Ellipsis, ImageIcon, Text } from "lucide-react";
@@ -23,10 +27,12 @@ interface GetBannerTableColumnsProps {
   setRowAction: React.Dispatch<
     React.SetStateAction<DataTableRowAction<Banner> | null>
   >;
+  total: number;
 }
 
 export function getBannerTableColumns({
   setRowAction,
+  total,
 }: GetBannerTableColumnsProps): ColumnDef<Banner>[] {
   return [
     {
@@ -121,39 +127,36 @@ export function getBannerTableColumns({
       ),
       cell: ({ row }) => {
         const [isUpdatePending, startUpdateTransition] = React.useTransition();
-        const [orderValue, setOrderValue] = React.useState(row.original.order);
+        const handleOrderChange = (direction: "up" | "down") => {
+          startUpdateTransition(() => {
+            toast.promise(
+              changeBannerOrder({
+                id: String(row.original.id),
+                order: direction,
+              }),
+              {
+                loading: "Updating banner order...",
+                success: (data) => data.message,
+                error: "Failed to update banner order",
+              }
+            );
+          });
+        };
 
         return (
           <div className="flex items-center gap-2">
-            {/* <Input
-              type="number"
-              min="1"
-              value={orderValue}
-              onChange={(e) => setOrderValue(Number(e.target.value))}
-              onBlur={() => {
-                if (orderValue !== row.original.order) {
-                  startUpdateTransition(() => {
-                    toast.promise(
-                      changeBannerOrder({
-                        id: String(row.original.id),
-                        order: orderValue,
-                      }),
-                      {
-                        loading: "Updating banner order...",
-                        success: (data) => data.message,
-                        error: "Failed to update banner order",
-                      }
-                    );
-                  });
-                }
-              }}
-              disabled={isUpdatePending}
-              className="w-20"
-            /> */}
-            <Button>
+            <Button
+              // className={cn({ invisible: row.index === 0 })}
+              disabled={isUpdatePending || row.index === 0}
+              onClick={() => handleOrderChange("up")}
+            >
               <ArrowUp />
             </Button>
-            <Button>
+            <Button
+              // className={cn({ invisible: row.index === 0 })}
+              disabled={isUpdatePending || row.index === total - 1}
+              onClick={() => handleOrderChange("down")}
+            >
               <ArrowDown />
             </Button>
           </div>

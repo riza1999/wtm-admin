@@ -163,11 +163,14 @@ export async function changeBannerStatus(body: {
   }
 }
 
-export async function changeBannerOrder(body: { id: string; order: number }) {
+export async function changeBannerOrder(body: {
+  id: string;
+  order: "up" | "down";
+}) {
   try {
     const response = await apiCall(`banners/order`, {
       method: "POST",
-      body: JSON.stringify({ body }),
+      body: JSON.stringify(body),
     });
 
     if (response.status !== 200) {
